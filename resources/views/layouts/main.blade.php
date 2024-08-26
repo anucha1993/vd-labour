@@ -15,10 +15,14 @@
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="{{URL::asset('../assets/images/favicon.png')}}" />
     <!-- Custom CSS -->
+
     <link rel="stylesheet" type="text/css" href="{{URL::asset('../assets/extra-libs/multicheck/multicheck.css')}}" />
     <link href="{{URL::asset('../assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.css')}}" rel="stylesheet" />
     <link href="{{URL::asset('../dist/css/style.min.css')}}" rel="stylesheet" />
     <script src="{{URL::asset('../assets/libs/jquery/dist/jquery.min.js')}}"></script>
+    <script src="{{URL::asset('../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js')}}"></script>
+    
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -543,7 +547,7 @@
     <!-- ============================================================== -->
   
     <!-- Bootstrap tether Core JavaScript -->
-    <script src="{{URL::asset('../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js')}}"></script>
+    
     <!-- slimscrollbar scrollbar JavaScript -->
     <script src="{{URL::asset('../assets/libs/perfect-scrollbar/dist/perfect-scrollbar.jquery.min.js')}}"></script>
     <script src="{{URL::asset('../assets/extra-libs/sparkline/sparkline.js')}}"></script>

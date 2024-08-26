@@ -12,6 +12,7 @@ class labourFileModel extends Model
     protected $primaryKey="labour_file_id";
     protected $fillable = [
         'labour_file_name',
+        'labour_file_note',
         'labour_file_path',
         'list_file_id',
         'labour_id',
