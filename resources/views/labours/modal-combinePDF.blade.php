@@ -5,13 +5,14 @@
         <div class="container">
             <form action="{{ route('merge-pdfs') }}" id="test" method="post">
                 @csrf
+                <input type="hidden" name="labour_id" value="{{$labourModel->labour_id}}">
                 <table>
                     @foreach ($labourfiles as $item)
                         @if ($item->labour_file_path)
                             <tr>
                                 <td><input type="number" class="form-control no" name="no[]" placeholder="ลำดับ"
                                         style="width: 100px" readonly></td>
-                                <td>&nbsp; <input type="checkbox" name="checkNum[]" class="checkNum" value="{{ $labourModel->labour_path }}\\{{ $item->labour_file_path }}">
+                                <td>&nbsp; <input type="checkbox" name="checkNum[]" class="checkNum" value="{{ env('LOCATION_PATH') }}\\{{ $labourModel->labour_path }}\\{{ $item->labour_file_path }}">
                                     {{ $item->labour_file_path }}</td>
                                 <td>[ {{ $item->labour_file_note }} ]</td>
                             </tr>

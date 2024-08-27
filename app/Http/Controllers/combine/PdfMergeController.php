@@ -3,40 +3,98 @@
 namespace App\Http\Controllers\Combine;
 
 use Illuminate\Http\Request;
+use App\Models\labours\labourModel;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Storage;
-use Jurosh\PDFMerge\PDFMerger; // นำเข้าคลาส PDFMerger
 
 class PdfMergeController extends Controller
 {
+    // public function mergePdfs(Request $request)
+    // {
+    //     // รายชื่อไฟล์ PDF ที่จะรวม
+    //     $pdfFiles = [
+    //         '\\\\192.168.10.100\\public\\2024\\TEST\\BRC_ANUCHA_YOTHANAN.pdf',
+    //         '\\\\192.168.10.100\\public\\2024\\TEST\\CER_ANUCHA_YOTHANAN.pdf'
+    //     ];
+    //     dd($pdfFiles);
+        
+    //     // เส้นทางสำหรับไฟล์ PDF ที่รวมแล้ว
+    //     $outputFile = '\\\\192.168.10.100\\public\\2024\\TEST\\merged.pdf';
+    
+    //     // ตั้งค่าตัวแปร PATH
+    //     putenv('PATH=C:\\Program Files (x86)\\PDFtk\\bin;' . getenv('PATH'));
+    
+    //     // ตรวจสอบว่าไฟล์มีอยู่
+    //     foreach ($pdfFiles as $file) {
+    //         if (!file_exists($file)) {
+    //             return response()->json(['message' => "File not found: $file"], 404);
+    //         }
+    //     }
+
+    //     // สร้างคำสั่ง pdftk
+    //     $command = 'pdftk ' . implode(' ', array_map('escapeshellarg', $pdfFiles)) . ' cat output ' . escapeshellarg($outputFile);
+    
+    //     // เรียกใช้คำสั่ง pdftk
+    //     exec($command . ' 2>&1', $output, $returnVar);
+    
+    //     if ($returnVar === 0) {
+    //         // ส่งไฟล์ PDF ที่รวมแล้วเป็นการดาวน์โหลด
+    //         return response()->download($outputFile)->deleteFileAfterSend(true);
+    //     } else {
+    //         return response()->json(['message' => 'Failed to merge PDFs.', 'error' => implode("\n", $output)], 500);
+    //     }
+    // }
+
     public function mergePdfs(Request $request)
     {
-        // รับไฟล์ที่เลือกจาก request
-        $selectedFiles = $request->input('checkNum', []);
-        $pageOrders = $request->input('no', []);
-
-        if (empty($selectedFiles) || empty($pageOrders)) {
-            return back()->with('error', 'กรุณาเลือกไฟล์ PDF และระบุลำดับเพื่อรวม');
-        }
-
-        // สร้าง PDFMerger object
-        $pdfMerger = new PDFMerger();
-
-        // Loop ผ่านไฟล์ PDF แต่ละไฟล์ที่เลือก
-        foreach ($selectedFiles as $file) {
-            $filePath = Storage::disk('public')->path($file);
-
-            if (file_exists($filePath)) {
-                // เพิ่มไฟล์ PDF ลงใน PDFMerger
-                $pdfMerger->addPDF($filePath, 'all', 'vertical'); // หรือเปลี่ยนตามที่ต้องการ
+        // รับข้อมูลจากฟอร์ม
+        $nos = $request->input('no', []);
+        $paths = $request->input('checkNum', []);
+    
+        // สร้างอาร์เรย์ไฟล์ตามลำดับ
+        $pdfFiles = [];
+        foreach ($nos as $index => $no) {
+            if (isset($paths[$index])) {
+                // แปลงเครื่องหมายสแลชให้เป็นแบบที่เหมาะสม
+                $filePath = str_replace(['\\', '/'], DIRECTORY_SEPARATOR, $paths[$index]);
+                if (file_exists($filePath)) {
+                    $pdfFiles[$no] = $filePath;
+                } else {
+                    return response()->json(['message' => "File not found: $filePath"], 404);
+                }
             }
         }
 
-        // สร้างไฟล์ PDF ที่รวมแล้ว
-        $outputFile = public_path('pdf/merged.pdf');
-        $pdfMerger->merge('file', $outputFile);
-
-        // ดาวน์โหลดไฟล์ที่รวมกันแล้ว
-        return response()->download($outputFile)->deleteFileAfterSend(true);
+        $labourModel = labourModel::where('labour_id',$request->labour_id)->first();
+    
+        // เรียงไฟล์ตามลำดับ
+        ksort($pdfFiles);
+        $pdfFiles = array_values($pdfFiles);
+        //dd($pdfFiles);
+    
+        // เส้นทางสำหรับไฟล์ PDF ที่รวมแล้ว
+        $outputFile = storage_path('app/public/'.'DOC_'.$labourModel->labour_firstname.'_'.$labourModel->labour_lastname.'.pdf');
+    
+        // ตั้งค่าตัวแปร PATH
+        putenv('PATH=C:\\Program Files (x86)\\PDFtk\\bin;' . getenv('PATH'));
+    
+        // สร้างคำสั่ง pdftk
+        $command = 'pdftk ' . implode(' ', array_map('escapeshellarg', $pdfFiles)) . ' cat output ' . escapeshellarg($outputFile);
+    
+        // เรียกใช้คำสั่ง pdftk
+        exec($command . ' 2>&1', $output, $returnVar);
+    
+        if ($returnVar === 0) {
+            // ส่งไฟล์ PDF ที่รวมแล้วเป็นการดาวน์โหลด
+            return response()->download($outputFile)->deleteFileAfterSend(true);
+        } else {
+            return response()->json(['message' => 'Failed to merge PDFs.', 'error' => implode("\n", $output)], 500);
+        }
     }
+    
+
+
+
+
+
+    
 }
