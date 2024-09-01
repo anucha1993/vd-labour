@@ -33,6 +33,8 @@ class labourModel extends Model
        'labour_file_list',
        'labour_path',
        'labour_customer',
+       'labour_disease_expriry',
+       'labour_cid_expriry',
        'created_by',
        'updated_by',
     ];

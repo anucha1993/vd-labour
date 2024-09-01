@@ -1,9 +1,12 @@
 <?php
 
+use App\Models\labours\labourModel;
+use App\Models\files\labourFileModel;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\labours\labourController;
 use App\Http\Controllers\combine\PdfMergeController;
 use App\Http\Controllers\jobgroup\jobGoupController;
+use App\Http\Controllers\labours\labourFileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,5 +43,9 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::get('jobgroup/ajax/position',[jobGoupController::class,'ajaxSelectPosition'])->name('jobgroup.ajaxSelectPosition');
 
 Route::post('/merge-pdfs', [PdfMergeController::class, 'mergePdfs'])->name('merge-pdfs');
+
+// labour file
+
+Route::get('labour/delete/file/',[labourFileController::class,'delete'])->name('labourfile.delete');
 
 

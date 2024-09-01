@@ -56,7 +56,7 @@
                     </div>
                     <input type="hidden" name="labour_customer_old" value="{{ $labourModel->labour_customer }}">
                     <div class="row mt-3">
-                        <div class="col-md-3">
+                        <div class="col-md-3 mt-3">
                             <label>Customer (นายจ้าง)</label>
                             <select name="labour_customer" class="form-select">
                                 <option value="">Select a Customer</option>
@@ -69,27 +69,43 @@
                             </select>
                         </div>
 
-                        <div class="col-md-2">
+                        <div class="col-md-2 mt-3">
                             <label>Passport No.</label>
                             <input type="text" name="labour_passport_number" class="form-control"
                                 placeholder="Passport Number" value="{{ $labourModel->labour_passport_number }}">
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-2 mt-3">
                             <label>Data Issue</label>
                             <input type="date" name="labour_passport_issue" class="form-control" placeholder="Date Issue"
                                 value="{{ $labourModel->labour_passport_issue }}">
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-2 mt-3">
                             <label>Data Expiry</label>
                             <input type="date" name="labour_passport_expiry" class="form-control"
                                 placeholder="Date Expiry" value="{{ $labourModel->labour_passport_expiry }}">
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-3 mt-3">
                             <label>Register Number.</label>
                             <input type="text" name="labour_register_number" class="form-control"
                                 placeholder="Register Number" value="{{ $labourModel->labour_register_number }}" required>
                         </div>
                     </div>
+
+                    <div class="row">
+                        <div class="col-md-3 mt-3">
+                            <label>Disease Expiry (ผลโรคหมดอายุ) </label>
+                            <input type="date" name="labour_disease_expriry" class="form-control"
+                                placeholder="Register Number" value="{{ $labourModel->labour_disease_expriry }}" required>
+                        </div>
+                        <div class="col-md-3 mt-3">
+                            <label>CID Expiry</label>
+                            <input type="date" name="labour_cid_expriry" class="form-control"
+                                placeholder="Register Number" value="{{ $labourModel->labour_cid_expriry }}" required>
+                        </div>
+                    </div>
+
+
+
                     <hr>
                     <h4>ข้อมูลกลุ่มงาน</h4>
                     <div class="row">
@@ -211,12 +227,12 @@
                     </div>
                     <hr>
 
-                        <a href="{{ route('labour.CombinePDF', $labourModel->labour_id) }}" class="create-CombinePDF btn btn-primary"><i class="fas fa-file-pdf"></i> CombinePDF</a>
+                    <a href="{{ route('labour.CombinePDF', $labourModel->labour_id) }}"
+                        class="create-CombinePDF btn btn-primary"><i class="fas fa-file-pdf"></i> CombinePDF</a>
                     <br>
                     <br>
                     <div class="row">
                         <table>
-
                             <tbody>
                                 @foreach ($labourfiles as $key => $item)
                                     <tr>
@@ -234,7 +250,11 @@
                                                     value="{{ $item->labour_file_id }}">
                                                 <input type="file" name="files[]">
                                             @endif
-
+                                        </td>
+                                        <td> <a href="" data-file-id="{{ $item->labour_file_id }}"
+                                                data-labour-id="{{ $labourModel->labour_id }}"
+                                                data-path="{{ $labourModel->labour_path . '/' . $item->labour_file_path }}"
+                                                class="delete-file text-danger"> <i class="fa fa-trash"></i> Delete</a>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -265,27 +285,28 @@
         </div>
     </div>
 
-    
 
-<style>
-    .modal {
-   width: 1000px;
-   height: 1000px;
-   left: 40%;
-   top: 30%; 
-   margin-left: -150px;
-   margin-top: -150px;
-}
-</style>
-   
- 
 
-    <div class="modal fade bd-example-modal-sm modal-lg"  id="add-CombinePDF" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-          ...
+    <style>
+        .modal {
+            width: 1000px;
+            height: 1000px;
+            left: 40%;
+            top: 30%;
+            margin-left: -150px;
+            margin-top: -150px;
+        }
+    </style>
+
+
+
+    <div class="modal fade bd-example-modal-sm modal-lg" id="add-CombinePDF" tabindex="-1" role="dialog"
+        aria-labelledby="mySmallModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                ...
+            </div>
         </div>
-      </div>
     </div>
 
 
@@ -294,6 +315,45 @@
 
 
     <script>
+        $(document).ready(function() {
+            $('.delete-file').on('click', function(e) {
+                e.preventDefault();
+                var path = $(this).attr('data-path');
+                var fileId = $(this).attr('data-file-id');
+                var labourId = $(this).attr('data-labour-id');
+                // ตรวจสอบค่าตัวแปรที่ได้รับ
+                console.log('Path:', path);
+                console.log('File ID:', fileId);
+                console.log('Labour ID:', labourId);
+
+                if (confirm('คุณแน่ใจนะว่าจะลบไฟล์ ' + path)) {
+                    $.ajax({
+                        url: '{{ route('labourfile.delete') }}',
+                        method: 'GET',
+                        data: {
+                            path: path,
+                            fileId: fileId,
+                            labourId: labourId,
+                        }
+                    }).done(function(response) {
+                        console.log(response); // แสดงข้อมูลที่ตอบกลับใน console
+                        if (response.success) {
+                            alert(response.success);
+                            location.reload(); // Reload หน้าเว็บเมื่อสำเร็จ
+                        } else {
+                            alert(response.error);
+                        }
+                    }).fail(function(jqXHR, textStatus, errorThrown) {
+                        console.error("Request failed: " + textStatus + ", " + errorThrown);
+                        alert('เกิดข้อผิดพลาดในการลบไฟล์');
+                    });
+                } else {
+                    alert('ยกเลิกการลบสำเร็จ!');
+                }
+            });
+        });
+
+
         $(document).ready(function() {
 
             // modal add user
@@ -332,7 +392,4 @@
             });
         });
     </script>
-
-
-   
 @endsection

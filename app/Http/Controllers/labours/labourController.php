@@ -94,6 +94,13 @@ class labourController extends Controller
             }
         }
 
+        $counFile = labourFileModel::where('labour_id',$labourModel->labour_id)->count('labour_file_id');
+        $counFileNotNull = labourFileModel::where('labour_id',$labourModel->labour_id)
+        ->whereNotNull('labour_file_path')
+        ->count('labour_file_id');
+
+        $labourModel->update(['labour_file_count' => $counFile, 'labour_file_list' => $counFileNotNull]);
+
         if ($request->labour_customer_old === null && $labourModel->labour_customer !== null) {
             // ดึงข้อมูลที่จำเป็นจากฐานข้อมูล
             $country = countryModel::where('country_id', $labourModel->labour_country)->first();

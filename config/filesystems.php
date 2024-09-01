@@ -39,10 +39,18 @@ return [
             'visibility' => 'public',
         ],
 
+        // 'public' => [
+        //     'driver' => 'local',
+        //     'root' => storage_path('app/public'),
+        //     'url' => env('APP_URL') . '\\192.168.10.110\DOCUMENTS\LABOURS',
+        //     'visibility' => 'public',
+        //     'throw' => false,
+        // ],
+
         'public' => [
             'driver' => 'local',
-            'root' => storage_path('app/public'),
-            'url' => env('APP_URL') . '/storage',
+            'root' => 'D:\\DOCUMENTS\\LABOURS', // ใช้ \\ สำหรับเส้นทางในเครื่องบน Windows
+            'url' => env('APP_URL') . '/storage', // URL ของ public disk
             'visibility' => 'public',
             'throw' => false,
         ],
