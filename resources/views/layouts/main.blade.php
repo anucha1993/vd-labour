@@ -330,9 +330,8 @@
                                     class="hide-menu">ข้อมูลคนงาน</span></a>
                         </li>
                         <li class="sidebar-item">
-                            <a class="sidebar-link waves-effect waves-dark sidebar-link" href="grid.html"
-                                aria-expanded="false"><i class="mdi mdi-blur-linear"></i><span class="hide-menu">Full
-                                    Width</span></a>
+                            <a class="sidebar-link waves-effect waves-dark sidebar-link" href="{{route('export.form.labour')}}"
+                                aria-expanded="false"><i class="mdi mdi-blur-linear"></i><span class="hide-menu">รายงาน</span></a>
                         </li>
                         <li class="sidebar-item">
                             <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)"

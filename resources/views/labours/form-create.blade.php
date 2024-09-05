@@ -67,6 +67,20 @@
                         <input type="text" name="labour_register_number" class="form-control" placeholder="Register Number" required>
                     </div>
                 </div>
+
+                <div class="row">
+                    <div class="col-md-3 mt-3">
+                        <label>Disease Expiry (ผลโรคหมดอายุ) </label>
+                        <input type="date" name="labour_disease_expriry" class="form-control"
+                            placeholder="Register Number" required>
+                    </div>
+                    <div class="col-md-3 mt-3">
+                        <label>CID Expiry</label>
+                        <input type="date" name="labour_cid_expriry" class="form-control"
+                            placeholder="Register Number" required>
+                    </div>
+                </div>
+
                 <hr>
                 <h4>ข้อมูลกลุ่มงาน</h4>
                 <div class="row">
@@ -152,6 +166,18 @@
                             <option value="">Select a Staff</option>
                             @forelse ($staffs as $item)
                             <option value="{{$item->staff_id}}">{{$item->staff_name}}({{$item->staff_nickname}})</option>
+                            @empty
+                                
+                            @endforelse
+                        </select>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label>สายหาคน</label>
+                        <select name="labour_staff_sub" class="form-select" required>
+                            <option value="">Select a Staff Sub</option>
+                            @forelse ($staffSub as $item)
+                            <option value="{{$item->staff_sub_id}}">{{$item->staff_sub_name}}</option>
                             @empty
                                 
                             @endforelse

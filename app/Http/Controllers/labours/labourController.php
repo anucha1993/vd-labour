@@ -16,6 +16,7 @@ use App\Models\labours\labourModel;
 use Illuminate\Support\Facades\Storage;
 use App\Models\locationTest\locationTestModel;
 use App\Models\positions\positionModel;
+use App\Models\staff\staffSubModel;
 use Illuminate\Support\Facades\Auth;
 
 class labourController extends Controller
@@ -28,12 +29,87 @@ class labourController extends Controller
 
     public function index(Request $request)
     {
-        $labours = labourModel::leftjoin('staff', 'staff.staff_id', 'labours.labour_staff')
+        $jobGroup = jobGroupModel::where('job_group_status', 'active')->latest()->get();
+        $customers = customerModel::latest()->get();
+        $staffs = staffModel::where('staff_status', 'active')->get();
+        $staffSub = staffSubModel::where('staff_sub_status', 'active')->get();
 
-            ->latest('labours.created_at')
-            ->get();
+        // Search
+        $labour_firstname = $request->labour_firstname;
+        $labour_lastname = $request->labour_lastname;
+        $labour_phone = $request->labour_phone;
+        $labour_passport_number = $request->labour_passport_number;
+        $labour_disease_date_start = $request->labour_disease_date_start;
+        $labour_disease_date_end = $request->labour_disease_date_end;
+        $labour_country = $request->labour_country;
+        $labour_job_group = $request->labour_job_group;
+        $labour_status = $request->labour_status;
+        $labours = labourModel::leftjoin('staff', 'staff.staff_id', 'labours.labour_staff')->latest('labours.created_at');
+        //labour_firstname
+        if (!empty($labour_firstname)) {
+            $labours = $labours->where(function ($query) use ($labour_firstname) {
+                $query->where('labour_firstname', 'LIKE', "%$labour_firstname%");
+            });
+        }
+        //labour_lastname
+        if (!empty($labour_lastname)) {
+            $labours = $labours->where(function ($query) use ($labour_lastname) {
+                $query->where('labour_firstname', 'LIKE', "%$labour_lastname%");
+            });
+        }
+        //labour_phone
+        if (!empty($labour_phone)) {
+            $labours = $labours->where(function ($query) use ($labour_phone) {
+                $query->where('labour_phone', 'LIKE', "%$labour_phone%");
+            });
+        }
+        //labour_passport_number
+        if (!empty($labour_passport_number)) {
+            $labours = $labours->where(function ($query) use ($labour_passport_number) {
+                $query->where('labour_passport_number', 'LIKE', "%$labour_passport_number%");
+            });
+        }
+        // ผลโรค เริ่มต้น
+        if (!empty($labour_disease_date_start) && !empty($labour_disease_date_end)) {
+            $labours = $labours->where(function ($query) use ($labour_disease_date_start, $labour_disease_date_end) {
+                $query->whereDate('labour_disease_expriry', '>=', $labour_disease_date_start)->whereDate('labour_disease_expriry', '<=', $labour_disease_date_end);
+            });
+        }
+        // CID เริ่มต้น
+        if (!empty($labour_cid_start) && !empty($labour_cid_end)) {
+            $labours = $labours->where(function ($query) use ($labour_cid_start, $labour_cid_end) {
+                $query->whereDate('labour_cid_expriry', '>=', $labour_cid_start)->whereDate('labour_cid_expriry', '<=', $labour_cid_end);
+            });
+        }
+        //Country
+        if (!empty($labour_country)) {
+            $labours = $labours->where(function ($query) use ($labour_country) {
+                $query->where('labour_country', $labour_country);
+            });
+        }
+         //labour_job_group
+         if (!empty($labour_job_group)) {
+            $labours = $labours->where(function ($query) use ($labour_job_group) {
+                $query->where('labour_job_group', $labour_job_group);
+            });
+        }
+          //labour_staff
+          if (!empty($labour_staff)) {
+            $labours = $labours->where(function ($query) use ($labour_staff) {
+                $query->where('labour_staff', $labour_staff);
+            });
+        }
+          //labour_status
+          if (!empty($labour_status)) {
+            $labours = $labours->where(function ($query) use ($labour_status) {
+                $query->where('labour_status', $labour_status);
+            });
+        }
 
-        return view('labours.index', compact('labours'));
+
+        $labours = $labours->paginate(10);
+
+        return view('labours.index', compact('labours', 'customers', 'jobGroup', 'staffs','staffSub'));
     }
 
     public function edit(labourModel $labourModel)
@@ -51,10 +127,8 @@ class labourController extends Controller
         $fileID = $labourfiles->pluck('list_file_id')->toArray();
 
         $listFiles = listFileModel::whereNotIn('list_file_id', $fileID)->get();
-        
-
-
-        return view('labours.form-edit', compact('listFiles','customers', 'labourModel', 'country', 'jobGroup', 'locationtest', 'staffs', 'fileManage', 'examinationRound', 'position', 'labourfiles'));
+        $staffSub = staffSubModel::where('staff_sub_status', 'active')->get();
+        return view('labours.form-edit', compact('listFiles', 'customers', 'labourModel','staffSub', 'country', 'jobGroup', 'locationtest', 'staffs', 'fileManage', 'examinationRound', 'position', 'labourfiles'));
     }
 
     public function create()
@@ -65,15 +139,16 @@ class labourController extends Controller
         $staffs = staffModel::where('staff_status', 'active')->get();
         $fileManage = fileManageModel::where('file_manage_status', 'active')->get();
         $customers = customerModel::where('customer_status', 'active')->get();
+        $staffSub = staffSubModel::where('staff_sub_status', 'active')->get();
 
         $examinationRound = examinationRoundModel::where('examination_round_status', 'active')->latest()->get();
-        return view('labours.form-create', compact('country', 'jobGroup', 'locationtest', 'staffs', 'fileManage', 'examinationRound', 'customers'));
+        return view('labours.form-create', compact('country', 'jobGroup', 'locationtest', 'staffs', 'fileManage', 'examinationRound', 'customers','staffSub'));
     }
 
     public function update(labourModel $labourModel, Request $request)
     {
         $labourModel->update($request->all());
-        labourFileModel::where('labour_id',$labourModel->labour_id)->update(['labour_passport_number' => $labourModel->labour_passport_number ]);
+        labourFileModel::where('labour_id', $labourModel->labour_id)->update(['labour_passport_number' => $labourModel->labour_passport_number]);
         $files = $request->file('files');
         if ($files) {
             foreach ($files as $key => $file) {
@@ -94,10 +169,10 @@ class labourController extends Controller
             }
         }
 
-        $counFile = labourFileModel::where('labour_id',$labourModel->labour_id)->count('labour_file_id');
-        $counFileNotNull = labourFileModel::where('labour_id',$labourModel->labour_id)
-        ->whereNotNull('labour_file_path')
-        ->count('labour_file_id');
+        $counFile = labourFileModel::where('labour_id', $labourModel->labour_id)->count('labour_file_id');
+        $counFileNotNull = labourFileModel::where('labour_id', $labourModel->labour_id)
+            ->whereNotNull('labour_file_path')
+            ->count('labour_file_id');
 
         $labourModel->update(['labour_file_count' => $counFile, 'labour_file_list' => $counFileNotNull]);
 
@@ -170,7 +245,6 @@ class labourController extends Controller
 
             // ตรวจสอบการคัดลอกและรายงานผลลัพธ์
             if (copyDirectory($sourceDirectory, $destinationDirectory)) {
-              
                 // ตรวจสอบว่าโฟลเดอร์ปลายทางมีอยู่หรือไม่
                 if (Storage::disk('public')->exists($folderPathOld)) {
                     // สร้างโฟลเดอร์ปลายทาง
@@ -186,13 +260,12 @@ class labourController extends Controller
 
     public function store(Request $request)
     {
-         $checkLabour = NULL;
+        $checkLabour = null;
 
-         if($request->labour_passport_number !== NULL){
+        if ($request->labour_passport_number !== null) {
             $checkLabour = labourModel::where('labour_passport_number', $request->labour_passport_number)->first();
-         }
+        }
 
-       
         if (empty($checkLabour)) {
             $request->merge(['created_by' => Auth::user()->name]);
             $request->merge(['labour_folder_year' => date('Y')]);
@@ -210,12 +283,11 @@ class labourController extends Controller
             $examinationRound = $labourModel->labour_examination;
             $folderNameLabour = $labourModel->labour_firstname . '_' . $labourModel->labour_lastname;
             $positionName = $position->position_name;
-          
 
             if (empty($request->labour_customer)) {
                 $folderPath = $folderYear . '\\BACKUP\\' . $labourModel->labour_firstname . '_' . $labourModel->labour_lastname;
             } else {
-                $customerName = $customer->customer_name ;
+                $customerName = $customer->customer_name;
                 $folderPath = $folderYear . '\\' . $countryName . '\\' . $jobGroupName . '\\' . $positionName . '\\' . $examinationRound . '\\' . $customerName . '\\' . $folderNameLabour;
             }
             //สร้าง Forlder
@@ -247,10 +319,9 @@ class labourController extends Controller
         return redirect()->back();
     }
 
-
     public function CombinePDF(labourModel $labourModel, Request $request)
     {
         $labourfiles = labourFileModel::where('labour_id', $labourModel->labour_id)->get();
-        return view('labours.modal-combinePDF',compact('labourfiles','labourModel'));
+        return view('labours.modal-combinePDF', compact('labourfiles', 'labourModel'));
     }
 }

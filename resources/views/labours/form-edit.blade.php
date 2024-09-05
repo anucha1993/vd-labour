@@ -210,6 +210,20 @@
                             </select>
                         </div>
                         <div class="col-md-3">
+                            <label>Staff</label>
+                            <select name="labour_staff_sub" class="form-select" required
+                                @if (in_array($labourModel->labour_status, ['success'])) disabled @endif>
+                                <option value="">Select a Staff Sub</option>
+                                @forelse ($staffSub as $item)
+                                    <option @if ($item->staff_sub_id === $labourModel->labour_staff_sub) selected @endif
+                                        value="{{ $item->staff_sub_id }}">
+                                        {{ $item->staff_sub_name }}</option>
+                                @empty
+                                @endforelse
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-3">
                             <label>Status</label>
                             <select name="labour_status" class="form-select" required>
                                 <option @if ($labourModel->labour_status === 'wait') selected @endif value="wait">กำลังดำเนินการ

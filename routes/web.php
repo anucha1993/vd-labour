@@ -5,6 +5,7 @@ use App\Models\files\labourFileModel;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\labours\labourController;
 use App\Http\Controllers\combine\PdfMergeController;
+use App\Http\Controllers\formExport\labourFormExportController;
 use App\Http\Controllers\jobgroup\jobGoupController;
 use App\Http\Controllers\labours\labourFileController;
 
@@ -45,7 +46,12 @@ Route::get('jobgroup/ajax/position',[jobGoupController::class,'ajaxSelectPositio
 Route::post('/merge-pdfs', [PdfMergeController::class, 'mergePdfs'])->name('merge-pdfs');
 
 // labour file
-
 Route::get('labour/delete/file/',[labourFileController::class,'delete'])->name('labourfile.delete');
+
+//export Labour
+Route::get('export/form/labour',[labourFormExportController::class,'index'])->name('export.form.labour');
+
+//export
+Route::get('/export/export-labour', [labourFormExportController::class, 'export'])->name('labour.export');
 
 

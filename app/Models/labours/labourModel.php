@@ -35,6 +35,7 @@ class labourModel extends Model
        'labour_customer',
        'labour_disease_expriry',
        'labour_cid_expriry',
+       'labour_staff_sub',
        'created_by',
        'updated_by',
     ];
