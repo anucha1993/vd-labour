@@ -50,8 +50,8 @@
 
                 <div class="row">
                     <div class="col-md-3 mt-3">
-                        <label> Country Name</label>
-                        <select name="labour_country" class="form-select">
+                        <label> Customers Name</label>
+                        <select name="labour_customer" class="form-select">
                             <option value="all" >All</option>
                             @forelse ($customers as $item)
                             <option value="{{$item->customer_id}}" >{{$item->customer_name}}</option>
@@ -61,6 +61,20 @@
                             
                         </select>
                     </div>
+
+                    <div class="col-md-3 mt-3">
+                        <label> Country Name</label>
+                        <select name="labour_country" class="form-select">
+                            <option value="all" >All</option>
+                            @forelse ($country as $item)
+                            <option value="{{$item->country_id}}" >{{$item->country_name_th}}</option>
+                            @empty
+                                
+                            @endforelse
+                            
+                        </select>
+                    </div>
+
                     <div class="col-md-3 mt-3">
                         <label> Job Group</label>
                         <select name="labour_job_group" class="form-select">

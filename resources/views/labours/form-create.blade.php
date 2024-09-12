@@ -90,7 +90,7 @@
                             <option value="">Select a Examination round</option>
 
                              @forelse ($examinationRound as $item)
-                             <option value="{{$item->examination_round_name}}">{{$item->examination_round_name}}</option>
+                             <option value="{{$item->examination_round_name}}">{{date('d-m-Y',strtotime($item->examination_round_name))}}</option>
                              @empty
                                  
                              @endforelse

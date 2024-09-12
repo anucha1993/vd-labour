@@ -34,6 +34,7 @@ class labourController extends Controller
         $staffs = staffModel::where('staff_status', 'active')->get();
         $staffSub = staffSubModel::where('staff_sub_status', 'active')->get();
 
+        
         // Search
         $labour_firstname = $request->labour_firstname;
         $labour_lastname = $request->labour_lastname;

@@ -13,7 +13,7 @@ class examinationRoundModel extends Model
     protected $fillable = [
         'examination_round_name',
         'examination_round_status',
-
+'examination_round_note'
         
     ];
 }

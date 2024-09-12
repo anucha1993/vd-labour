@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\categorys\ExaminationRounController;
 use App\Models\labours\labourModel;
 use App\Models\files\labourFileModel;
 use Illuminate\Support\Facades\Route;
@@ -53,5 +54,10 @@ Route::get('export/form/labour',[labourFormExportController::class,'index'])->na
 
 //export
 Route::get('/export/export-labour', [labourFormExportController::class, 'export'])->name('labour.export');
+
+//รอบสอบ 
+Route::get('category/examination-roun',[ExaminationRounController::class, 'index'])->name('category.examination');
+Route::post('category/examination-roun/store',[ExaminationRounController::class, 'store'])->name('category.examination.store');
+Route::get('category/examination-roun/cancel/{examinationRoundModel}',[ExaminationRounController::class, 'index'])->name('category.examination.cancel');
 
 

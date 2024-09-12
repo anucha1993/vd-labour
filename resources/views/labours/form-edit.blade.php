@@ -25,6 +25,8 @@
                             </a></span>
 
                         <hr>
+                      
+
                         <div class="col-md-1">
                             <label>Prefix</label>
                             <select name="labour_prefix" class="form-select" required>
@@ -113,11 +115,11 @@
                             <label>Examination round (รอบสอบ)</label>
                             <select name="labour_examination" class="form-select" required
                                 @if (in_array($labourModel->labour_status, ['success'])) disabled @endif>
-                                <option value="">Select a Examination round</option>
+                                <option selected value="">{{$labourModel->labour_examination}}</option>
 
                                 @forelse ($examinationRound as $item)
-                                    <option @if ($item->examination_round_name === $labourModel->labour_examination) selected @endif
-                                        value="{{ $item->examination_round_name }}">{{ $item->examination_round_name }}
+                                    <option 
+                                        value="{{ $item->examination_round_name }}">{{ date('d-m-Y',strtotime($item->examination_round_name)) }}
                                     </option>
                                 @empty
                                 @endforelse

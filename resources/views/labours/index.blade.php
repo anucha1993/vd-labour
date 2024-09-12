@@ -59,7 +59,7 @@
                             <input type="date" name="labour_cid_start" class="form-control"
                                 placeholder="Register Number"  >
                         </div>
-                        
+
                         <div class="col-md-3 mt-3">
                             <label> Data End CID Expiry</label>
                             <input type="date" name="labour_cid_end" class="form-control"
@@ -103,6 +103,7 @@
                                 @endforelse
                             </select>
                         </div>
+
                         <div class="col-md-3 mt-3">
                             <label> Status </label>
                             <select name="labour_status" class="form-select">
@@ -112,6 +113,7 @@
                                 <option value="cancel">ยกเลิก</option>
                             </select>
                         </div>
+                        
                     </div>
     
                     <button type="submit" class="btn btn-outline-secondary mt-3 float-end">

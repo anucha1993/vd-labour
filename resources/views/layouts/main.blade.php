@@ -335,12 +335,12 @@
                         </li>
                         <li class="sidebar-item">
                             <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)"
-                                aria-expanded="false"><i class="mdi mdi-receipt"></i><span class="hide-menu">Forms
+                                aria-expanded="false"><i class="mdi mdi-receipt"></i><span class="hide-menu">Category
                                 </span></a>
                             <ul aria-expanded="false" class="collapse first-level">
                                 <li class="sidebar-item">
-                                    <a href="form-basic.html" class="sidebar-link"><i
-                                            class="mdi mdi-note-outline"></i><span class="hide-menu"> Form Basic
+                                    <a href="{{route('category.examination')}}" class="sidebar-link"><i
+                                            class="mdi mdi-note-outline"></i><span class="hide-menu"> รอบสอบ
                                         </span></a>
                                 </li>
                                 <li class="sidebar-item">
