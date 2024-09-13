@@ -162,13 +162,15 @@
                                     </th>
                                     <th>{{ $item->labour_phone }}</th>
                                     <th>
-                                      
-                                       <div class="progress mt-3">
-                                       
-                                        <div class="progress-bar  bg-success" role="progressbar" style="width: {{$item->labour_file_list}}%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="{{$item->labour_file_count}}">
-                                          
+                                        @php
+                                            $progress = ($item->labour_file_list / $item->labour_file_count) * 100;
+
+                                        @endphp
+                                    <div class="progress mt-3">
+                                        <div class="progress-bar bg-success" role="progressbar" style="width: {{$progress}}%" aria-valuenow="{{$progress}}" aria-valuemin="0" aria-valuemax="100">
+                                           
                                         </div>
-                                        </div>
+                                    </div>
                                     </th>
                                     
                                     <th>

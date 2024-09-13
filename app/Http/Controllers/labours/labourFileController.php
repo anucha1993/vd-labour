@@ -10,6 +10,10 @@ use Illuminate\Support\Facades\Storage;
 class labourFileController extends Controller
 {
     //
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
     public function delete(Request $request)
     {
@@ -22,6 +26,7 @@ class labourFileController extends Controller
 
             return response()->json(['success' => 'Deleted File Path ' . $request->path . ' Successfully.']);
         } else {
+            labourFileModel::where('labour_file_id', $request->fileId)->update(['labour_file_path' => null]);
             return response()->json(['error' => 'Cannot Delete File Path ' . $request->path . ' Error.']);
         }
     }

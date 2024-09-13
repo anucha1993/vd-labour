@@ -46,16 +46,15 @@ class PdfMergeController extends Controller
 
     public function mergePdfs(Request $request)
     {
-        // รับข้อมูลจากฟอร์ม
         $nos = $request->input('no', []);
         $paths = $request->input('checkNum', []);
     
-        // สร้างอาร์เรย์ไฟล์ตามลำดับ
+        // ปรับ path ให้ตรงกับ alias ที่ตั้งใน Apache
         $pdfFiles = [];
         foreach ($nos as $index => $no) {
             if (isset($paths[$index])) {
-                // แปลงเครื่องหมายสแลชให้เป็นแบบที่เหมาะสม
-                $filePath = str_replace(['\\', '/'], DIRECTORY_SEPARATOR, $paths[$index]);
+                // แปลง path ให้ตรงกับโครงสร้างที่ใช้งานใน Windows
+                $filePath = 'D:/LABOURS/' . $paths[$index]; // ใช้ path ของ D:/LABOURS ตามที่ Alias ชี้ไป
                 if (file_exists($filePath)) {
                     $pdfFiles[$no] = $filePath;
                 } else {
@@ -63,16 +62,15 @@ class PdfMergeController extends Controller
                 }
             }
         }
-
+    
         $labourModel = labourModel::where('labour_id',$request->labour_id)->first();
     
         // เรียงไฟล์ตามลำดับ
         ksort($pdfFiles);
         $pdfFiles = array_values($pdfFiles);
-        //dd($pdfFiles);
-    
+        
         // เส้นทางสำหรับไฟล์ PDF ที่รวมแล้ว
-        $outputFile = storage_path('app/public/'.'DOC_'.$labourModel->labour_firstname.'_'.$labourModel->labour_lastname.'.pdf');
+        $outputFile = 'D:/LABOURS/' . 'DOC_' . $labourModel->labour_firstname . '_' . $labourModel->labour_lastname . '.pdf';
     
         // ตั้งค่าตัวแปร PATH
         putenv('PATH=C:\\Program Files (x86)\\PDFtk\\bin;' . getenv('PATH'));
@@ -91,7 +89,6 @@ class PdfMergeController extends Controller
         }
     }
     
-
 
 
 

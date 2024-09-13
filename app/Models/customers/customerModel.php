@@ -14,6 +14,6 @@ class customerModel extends Model
         'country_id',
         'customer_name',
         'customer_status',
-    
+        'customer_note',
     ];
 }

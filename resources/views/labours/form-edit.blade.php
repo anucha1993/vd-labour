@@ -60,7 +60,7 @@
                     <div class="row mt-3">
                         <div class="col-md-3 mt-3">
                             <label>Customer (นายจ้าง)</label>
-                            <select name="labour_customer" class="form-select">
+                            <select name="labour_customer" class="form-select"  @if($labourModel->labour_customer != NULL) @disabled(true) @endif >
                                 <option value="">Select a Customer</option>
 
                                 @forelse ($customers as $item)
@@ -114,8 +114,8 @@
                         <div class="col-md-3 mt-3">
                             <label>Examination round (รอบสอบ)</label>
                             <select name="labour_examination" class="form-select" required
-                                @if (in_array($labourModel->labour_status, ['success'])) disabled @endif>
-                                <option selected value="">{{$labourModel->labour_examination}}</option>
+                               @if($labourModel->labour_customer != NULL) @disabled(true) @endif>
+                                <option selected value="{{$labourModel->labour_examination}}">{{ date('d-m-Y',strtotime($labourModel->labour_examination)) }} </option>
 
                                 @forelse ($examinationRound as $item)
                                     <option 
@@ -129,7 +129,7 @@
                         <div class="col-md-3 mt-3">
                             <label>Country</label>
                             <select name="labour_country" class="form-select country" required
-                                @if (in_array($labourModel->labour_status, ['success'])) disabled @endif>
+                               @if($labourModel->labour_customer != NULL) @disabled(true) @endif>
                                 <option value="">Select a Country</option>
                                 @forelse ($country as $item)
                                     <option @if ($item->country_id === $labourModel->labour_country) selected @endif
@@ -143,7 +143,7 @@
                         <div class="col-md-3 mt-3">
                             <label>Job Group</label>
                             <select name="labour_job_group" class="form-select job-group" required
-                                @if (in_array($labourModel->labour_status, ['success'])) disabled @endif>
+                               @if($labourModel->labour_customer != NULL) @disabled(true) @endif>
                                 <option value="">Select a Job Group</option>
 
                                 @forelse ($jobGroup as $item)
@@ -157,7 +157,7 @@
                         <div class="col-md-3 mt-3">
                             <label>Position</label>
                             <select name="labour_position" class="form-select" id="position" required
-                                @if (in_array($labourModel->labour_status, ['success'])) disabled @endif>
+                               @if($labourModel->labour_customer != NULL) @disabled(true) @endif>
                                 <option selected value="{{ $labourModel->labour_position }}">
                                     {{ $position->position_name }}</option>
 
@@ -167,7 +167,7 @@
                         <div class="col-md-3 mt-3">
                             <label>lacation Test</label>
                             <select name="labour_location_test" class="form-select" required
-                                @if (in_array($labourModel->labour_status, ['success'])) disabled @endif>
+                               @if($labourModel->labour_customer != NULL) @disabled(true) @endif>
                                 <option value="">Select a Localtion Test</option>
                                 @forelse ($locationtest as $item)
                                     <option @if ($item->location_test_id === $labourModel->labour_location_test) selected @endif
@@ -180,7 +180,7 @@
                         <div class="col-md-3 mt-3">
                             <label>Docs. Type. (Path จัดเก็บเอกสาร)</label>
                             <select name="labour_location_doc" class="form-select" required
-                                @if (in_array($labourModel->labour_status, ['success'])) disabled @endif>
+                               @if($labourModel->labour_customer != NULL) @disabled(true) @endif>
                                 <option value="">Select a File Manage</option>
                                 @forelse ($fileManage as $item)
                                     <option @if ($item->file_manage_id === $labourModel->labour_location_doc) selected @endif
@@ -201,7 +201,7 @@
                         <div class="col-md-3">
                             <label>Staff</label>
                             <select name="labour_staff" class="form-select" required
-                                @if (in_array($labourModel->labour_status, ['success'])) disabled @endif>
+                               @if($labourModel->labour_customer != NULL) @disabled(true) @endif>
                                 <option value="">Select a Staff</option>
                                 @forelse ($staffs as $item)
                                     <option @if ($item->staff_id === $labourModel->labour_staff) selected @endif
@@ -214,7 +214,7 @@
                         <div class="col-md-3">
                             <label>Staff</label>
                             <select name="labour_staff_sub" class="form-select" required
-                                @if (in_array($labourModel->labour_status, ['success'])) disabled @endif>
+                               @if($labourModel->labour_customer != NULL) @disabled(true) @endif>
                                 <option value="">Select a Staff Sub</option>
                                 @forelse ($staffSub as $item)
                                     <option @if ($item->staff_sub_id === $labourModel->labour_staff_sub) selected @endif

@@ -35,7 +35,7 @@ return [
         ],
         'labour_documents' => [
             'driver' => 'local',
-            'root' => env('LOCATION_DRIVE', '\\192.168.10.110\DOCUMENTS\LABOURS'),
+            'root' => env('LOCATION_DRIVE', '\\192.168.1.252\LABOURS'),
             'visibility' => 'public',
         ],
 
@@ -49,7 +49,7 @@ return [
 
         'public' => [
             'driver' => 'local',
-            'root' => 'D:\\DOCUMENTS\\LABOURS', // ใช้ \\ สำหรับเส้นทางในเครื่องบน Windows
+            'root' => 'D:\\LABOURS', // ใช้ \\ สำหรับเส้นทางในเครื่องบน Windows
             'url' => env('APP_URL') . '/storage', // URL ของ public disk
             'visibility' => 'public',
             'throw' => false,

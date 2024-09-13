@@ -6,6 +6,7 @@ use App\Models\files\labourFileModel;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\labours\labourController;
 use App\Http\Controllers\combine\PdfMergeController;
+use App\Http\Controllers\customers\customerController;
 use App\Http\Controllers\formExport\labourFormExportController;
 use App\Http\Controllers\jobgroup\jobGoupController;
 use App\Http\Controllers\labours\labourFileController;
@@ -60,4 +61,8 @@ Route::get('category/examination-roun',[ExaminationRounController::class, 'index
 Route::post('category/examination-roun/store',[ExaminationRounController::class, 'store'])->name('category.examination.store');
 Route::get('category/examination-roun/cancel/{examinationRoundModel}',[ExaminationRounController::class, 'index'])->name('category.examination.cancel');
 
-
+//customer
+Route::get('customers',[customerController::class,'index'])->name('customer.index');
+Route::post('customers/store',[customerController::class,'store'])->name('customer.store');
+Route::get('customer/edit/{customerModel}',[customerController::class,'edit'])->name('customer.edit');
+Route::PUT('customer/update/{customerModel}',[customerController::class,'update'])->name('customer.update');
