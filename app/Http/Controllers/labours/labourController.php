@@ -33,8 +33,6 @@ class labourController extends Controller
         $customers = customerModel::latest()->get();
         $staffs = staffModel::where('staff_status', 'active')->get();
         $staffSub = staffSubModel::where('staff_sub_status', 'active')->get();
-
-        
         // Search
         $labour_firstname = $request->labour_firstname;
         $labour_lastname = $request->labour_lastname;
@@ -158,6 +156,11 @@ class labourController extends Controller
                 $extension = $file->getClientOriginalExtension(); // นามสกุลไฟล์
                 $uniqueName = $request->labour_file_name[$key] . '_' . $labourModel->labour_firstname . '_' . $labourModel->labour_lastname . '.' . $extension; // แก้ไขให้ใช้ $labourModel->id แทน $labourModel
 
+                 //สร้าง Forlder
+            if (!Storage::disk('public')->exists($labourModel->labour_path)) {
+                Storage::disk('public')->makeDirectory($labourModel->labour_path);
+            }
+
                 // อัปโหลดไฟล์ไปยัง disk ที่กำหนด
                 $path = $file->storeAs($labourModel->labour_path, $uniqueName, 'public');
 
@@ -174,87 +177,86 @@ class labourController extends Controller
         $counFileNotNull = labourFileModel::where('labour_id', $labourModel->labour_id)
             ->whereNotNull('labour_file_path')
             ->count('labour_file_id');
-
         $labourModel->update(['labour_file_count' => $counFile, 'labour_file_list' => $counFileNotNull]);
 
-        if ($request->labour_customer_old === null && $labourModel->labour_customer !== null) {
-            // ดึงข้อมูลที่จำเป็นจากฐานข้อมูล
-            $country = countryModel::where('country_id', $labourModel->labour_country)->first();
-            $jobGroup = jobGroupModel::where('job_group_id', $labourModel->labour_job_group)->first();
-            $position = positionModel::where('position_id', $labourModel->labour_position)->first();
-            $customer = customerModel::where('customer_id', $labourModel->labour_customer)->first();
+        // if ($request->labour_customer_old === null && $labourModel->labour_customer !== null) {
+        //     // ดึงข้อมูลที่จำเป็นจากฐานข้อมูล
+        //     $country = countryModel::where('country_id', $labourModel->labour_country)->first();
+        //     $jobGroup = jobGroupModel::where('job_group_id', $labourModel->labour_job_group)->first();
+        //     $position = positionModel::where('position_id', $labourModel->labour_position)->first();
+        //     $customer = customerModel::where('customer_id', $labourModel->labour_customer)->first();
 
-            $folderYear = $labourModel->labour_folder_year;
-            $countryName = $country->country_name_en;
-            $jobGroupName = $jobGroup->job_group_name;
-            $examinationRound = $labourModel->labour_examination;
-            $folderNameLabour = $labourModel->labour_firstname . '_' . $labourModel->labour_lastname;
-            $positionName = $position->position_name;
-            $customerName = $customer->customer_name;
+        //     $folderYear = $labourModel->labour_folder_year;
+        //     $countryName = $country->country_name_en;
+        //     $jobGroupName = $jobGroup->job_group_name;
+        //     $examinationRound = $labourModel->labour_examination;
+        //     $folderNameLabour = $labourModel->labour_firstname . '_' . $labourModel->labour_lastname;
+        //     $positionName = $position->position_name;
+        //     $customerName = $customer->customer_name;
 
-            // ใช้ DIRECTORY_SEPARATOR เพื่อความเข้ากันได้
-            $folderPathNew = $folderYear . DIRECTORY_SEPARATOR . $countryName . DIRECTORY_SEPARATOR . $jobGroupName . DIRECTORY_SEPARATOR . $positionName . DIRECTORY_SEPARATOR . $examinationRound . DIRECTORY_SEPARATOR . $customerName . DIRECTORY_SEPARATOR . $folderNameLabour;
-            $folderPathOld = $labourModel->labour_path;
+        //     // ใช้ DIRECTORY_SEPARATOR เพื่อความเข้ากันได้
+        //     $folderPathNew = $folderYear . DIRECTORY_SEPARATOR . $countryName . DIRECTORY_SEPARATOR . $jobGroupName . DIRECTORY_SEPARATOR . $positionName . DIRECTORY_SEPARATOR . $examinationRound . DIRECTORY_SEPARATOR . $customerName . DIRECTORY_SEPARATOR . $folderNameLabour;
+        //     $folderPathOld = $labourModel->labour_path;
 
-            // ตรวจสอบว่าโฟลเดอร์ปลายทางมีอยู่หรือไม่
-            if (!Storage::disk('public')->exists($folderPathNew)) {
-                // สร้างโฟลเดอร์ปลายทาง
-                Storage::disk('public')->makeDirectory($folderPathNew);
-            }
+        //     // ตรวจสอบว่าโฟลเดอร์ปลายทางมีอยู่หรือไม่
+        //     if (!Storage::disk('public')->exists($folderPathNew)) {
+        //         // สร้างโฟลเดอร์ปลายทาง
+        //         Storage::disk('public')->makeDirectory($folderPathNew);
+        //     }
 
-            function copyDirectory($source, $destination)
-            {
-                if (!is_dir($source) || !is_dir($destination)) {
-                    return false;
-                }
+        //     function copyDirectory($source, $destination)
+        //     {
+        //         if (!is_dir($source) || !is_dir($destination)) {
+        //             return false;
+        //         }
 
-                // ตรวจสอบว่าโฟลเดอร์ต้นทางมีไฟล์หรือไม่
-                $files = scandir($source);
-                if (count($files) <= 2) {
-                    // โฟลเดอร์ว่างเปล่า (มีแค่ '.' และ '..')
-                    return false;
-                }
+        //         // ตรวจสอบว่าโฟลเดอร์ต้นทางมีไฟล์หรือไม่
+        //         $files = scandir($source);
+        //         if (count($files) <= 2) {
+        //             // โฟลเดอร์ว่างเปล่า (มีแค่ '.' และ '..')
+        //             return false;
+        //         }
 
-                if (!is_dir($destination)) {
-                    if (!mkdir($destination, 0755, true)) {
-                        echo 'Failed to create directory: ' . $destination;
-                        return false;
-                    }
-                }
+        //         if (!is_dir($destination)) {
+        //             if (!mkdir($destination, 0755, true)) {
+        //                 echo 'Failed to create directory: ' . $destination;
+        //                 return false;
+        //             }
+        //         }
 
-                foreach ($files as $file) {
-                    if ($file !== '.' && $file !== '..') {
-                        $sourceFile = $source . DIRECTORY_SEPARATOR . $file;
-                        $destinationFile = $destination . DIRECTORY_SEPARATOR . $file;
+        //         foreach ($files as $file) {
+        //             if ($file !== '.' && $file !== '..') {
+        //                 $sourceFile = $source . DIRECTORY_SEPARATOR . $file;
+        //                 $destinationFile = $destination . DIRECTORY_SEPARATOR . $file;
 
-                        if (is_dir($sourceFile)) {
-                            copyDirectory($sourceFile, $destinationFile);
-                        } else {
-                            if (!copy($sourceFile, $destinationFile)) {
-                                echo 'Failed to copy file: ' . $sourceFile;
-                            }
-                        }
-                    }
-                }
+        //                 if (is_dir($sourceFile)) {
+        //                     copyDirectory($sourceFile, $destinationFile);
+        //                 } else {
+        //                     if (!copy($sourceFile, $destinationFile)) {
+        //                         echo 'Failed to copy file: ' . $sourceFile;
+        //                     }
+        //                 }
+        //             }
+        //         }
 
-                return true;
-            }
+        //         return true;
+        //     }
 
-            $sourceDirectory = env('LOCATION_PATH') . DIRECTORY_SEPARATOR . $folderPathOld; // กำหนดตำแหน่งโฟลเดอร์ต้นทาง
-            $destinationDirectory = env('LOCATION_PATH') . DIRECTORY_SEPARATOR . $folderPathNew; // กำหนดตำแหน่งโฟลเดอร์ปลายทาง
-            $labourModel->update(['labour_path' => $folderPathNew]);
+        //     $sourceDirectory = env('LOCATION_PATH') . DIRECTORY_SEPARATOR . $folderPathOld; // กำหนดตำแหน่งโฟลเดอร์ต้นทาง
+        //     $destinationDirectory = env('LOCATION_PATH') . DIRECTORY_SEPARATOR . $folderPathNew; // กำหนดตำแหน่งโฟลเดอร์ปลายทาง
+        //     $labourModel->update(['labour_path' => $folderPathNew]);
 
-            // ตรวจสอบการคัดลอกและรายงานผลลัพธ์
-            if (copyDirectory($sourceDirectory, $destinationDirectory)) {
-                // ตรวจสอบว่าโฟลเดอร์ปลายทางมีอยู่หรือไม่
-                if (Storage::disk('public')->exists($folderPathOld)) {
-                    // สร้างโฟลเดอร์ปลายทาง
-                    Storage::disk('public')->deleteDirectory($folderPathOld);
-                }
-            } else {
-                echo 'No files to copy or failed to copy.';
-            }
-        }
+        //     // ตรวจสอบการคัดลอกและรายงานผลลัพธ์
+        //     if (copyDirectory($sourceDirectory, $destinationDirectory)) {
+        //         // ตรวจสอบว่าโฟลเดอร์ปลายทางมีอยู่หรือไม่
+        //         if (Storage::disk('public')->exists($folderPathOld)) {
+        //             // สร้างโฟลเดอร์ปลายทาง
+        //             Storage::disk('public')->deleteDirectory($folderPathOld);
+        //         }
+        //     } else {
+        //         echo 'No files to copy or failed to copy.';
+        //     }
+        // }
 
         return redirect()->back()->with('success', 'Updated Labour Successfully.');
     }
@@ -264,33 +266,34 @@ class labourController extends Controller
         $checkLabour = null;
 
         if ($request->labour_passport_number !== null) {
-            $checkLabour = labourModel::where('labour_passport_number', $request->labour_passport_number)->first();
+            $checkLabour = labourModel::where('labour_passport_number', $request->labour_passport_number)
+            ->orWhere('labour_firstname', $request->labour_firstname)
+            ->first();
         }
 
         if (empty($checkLabour)) {
             $request->merge(['created_by' => Auth::user()->name]);
             $request->merge(['labour_folder_year' => date('Y')]);
-
             $labourModel = labourModel::create($request->all());
-
-            $country = countryModel::where('country_id', $labourModel->labour_country)->first();
-            $jobGroup = jobGroupModel::where('job_group_id', $labourModel->labour_job_group)->first();
-            $position = positionModel::where('position_id', $labourModel->labour_position)->first();
-            $customer = customerModel::where('customer_id', $labourModel->labour_customer)->first();
-
+            // $country = countryModel::where('country_id', $labourModel->labour_country)->first();
+            // $jobGroup = jobGroupModel::where('job_group_id', $labourModel->labour_job_group)->first();
+            // $position = positionModel::where('position_id', $labourModel->labour_position)->first();
+            // $customer = customerModel::where('customer_id', $labourModel->labour_customer)->first();
             $folderYear = $labourModel->labour_folder_year;
-            $countryName = $country->country_name_en;
-            $jobGroupName = $jobGroup->job_group_name;
-            $examinationRound = $labourModel->labour_examination;
-            $folderNameLabour = $labourModel->labour_firstname . '_' . $labourModel->labour_lastname;
-            $positionName = $position->position_name;
+            // $countryName = $country->country_name_en;
+            // $jobGroupName = $jobGroup->job_group_name;
+            // $examinationRound = $labourModel->labour_examination;
+            // $folderNameLabour = $labourModel->labour_firstname . '_' . $labourModel->labour_lastname;
+            // $positionName = $position->position_name;
 
-            if (empty($request->labour_customer)) {
-                $folderPath = $folderYear . '\\BACKUP\\' . $labourModel->labour_firstname . '_' . $labourModel->labour_lastname;
-            } else {
-                $customerName = $customer->customer_name;
-                $folderPath = $folderYear . '\\' . $countryName . '\\' . $jobGroupName . '\\' . $positionName . '\\' . $examinationRound . '\\' . $customerName . '\\' . $folderNameLabour;
-            }
+            // if (empty($request->labour_customer)) {
+            //     $folderPath = $folderYear . '\\BACKUP\\' . $labourModel->labour_firstname . '_' . $labourModel->labour_lastname;
+            // } 
+            // else {
+            //     $customerName = $customer->customer_name;
+            //     $folderPath = $folderYear . '\\' . $countryName . '\\' . $jobGroupName . '\\' . $positionName . '\\' . $examinationRound . '\\' . $customerName . '\\' . $folderNameLabour;
+            // }
+            $folderPath = $folderYear.'\\'.date('m').'\\'.$labourModel->labour_firstname . '_' . $labourModel->labour_lastname;
             //สร้าง Forlder
             if (!Storage::disk('public')->exists($folderPath)) {
                 Storage::disk('public')->makeDirectory($folderPath);

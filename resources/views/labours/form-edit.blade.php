@@ -60,7 +60,7 @@
                     <div class="row mt-3">
                         <div class="col-md-3 mt-3">
                             <label>Customer (นายจ้าง)</label>
-                            <select name="labour_customer" class="form-select"  @if($labourModel->labour_customer != NULL) @disabled(true) @endif >
+                            <select name="labour_customer" class="form-select"  >
                                 <option value="">Select a Customer</option>
 
                                 @forelse ($customers as $item)
@@ -81,11 +81,13 @@
                             <input type="date" name="labour_passport_issue" class="form-control" placeholder="Date Issue"
                                 value="{{ $labourModel->labour_passport_issue }}">
                         </div>
+
                         <div class="col-md-2 mt-3">
-                            <label>Data Expiry</label>
-                            <input type="date" name="labour_passport_expiry" class="form-control"
+                            <label>Data Expiry</label> <span id="daysLeft" class="text-info">จำนวนวันหมดอายุ : </span>
+                            <input type="date" name="labour_passport_expiry" id="labour_passport_expiry" class="form-control"
                                 placeholder="Date Expiry" value="{{ $labourModel->labour_passport_expiry }}">
                         </div>
+
                         <div class="col-md-3 mt-3">
                             <label>Register Number.</label>
                             <input type="text" name="labour_register_number" class="form-control"
@@ -95,15 +97,28 @@
 
                     <div class="row">
                         <div class="col-md-3 mt-3">
-                            <label>Disease Expiry (ผลโรคหมดอายุ) </label>
-                            <input type="date" name="labour_disease_expriry" class="form-control"
-                                placeholder="Register Number" value="{{ $labourModel->labour_disease_expriry }}" required>
+                            <label>Disease Start (วันออกผลโรค) </label>
+                            <input type="date" name="labour_disease_start" id="labour_disease_start" class="form-control"
+                                placeholder="Disease Start" value="{{ $labourModel->labour_disease_start }}">
+                        </div>
+                        <div class="col-md-3 mt-3">
+                            <label>Disease Expiry (ผลโรคหมดอายุ) คำนวน 30 วัน </label>
+                            <input type="date" name="labour_disease_expiry" id="labour_disease_expiry" class="form-control" >
+                        </div>
+                        
+                        
+                        <div class="col-md-3 mt-3">
+                            <label>CID Start</label>
+                            <input type="date" name="labour_cid_start" class="form-control" id="labour_cid_start"
+                                placeholder="Register Number" value="{{ $labourModel->labour_cid_start }}">
                         </div>
                         <div class="col-md-3 mt-3">
                             <label>CID Expiry</label>
-                            <input type="date" name="labour_cid_expriry" class="form-control"
-                                placeholder="Register Number" value="{{ $labourModel->labour_cid_expriry }}" required>
+                            <input type="date" name="labour_cid_expiry" class="form-control" id="labour_cid_expiry"
+                                placeholder="CID Expiry" value="" >
                         </div>
+                        
+                        
                     </div>
 
 
@@ -114,7 +129,7 @@
                         <div class="col-md-3 mt-3">
                             <label>Examination round (รอบสอบ)</label>
                             <select name="labour_examination" class="form-select" required
-                               @if($labourModel->labour_customer != NULL) @disabled(true) @endif>
+                               >
                                 <option selected value="{{$labourModel->labour_examination}}">{{ date('d-m-Y',strtotime($labourModel->labour_examination)) }} </option>
 
                                 @forelse ($examinationRound as $item)
@@ -129,7 +144,7 @@
                         <div class="col-md-3 mt-3">
                             <label>Country</label>
                             <select name="labour_country" class="form-select country" required
-                               @if($labourModel->labour_customer != NULL) @disabled(true) @endif>
+                               >
                                 <option value="">Select a Country</option>
                                 @forelse ($country as $item)
                                     <option @if ($item->country_id === $labourModel->labour_country) selected @endif
@@ -143,7 +158,7 @@
                         <div class="col-md-3 mt-3">
                             <label>Job Group</label>
                             <select name="labour_job_group" class="form-select job-group" required
-                               @if($labourModel->labour_customer != NULL) @disabled(true) @endif>
+                               >
                                 <option value="">Select a Job Group</option>
 
                                 @forelse ($jobGroup as $item)
@@ -157,7 +172,7 @@
                         <div class="col-md-3 mt-3">
                             <label>Position</label>
                             <select name="labour_position" class="form-select" id="position" required
-                               @if($labourModel->labour_customer != NULL) @disabled(true) @endif>
+                               >
                                 <option selected value="{{ $labourModel->labour_position }}">
                                     {{ $position->position_name }}</option>
 
@@ -167,7 +182,7 @@
                         <div class="col-md-3 mt-3">
                             <label>lacation Test</label>
                             <select name="labour_location_test" class="form-select" required
-                               @if($labourModel->labour_customer != NULL) @disabled(true) @endif>
+                               >
                                 <option value="">Select a Localtion Test</option>
                                 @forelse ($locationtest as $item)
                                     <option @if ($item->location_test_id === $labourModel->labour_location_test) selected @endif
@@ -180,7 +195,7 @@
                         <div class="col-md-3 mt-3">
                             <label>Docs. Type. (Path จัดเก็บเอกสาร)</label>
                             <select name="labour_location_doc" class="form-select" required
-                               @if($labourModel->labour_customer != NULL) @disabled(true) @endif>
+                               >
                                 <option value="">Select a File Manage</option>
                                 @forelse ($fileManage as $item)
                                     <option @if ($item->file_manage_id === $labourModel->labour_location_doc) selected @endif
@@ -190,10 +205,6 @@
                             </select>
                         </div>
 
-
-
-
-
                     </div>
                     <hr>
                     <h4>ข้อมูลสถานะ</h4>
@@ -201,7 +212,7 @@
                         <div class="col-md-3">
                             <label>Staff</label>
                             <select name="labour_staff" class="form-select" required
-                               @if($labourModel->labour_customer != NULL) @disabled(true) @endif>
+                               >
                                 <option value="">Select a Staff</option>
                                 @forelse ($staffs as $item)
                                     <option @if ($item->staff_id === $labourModel->labour_staff) selected @endif
@@ -212,10 +223,11 @@
                             </select>
                         </div>
                         <div class="col-md-3">
-                            <label>Staff</label>
-                            <select name="labour_staff_sub" class="form-select" required
-                               @if($labourModel->labour_customer != NULL) @disabled(true) @endif>
-                                <option value="">Select a Staff Sub</option>
+                            <label>สายหาคน</label>
+                            <select name="labour_staff_sub" class="form-select" required>
+                                <option value="no-sub">Null</option>
+                               >
+                               
                                 @forelse ($staffSub as $item)
                                     <option @if ($item->staff_sub_id === $labourModel->labour_staff_sub) selected @endif
                                         value="{{ $item->staff_sub_id }}">
@@ -331,7 +343,135 @@
 
 
     <script>
+
+$(document).ready(function() {
+    // เมื่อผู้ใช้เปลี่ยนวันที่เริ่มต้นของโรค
+    $('#labour_disease_start').on('change', function() {
+        calculateDiseaseExpiry();
+    });
+    $('#labour_cid_start').on('change', function() {
+        calculateCIDExpiry();
+    });
+    calculateDiseaseExpiry();
+    calculateCIDExpiry();
+});
+
+
+// ฟังก์ชันสำหรับคำนวณวันหมดอายุของ CID โดยไม่นับวันเสาร์และอาทิตย์
+function calculateCIDExpiry() {
+    var startDate = new Date($('#labour_cid_start').val());
+    var diseaseDuration = 30; // ระยะเวลาหมดอายุใน 30 วัน
+
+    if ($('#labour_cid_start').val() === "") {
+        $('#labour_cid_expiry').val('');
+        return;
+    }
+
+    var currentDate = new Date(startDate);
+    var daysAdded = 0;
+
+    // ลูปเพื่อเพิ่มจำนวนวัน โดยไม่นับรวมวันเสาร์และอาทิตย์
+    while (daysAdded < diseaseDuration) {
+        currentDate.setDate(currentDate.getDate() + 1);
+
+        // ตรวจสอบว่าวันปัจจุบันไม่ใช่วันเสาร์ (6) หรือวันอาทิตย์ (0)
+        if (currentDate.getDay() !== 0 && currentDate.getDay() !== 6) {
+            daysAdded++;
+        }
+    }
+
+    // ตั้งค่าใน input ของวันหมดอายุ
+    var yyyy = currentDate.getFullYear();
+    var mm = String(currentDate.getMonth() + 1).padStart(2, '0'); // เดือนจะต้องบวก 1 เพราะมันนับจาก 0
+    var dd = String(currentDate.getDate()).padStart(2, '0');
+    var formattedExpiryDate = yyyy + '-' + mm + '-' + dd;
+
+    $('#labour_cid_expiry').val(formattedExpiryDate);
+}
+
+
+// ฟังก์ชันสำหรับคำนวณวันหมดอายุของโรค โดยไม่นับวันเสาร์และอาทิตย์
+function calculateDiseaseExpiry() {
+    var startDate = new Date($('#labour_disease_start').val());
+    var diseaseDuration = 30; // สมมติว่าผลโรคจะหมดอายุใน 14 วัน (กำหนดตามความต้องการ)
+
+    if ($('#labour_disease_start').val() === "") {
+        $('#labour_disease_expiry').val('');
+        return;
+    }
+
+    var currentDate = new Date(startDate);
+    var daysAdded = 0;
+
+    // ลูปเพื่อเพิ่มจำนวนวัน โดยไม่นับรวมวันเสาร์และอาทิตย์
+    while (daysAdded < diseaseDuration) {
+        currentDate.setDate(currentDate.getDate() + 1);
+
+        // ตรวจสอบว่าวันปัจจุบันไม่ใช่วันเสาร์ (6) หรือวันอาทิตย์ (0)
+        if (currentDate.getDay() !== 0 && currentDate.getDay() !== 6) {
+            daysAdded++;
+        }
+    }
+
+    // ตั้งค่าใน input ของวันหมดอายุ
+    var yyyy = currentDate.getFullYear();
+    var mm = String(currentDate.getMonth() + 1).padStart(2, '0'); // เดือนจะต้องบวก 1 เพราะมันนับจาก 0
+    var dd = String(currentDate.getDate()).padStart(2, '0');
+    var formattedExpiryDate = yyyy + '-' + mm + '-' + dd;
+
+    $('#labour_disease_expiry').val(formattedExpiryDate);
+}
+
+
         $(document).ready(function() {
+
+    //         $('#labour_passport_expiry').on('change', function() {
+    //     // Get the selected expiry date
+    //     var expiryDate = new Date($(this).val());
+    //     var today = new Date(); // Current date
+
+    //     // Calculate the difference in time
+    //     var timeDiff = expiryDate.getTime() - today.getTime();
+
+    //     // Calculate the number of days until expiry
+    //     var daysUntilExpiry = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+    //     // Update the span with the number of days left
+    //     if (daysUntilExpiry > 0) {
+    //         $('#daysLeft').text('วันหมดอายุ : ' + daysUntilExpiry + ' วัน');
+    //     } else {
+    //         $('#daysLeft').text('หมดอายุแล้ว');
+    //     }
+    // });
+
+    // ฟังก์ชัน passportExpiry() สำหรับคำนวณวันหมดอายุ
+function passportExpiry() {
+    // Get the selected expiry date
+    var expiryDate = new Date($('#labour_passport_expiry').val());
+    var today = new Date(); // Current date
+
+    // Calculate the difference in time
+    var timeDiff = expiryDate.getTime() - today.getTime();
+
+    // Calculate the number of days until expiry
+    var daysUntilExpiry = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+    // Update the span with the number of days left
+    if ($('#labour_passport_expiry').val() === "") {
+        $('#daysLeft').text('กรุณาเลือกวันที่');
+    } else if (daysUntilExpiry > 0) {
+        $('#daysLeft').text('วันหมดอายุ : ' + daysUntilExpiry + ' วัน');
+    } else {
+        $('#daysLeft').text('หมดอายุแล้ว');
+    }
+}
+// ทำงานเมื่อมีการเปลี่ยนวันที่ใน input[type="date"]
+$('#labour_passport_expiry').on('change', function() {
+        passportExpiry();
+    });
+
+passportExpiry() 
+        
             $('.delete-file').on('click', function(e) {
                 e.preventDefault();
                 var path = $(this).attr('data-path');

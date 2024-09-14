@@ -34,6 +34,8 @@ class labourModel extends Model
        'labour_path',
        'labour_customer',
        'labour_disease_expriry',
+       'labour_disease_start',
+       'labour_cid_start',
        'labour_cid_expriry',
        'labour_staff_sub',
        'created_by',
