@@ -8,62 +8,80 @@ use App\Http\Controllers\Controller;
 
 class PdfMergeController extends Controller
 {
-    // public function mergePdfs(Request $request)
-    // {
-    //     // รายชื่อไฟล์ PDF ที่จะรวม
-    //     $pdfFiles = [
-    //         '\\\\192.168.10.100\\public\\2024\\TEST\\BRC_ANUCHA_YOTHANAN.pdf',
-    //         '\\\\192.168.10.100\\public\\2024\\TEST\\CER_ANUCHA_YOTHANAN.pdf'
-    //     ];
-    //     dd($pdfFiles);
-        
-    //     // เส้นทางสำหรับไฟล์ PDF ที่รวมแล้ว
-    //     $outputFile = '\\\\192.168.10.100\\public\\2024\\TEST\\merged.pdf';
-    
-    //     // ตั้งค่าตัวแปร PATH
-    //     putenv('PATH=C:\\Program Files (x86)\\PDFtk\\bin;' . getenv('PATH'));
-    
-    //     // ตรวจสอบว่าไฟล์มีอยู่
-    //     foreach ($pdfFiles as $file) {
-    //         if (!file_exists($file)) {
-    //             return response()->json(['message' => "File not found: $file"], 404);
-    //         }
-    //     }
+   
+    public function mergePdfs(Request $request)
+{
 
-    //     // สร้างคำสั่ง pdftk
-    //     $command = 'pdftk ' . implode(' ', array_map('escapeshellarg', $pdfFiles)) . ' cat output ' . escapeshellarg($outputFile);
     
-    //     // เรียกใช้คำสั่ง pdftk
-    //     exec($command . ' 2>&1', $output, $returnVar);
-    
-    //     if ($returnVar === 0) {
-    //         // ส่งไฟล์ PDF ที่รวมแล้วเป็นการดาวน์โหลด
-    //         return response()->download($outputFile)->deleteFileAfterSend(true);
-    //     } else {
-    //         return response()->json(['message' => 'Failed to merge PDFs.', 'error' => implode("\n", $output)], 500);
+    // $nos = $request->input('no', []);
+    // $paths = $request->input('checkNum', []);
+    // // ปรับ path ให้ตรงกับ alias ที่ตั้งใน Apache
+    // $pdfFiles = [];
+    // foreach ($nos as $index => $no) {
+    //     if (isset($paths[$index])) {
+    //         // ใช้ trim เพื่อกำจัดช่องว่างที่ไม่จำเป็น และ str_replace เพื่อแปลง backslashes เป็น forward slashes
+    //         $filePath =  trim(str_replace('\\', '/', $paths[$index]));
+
+    //         // Debugging: แสดง path เพื่อดูว่ามีเส้นทางที่ถูกต้องหรือไม่
+    //         if (!file_exists($filePath)) {
+    //             return response()->json(['message' => "File not found: $filePath"], 404);
+    //         }
+    //         $pdfFiles[$no] = $filePath;
     //     }
     // }
 
-    public function mergePdfs(Request $request)
-{
-    $nos = $request->input('no', []);
-    $paths = $request->input('checkNum', []);
+//     $nos = $request->input('no', []);
+// $paths = $request->input('checkNum', []);
 
-    // ปรับ path ให้ตรงกับ alias ที่ตั้งใน Apache
-    $pdfFiles = [];
-    foreach ($nos as $index => $no) {
-        if (isset($paths[$index])) {
-            // ใช้ trim เพื่อกำจัดช่องว่างที่ไม่จำเป็น และ str_replace เพื่อแปลง backslashes เป็น forward slashes
-            $filePath = 'D:/LABOURS/' . trim(str_replace('\\', '/', $paths[$index]));
+// $pdfFiles = [];
+// foreach ($paths as $index => $path) {
+//     $filePath = trim(str_replace('\\', '/', $path));
+//     if (!file_exists($filePath)) {
+//         return response()->json(['message' => "File not found: $filePath"], 404);
+//     }
+//     $pdfFiles[$index] = $filePath;
+// }
 
-            // Debugging: แสดง path เพื่อดูว่ามีเส้นทางที่ถูกต้องหรือไม่
-            if (!file_exists($filePath)) {
-                return response()->json(['message' => "File not found: $filePath"], 404);
-            }
 
-            $pdfFiles[$no] = $filePath;
-        }
+$nos = $request->input('no', []);
+$paths = $request->input('checkNum', []);
+
+// กรองค่า null ออกจาก $nos
+$selectedNos = array_filter($nos, function($value) {
+    return $value !== null;
+});
+
+// สร้าง array ใหม่เพื่อเก็บไฟล์ตามลำดับที่เลือก
+$orderedPaths = [];
+
+// วนลูปตามค่าใน $selectedNos
+foreach ($selectedNos as $no) {
+    // แปลง $no เป็น integer และลบ 1 เพื่อให้ตรงกับ index ของ $paths
+    $index = (int) $no - 1;
+
+    // ตรวจสอบว่า index มีอยู่ใน $paths หรือไม่
+    if (isset($paths[$index])) {
+        $orderedPaths[] = $paths[$index];
     }
+}
+
+// แปลง backslashes เป็น forward slashes และตรวจสอบไฟล์
+$pdfFiles = [];
+foreach ($orderedPaths as $path) {
+    $filePath = trim(str_replace('\\', '/', $path));
+    if (!file_exists($filePath)) {
+        return response()->json(['message' => "File not found: $filePath"], 404);
+    }
+    $pdfFiles[] = $filePath;
+}
+
+
+
+//dd($nos,$paths, $pdfFiles);
+
+
+
+
 
     // เรียงไฟล์ตามลำดับ
     ksort($pdfFiles);
@@ -80,7 +98,7 @@ class PdfMergeController extends Controller
     }
 
     // เส้นทางสำหรับไฟล์ PDF ที่รวมแล้ว
-    $outputFile = 'D:/LABOURS/DOC_' . $labourModel->labour_firstname . '_' . $labourModel->labour_lastname . '.pdf';
+    $outputFile =  $labourModel->labour_firstname . '_' . $labourModel->labour_lastname . '.pdf';
 
     // ตั้งค่าตัวแปร PATH
     putenv('PATH=C:\\Program Files (x86)\\PDFtk\\bin;' . getenv('PATH'));

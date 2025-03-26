@@ -40,5 +40,7 @@ class labourModel extends Model
        'labour_staff_sub',
        'created_by',
        'updated_by',
+       'labour_disease_results_date',
+       'labour_birthday'
     ];
 }

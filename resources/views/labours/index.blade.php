@@ -11,130 +11,136 @@
         </div>
     @endif
 
-    
 
-<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" >
-  <div class="modal-dialog "  style="max-width: 70%;">
-    <div class="modal-content">
-        <div class="card">
-            <div class="card-body">
-                <h4>ค้านหาข้อมูล</h4>
-                <hr>
-                <form action="" method="get">
-                    <div class="row">
-                        <div class="col-md-3 mt">
-                            <label>FirstName</label>
-                            <input type="text" class="form-control" name="labour_firstname" placeholder="First Name">
-                        </div>
-                        <div class="col-md-3 mt">
-                            <label>LastName</label>
-                            <input type="text" class="form-control" name="labour_lastname" placeholder="Last Name">
-                        </div>
-                        <div class="col-md-3 mt">
-                            <label>Phone</label>
-                            <input type="text" class="form-control" name="labour_phone" placeholder="++66">
-                        </div>
-                        <div class="col-md-3 mt">
-                            <label>Passport No.</label>
-                            <input type="text" class="form-control" name="labour_passport_number" placeholder="Passport No.">
-                        </div>
-                        
+
+    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog " style="max-width: 70%;">
+            <div class="modal-content">
+                <div class="card">
+                    <div class="card-body">
+                        <h4>ค้านหาข้อมูล</h4>
+                        <hr>
+                        <form action="" method="get">
+                            <div class="row">
+                                <div class="col-md-3 mt">
+                                    <label>FirstName</label>
+                                    <input type="text" class="form-control" name="labour_firstname"
+                                        placeholder="First Name">
+                                </div>
+                                <div class="col-md-3 mt">
+                                    <label>LastName</label>
+                                    <input type="text" class="form-control" name="labour_lastname"
+                                        placeholder="Last Name">
+                                </div>
+                                <div class="col-md-3 mt">
+                                    <label>Phone</label>
+                                    <input type="text" class="form-control" name="labour_phone" placeholder="++66">
+                                </div>
+                                <div class="col-md-3 mt">
+                                    <label>Passport No.</label>
+                                    <input type="text" class="form-control" name="labour_passport_number"
+                                        placeholder="Passport No.">
+                                </div>
+
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-3 mt-3">
+                                    <label>Date Start (ผลโรคหมดอายุ) </label>
+                                    <input type="date" name="labour_disease_date_start" class="form-control"
+                                        placeholder="Register Number">
+                                </div>
+                                <div class="col-md-3 mt-3">
+                                    <label>Date End (ผลโรคหมดอายุ) </label>
+                                    <input type="date" name="labour_disease_date_end" class="form-control"
+                                        placeholder="Register Number">
+                                </div>
+
+
+                                <div class="col-md-3 mt-3">
+                                    <label>Data Start CID Expiry</label>
+                                    <input type="date" name="labour_cid_start" class="form-control"
+                                        placeholder="Register Number">
+                                </div>
+
+                                <div class="col-md-3 mt-3">
+                                    <label> Data End CID Expiry</label>
+                                    <input type="date" name="labour_cid_end" class="form-control"
+                                        placeholder="Register Number">
+                                </div>
+
+                            </div>
+
+
+                            <div class="row">
+                                <div class="col-md-3 mt-3">
+                                    <label> Country Name</label>
+                                    <select name="labour_country" class="form-select">
+                                        <option value="all">All</option>
+                                        @forelse ($customers as $item)
+                                            <option value="{{ $item->customer_id }}">{{ $item->customer_name }}</option>
+                                        @empty
+                                        @endforelse
+
+                                    </select>
+                                </div>
+                                <div class="col-md-3 mt-3">
+                                    <label> Job Group</label>
+                                    <select name="labour_job_group" class="form-select">
+                                        <option value="all">All</option>
+                                        @forelse ($jobGroup as $item)
+                                            <option value="{{ $item->job_group_id }}">{{ $item->job_group_name }}</option>
+                                        @empty
+                                        @endforelse
+                                    </select>
+                                </div>
+                                <div class="col-md-3 mt-3">
+                                    <label> Staff Name</label>
+                                    <select name="labour_staff" class="form-select">
+                                        <option value="all">All</option>
+                                        @forelse ($staffs as $item)
+                                            <option value="{{ $item->staff_id }}">
+                                                {{ $item->staff_name }}({{ $item->staff_nickname }})</option>
+                                        @empty
+                                        @endforelse
+                                    </select>
+                                </div>
+
+                                <div class="col-md-3 mt-3">
+                                    <label> Status </label>
+                                    <select name="labour_status" class="form-select">
+                                        <option value="all">All</option>
+                                        <option value="wait">กำลังดำเนินการ</option>
+                                        <option value="success">บินแล้ว</option>
+                                        <option value="cancel">ยกเลิก</option>
+                                    </select>
+                                </div>
+
+                            </div>
+
+                            <button type="submit" class="btn btn-outline-secondary mt-3 float-end">
+                                Search
+                            </button>
+                        </form>
                     </div>
-
-                    <div class="row">
-                        <div class="col-md-3 mt-3">
-                            <label>Date Start (ผลโรคหมดอายุ) </label>
-                            <input type="date" name="labour_disease_date_start" class="form-control"
-                                placeholder="Register Number" >
-                        </div>
-                        <div class="col-md-3 mt-3">
-                            <label>Date End (ผลโรคหมดอายุ) </label>
-                            <input type="date" name="labour_disease_date_end" class="form-control"
-                                placeholder="Register Number" >
-                        </div>
-
-                        
-                        <div class="col-md-3 mt-3">
-                            <label>Data Start CID Expiry</label>
-                            <input type="date" name="labour_cid_start" class="form-control"
-                                placeholder="Register Number"  >
-                        </div>
-
-                        <div class="col-md-3 mt-3">
-                            <label> Data End CID Expiry</label>
-                            <input type="date" name="labour_cid_end" class="form-control"
-                                placeholder="Register Number"  >
-                        </div>
-
-                    </div>
-
-    
-                    <div class="row">
-                        <div class="col-md-3 mt-3">
-                            <label> Country Name</label>
-                            <select name="labour_country" class="form-select">
-                                <option value="all" >All</option>
-                                @forelse ($customers as $item)
-                                <option value="{{$item->customer_id}}" >{{$item->customer_name}}</option>
-                                @empty
-                                    
-                                @endforelse
-                                
-                            </select>
-                        </div>
-                        <div class="col-md-3 mt-3">
-                            <label> Job Group</label>
-                            <select name="labour_job_group" class="form-select">
-                                <option value="all" >All</option>
-                                @forelse ($jobGroup as $item)
-                                <option value="{{ $item->job_group_id }}">{{ $item->job_group_name }}</option>
-                                @empty
-                                @endforelse
-                            </select>
-                        </div>
-                        <div class="col-md-3 mt-3">
-                            <label> Staff Name</label>
-                            <select name="labour_staff" class="form-select">
-                                <option value="all" >All</option>
-                                @forelse ($staffs as $item)
-                                <option value="{{$item->staff_id}}">{{$item->staff_name}}({{$item->staff_nickname}})</option>
-                                @empty
-                                    
-                                @endforelse
-                            </select>
-                        </div>
-
-                        <div class="col-md-3 mt-3">
-                            <label> Status </label>
-                            <select name="labour_status" class="form-select">
-                                <option value="all" >All</option>
-                                <option value="wait">กำลังดำเนินการ</option>
-                                <option value="success">บินแล้ว</option>
-                                <option value="cancel">ยกเลิก</option>
-                            </select>
-                        </div>
-                        
-                    </div>
-    
-                    <button type="submit" class="btn btn-outline-secondary mt-3 float-end">
-                        Search
-                      </button>
-                </form>
+                </div>
             </div>
         </div>
     </div>
-  </div>
-</div>
 
 
-   
+
     <div class="card">
         <div class="card-body">
             <div class="row">
-                <h4>ข้อมูลคนงาน  
-                    <button type="button" class="btn btn-outline-secondary float-end" data-toggle="modal" data-target=".bd-example-modal-lg">Search</button>
-                     <a href="{{route('labour.create')}}" class="btn btn-sm btn-primary "> <i class="fa fa-user"></i> เพิ่มข้อมูล</a></h4>
-             
+                <h4>ข้อมูลคนงาน
+                    <button type="button" class="btn btn-outline-secondary float-end" data-toggle="modal"
+                        data-target=".bd-example-modal-lg">Search</button>
+                    <a href="{{ route('labour.create') }}" class="btn btn-sm btn-primary "> <i class="fa fa-user"></i>
+                        เพิ่มข้อมูล</a>
+                </h4>
+
                 <br>
                 <div class="table-responsive">
                     <table class="table table">
@@ -142,7 +148,6 @@
                             <tr>
                                 <th>#</th>
                                 <th>Full-Name</th>
-                                <th>Register No.</th>
                                 <th>Passport No.</th>
                                 <th>Phone</th>
                                 <th>Docs.</th>
@@ -157,7 +162,7 @@
                                     <th>{{ $key + 1 }}</th>
                                     <th>{{ $item->labour_prefix . '.' . $item->labour_firstname . ' ' . $item->labour_lastname }}
                                     </th>
-                                    <th>{{ $item->labour_register_number }}</th>
+
                                     <th>{{ $item->labour_passport_number ? $item->labour_passport_number : 'ไม่พบข้อมูล' }}
                                     </th>
                                     <th>{{ $item->labour_phone }}</th>
@@ -166,13 +171,15 @@
                                             $progress = ($item->labour_file_list / $item->labour_file_count) * 100;
 
                                         @endphp
-                                    <div class="progress mt-3">
-                                        <div class="progress-bar bg-success" role="progressbar" style="width: {{$progress}}%" aria-valuenow="{{$progress}}" aria-valuemin="0" aria-valuemax="100">
-                                           
+                                        <div class="progress mt-3">
+                                            <div class="progress-bar bg-success" role="progressbar"
+                                                style="width: {{ $progress }}%" aria-valuenow="{{ $progress }}"
+                                                aria-valuemin="0" aria-valuemax="100">
+
+                                            </div>
                                         </div>
-                                    </div>
                                     </th>
-                                    
+
                                     <th>
                                         @if ($item->labour_status === 'wait')
                                             <span class="badge rounded-pill bg-primary">กำลังดำเนินการ</span>
@@ -189,25 +196,52 @@
                                         <div class="btn-group">
                                             <button type="button" class="btn btn-sm btn-secondary dropdown-toggle"
                                                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                               Actions
+                                                Actions
                                             </button>
                                             <div class="dropdown-menu">
-                                                <a class="dropdown-item" href="{{route('labour.edit',$item->labour_id)}}">แก้ไขข้อมูล</a>
-                                                <a class="dropdown-item" href="#">ดูเอกสาร</a>
+                                                <a class="dropdown-item"
+                                                    href="{{ route('labour.edit', $item->labour_id) }}">แก้ไขข้อมูล</a>
+                                                    @can('view labour')
+                                                    <a class="dropdown-item view-doc" href="{{route('labour.viewDocs',$item->labour_id)}}">ดูเอกสาร</a>
+                                                    @endcan
+                                               
 
                                             </div>
                                         </div>
                                     </th>
                                 </tr>
-
-                                
                             @endforeach
                         </tbody>
                     </table>
                     {!! $labours->withQueryString()->links('pagination::bootstrap-5') !!}
                 </div>
-                
+
             </div>
         </div>
     </div>
+
+
+    <div class="modal fade bd-example-modal-sm modal-lg" id="view-doc" tabindex="-1" role="dialog"
+    aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            ...
+        </div>
+    </div>
+</div>
+
+    <script>
+        $(document).ready(function() {
+
+            // modal add user
+            $(".view-doc").click("click", function(e) {
+                e.preventDefault();
+                $("#view-doc")
+                    .modal("show")
+                    .addClass("modal-lg")
+                    .find(".modal-content")
+                    .load($(this).attr("href"));
+            });
+        });
+    </script>
 @endsection

@@ -19,16 +19,21 @@
                     </div>
 
 
-                    <div class="col-md-4">
+                    <div class="col-md-2">
                         <label>Name</label>
                         <input type="text" class="form-control" name="labour_firstname" placeholder="Firstname" required>
                     </div>
 
-                    <div class="col-md-4">
+                    <div class="col-md-2">
                         <label>Lastname</label>
                         <input type="text" class="form-control" name="labour_lastname" placeholder="Lastname " required>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
+                        <label>Birthday <span id="age_result"></span></label>
+                        <input type="date" class="form-control" name="labour_birthday" placeholder="birthday" id="labour_birthday"
+                           >
+                    </div>
+                    <div class="col-md-2">
                         <label>Phone.</label>
                         <input type="text" class="form-control" name="labour_phone" placeholder="+66" >
                     </div>
@@ -65,7 +70,7 @@
                     </div>
                     <div class="col-md-2">
                         <label>Register Number.</label>
-                        <input type="text" name="labour_register_number" class="form-control" placeholder="Register Number" required>
+                        <input type="text" name="labour_register_number" class="form-control" placeholder="Register Number" >
                     </div>
                 </div>
 
@@ -79,9 +84,16 @@
                         <label>Disease Expiry (ผลโรคหมดอายุ) คำนวน 30 วัน </label>
                         <input type="date" name="labour_disease_expiry" id="labour_disease_expiry" class="form-control" >
                     </div>
-                    
-                    
+
                     <div class="col-md-3 mt-3">
+                            <label>date disease results (วันรับผลโรค) </label>
+                            <input type="date" name="labour_disease_results_date" id="labour_disease_expiry"  class="form-control" >
+                        </div>
+                    
+                </div>
+
+                <div class="row">
+                <div class="col-md-3 mt-3">
                         <label>CID Start</label>
                         <input type="date" name="labour_cid_start" class="form-control" id="labour_cid_start"
                             placeholder="Register Number" >
@@ -91,8 +103,6 @@
                         <input type="date" name="labour_cid_expiry" class="form-control" id="labour_cid_expiry"
                             placeholder="CID Expiry" value="" >
                     </div>
-                    
-                    
                 </div>
 
                 <hr>
@@ -100,7 +110,7 @@
                 <div class="row">
                     <div class="col-md-3 mt-3">
                         <label>Examination round (รอบสอบ)</label>
-                        <select name="labour_examination" class="form-select" required>
+                        <select name="labour_examination" class="form-select" >
                             <option value="">Select a Examination round</option>
 
                              @forelse ($examinationRound as $item)
@@ -216,6 +226,33 @@
             </div>
         </div>
     </div>
+
+
+    <script>
+        $(document).ready(function() {
+$('#labour_birthday').on('change', function() {
+const birthDate = new Date($(this).val());
+const today = new Date();
+
+let years = today.getFullYear() - birthDate.getFullYear();
+let months = today.getMonth() - birthDate.getMonth();
+let days = today.getDate() - birthDate.getDate();
+
+// ปรับเดือนและวันกรณีที่คำนวณเป็นลบ
+if (days < 0) {
+months--;
+days += new Date(today.getFullYear(), today.getMonth(), 0).getDate(); // วันสุดท้ายของเดือนก่อนหน้า
+}
+if (months < 0) {
+years--;
+months += 12;
+}
+
+// แสดงผลลัพธ์
+$('#age_result').text(`${years} ปี ${months} เดือน ${days} วัน`);
+});
+});
+    </script>
 
     <script>
 

@@ -25,7 +25,13 @@ class labourController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware('permission:view labour', ['only' => ['index']]);
+        $this->middleware('permission:create labour', ['only' => ['create', 'store']]);
+        $this->middleware('permission:update labour', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:delete labour', ['only' => ['destroy']]);
     }
+
+    
 
     public function index(Request $request)
     {
@@ -33,84 +39,81 @@ class labourController extends Controller
         $customers = customerModel::latest()->get();
         $staffs = staffModel::where('staff_status', 'active')->get();
         $staffSub = staffSubModel::where('staff_sub_status', 'active')->get();
-        // Search
+    
+        // ดึงค่าที่ค้นหามาจาก request
         $labour_firstname = $request->labour_firstname;
         $labour_lastname = $request->labour_lastname;
         $labour_phone = $request->labour_phone;
         $labour_passport_number = $request->labour_passport_number;
         $labour_disease_date_start = $request->labour_disease_date_start;
         $labour_disease_date_end = $request->labour_disease_date_end;
+        $labour_cid_start = $request->labour_cid_start;
+        $labour_cid_end = $request->labour_cid_end;
         $labour_country = $request->labour_country;
         $labour_job_group = $request->labour_job_group;
+        $labour_staff = $request->labour_staff;
         $labour_status = $request->labour_status;
-        $labours = labourModel::leftjoin('staff', 'staff.staff_id', 'labours.labour_staff')->latest('labours.created_at');
-        //labour_firstname
+    
+        // Query ข้อมูลจาก labourModel
+        $labours = labourModel::leftjoin('staff', 'staff.staff_id', 'labours.labour_staff')->latest('labours.updated_at');
+    
+        // ค้นหาด้วยชื่อ
         if (!empty($labour_firstname)) {
-            $labours = $labours->where(function ($query) use ($labour_firstname) {
-                $query->where('labour_firstname', 'LIKE', "%$labour_firstname%");
-            });
+            $labours = $labours->where('labours.labour_firstname', 'LIKE', "%$labour_firstname%");
         }
-        //labour_lastname
+    
+        // ค้นหาด้วยนามสกุล
         if (!empty($labour_lastname)) {
-            $labours = $labours->where(function ($query) use ($labour_lastname) {
-                $query->where('labour_firstname', 'LIKE', "%$labour_lastname%");
-            });
+            $labours = $labours->where('labours.labour_lastname', 'LIKE', "%$labour_lastname%");
         }
-        //labour_phone
+    
+        // ค้นหาด้วยเบอร์โทรศัพท์
         if (!empty($labour_phone)) {
-            $labours = $labours->where(function ($query) use ($labour_phone) {
-                $query->where('labour_phone', 'LIKE', "%$labour_phone%");
-            });
+            $labours = $labours->where('labours.labour_phone', 'LIKE', "%$labour_phone%");
         }
-        //labour_passport_number
+    
+        // ค้นหาด้วยหมายเลขหนังสือเดินทาง
         if (!empty($labour_passport_number)) {
-            $labours = $labours->where(function ($query) use ($labour_passport_number) {
-                $query->where('labour_passport_number', 'LIKE', "%$labour_passport_number%");
-            });
+            $labours = $labours->where('labours.labour_passport_number', 'LIKE', "%$labour_passport_number%");
         }
-        // ผลโรค เริ่มต้น
+    
+        // ค้นหาด้วยวันที่ผลโรค (เริ่มต้น - สิ้นสุด)
         if (!empty($labour_disease_date_start) && !empty($labour_disease_date_end)) {
-            $labours = $labours->where(function ($query) use ($labour_disease_date_start, $labour_disease_date_end) {
-                $query->whereDate('labour_disease_expriry', '>=', $labour_disease_date_start)->whereDate('labour_disease_expriry', '<=', $labour_disease_date_end);
-            });
+            $labours = $labours->whereBetween('labours.labour_disease_expiry', [$labour_disease_date_start, $labour_disease_date_end]);
         }
-        // CID เริ่มต้น
+    
+        // ค้นหาด้วยวันที่หมดอายุ CID (เริ่มต้น - สิ้นสุด)
         if (!empty($labour_cid_start) && !empty($labour_cid_end)) {
-            $labours = $labours->where(function ($query) use ($labour_cid_start, $labour_cid_end) {
-                $query->whereDate('labour_cid_expriry', '>=', $labour_cid_start)->whereDate('labour_cid_expriry', '<=', $labour_cid_end);
-            });
+            $labours = $labours->whereBetween('labours.labour_cid_expiry', [$labour_cid_start, $labour_cid_end]);
         }
-        //Country
-        if (!empty($labour_country)) {
-            $labours = $labours->where(function ($query) use ($labour_country) {
-                $query->where('labour_country', $labour_country);
-            });
+    
+        // ค้นหาด้วยประเทศ
+        if (!empty($labour_country) && $labour_country !== 'all') {
+            $labours = $labours->where('labours.labour_country', $labour_country);
         }
-         //labour_job_group
-         if (!empty($labour_job_group)) {
-            $labours = $labours->where(function ($query) use ($labour_job_group) {
-                $query->where('labour_job_group', $labour_job_group);
-            });
+    
+        // ค้นหาด้วยกลุ่มงาน
+        if (!empty($labour_job_group) && $labour_job_group !== 'all') {
+            $labours = $labours->where('labours.labour_job_group', $labour_job_group);
         }
-          //labour_staff
-          if (!empty($labour_staff)) {
-            $labours = $labours->where(function ($query) use ($labour_staff) {
-                $query->where('labour_staff', $labour_staff);
-            });
+    
+        // ค้นหาด้วยพนักงาน
+        if (!empty($labour_staff) && $labour_staff !== 'all') {
+            $labours = $labours->where('labours.labour_staff', $labour_staff);
         }
-          //labour_status
-          if (!empty($labour_status)) {
-            $labours = $labours->where(function ($query) use ($labour_status) {
-                $query->where('labour_status', $labour_status);
-            });
+    
+        // ค้นหาด้วยสถานะ
+        if (!empty($labour_status) && $labour_status !== 'all') {
+            $labours = $labours->where('labours.labour_status', $labour_status);
         }
-
-
+    
+        // Paginate ผลลัพธ์
         $labours = $labours->paginate(10);
-
-        return view('labours.index', compact('labours', 'customers', 'jobGroup', 'staffs','staffSub'));
+    
+        // ส่งผลลัพธ์ไปยัง view
+        return view('labours.index', compact('labours', 'customers', 'jobGroup', 'staffs', 'staffSub'));
     }
-
+    
     public function edit(labourModel $labourModel)
     {
         $country = countryModel::where('country_status', 'active')->latest()->get();
@@ -123,9 +126,11 @@ class labourController extends Controller
         $labourfiles = labourFileModel::where('labour_id', $labourModel->labour_id)->get();
         $customers = customerModel::where('customer_status', 'active')->get();
 
-        $fileID = $labourfiles->pluck('list_file_id')->toArray();
 
-        $listFiles = listFileModel::whereNotIn('list_file_id', $fileID)->get();
+
+        $fileID = $labourfiles->pluck('list_file_id')->toArray();
+        $listFiles = listFileModel::where('file_manage_id',$labourModel->labour_location_doc)->whereNotIn('list_file_id',$fileID)->get();
+        
         $staffSub = staffSubModel::where('staff_sub_status', 'active')->get();
         return view('labours.form-edit', compact('listFiles', 'customers', 'labourModel','staffSub', 'country', 'jobGroup', 'locationtest', 'staffs', 'fileManage', 'examinationRound', 'position', 'labourfiles'));
     }
@@ -179,85 +184,8 @@ class labourController extends Controller
             ->count('labour_file_id');
         $labourModel->update(['labour_file_count' => $counFile, 'labour_file_list' => $counFileNotNull]);
 
-        // if ($request->labour_customer_old === null && $labourModel->labour_customer !== null) {
-        //     // ดึงข้อมูลที่จำเป็นจากฐานข้อมูล
-        //     $country = countryModel::where('country_id', $labourModel->labour_country)->first();
-        //     $jobGroup = jobGroupModel::where('job_group_id', $labourModel->labour_job_group)->first();
-        //     $position = positionModel::where('position_id', $labourModel->labour_position)->first();
-        //     $customer = customerModel::where('customer_id', $labourModel->labour_customer)->first();
 
-        //     $folderYear = $labourModel->labour_folder_year;
-        //     $countryName = $country->country_name_en;
-        //     $jobGroupName = $jobGroup->job_group_name;
-        //     $examinationRound = $labourModel->labour_examination;
-        //     $folderNameLabour = $labourModel->labour_firstname . '_' . $labourModel->labour_lastname;
-        //     $positionName = $position->position_name;
-        //     $customerName = $customer->customer_name;
-
-        //     // ใช้ DIRECTORY_SEPARATOR เพื่อความเข้ากันได้
-        //     $folderPathNew = $folderYear . DIRECTORY_SEPARATOR . $countryName . DIRECTORY_SEPARATOR . $jobGroupName . DIRECTORY_SEPARATOR . $positionName . DIRECTORY_SEPARATOR . $examinationRound . DIRECTORY_SEPARATOR . $customerName . DIRECTORY_SEPARATOR . $folderNameLabour;
-        //     $folderPathOld = $labourModel->labour_path;
-
-        //     // ตรวจสอบว่าโฟลเดอร์ปลายทางมีอยู่หรือไม่
-        //     if (!Storage::disk('public')->exists($folderPathNew)) {
-        //         // สร้างโฟลเดอร์ปลายทาง
-        //         Storage::disk('public')->makeDirectory($folderPathNew);
-        //     }
-
-        //     function copyDirectory($source, $destination)
-        //     {
-        //         if (!is_dir($source) || !is_dir($destination)) {
-        //             return false;
-        //         }
-
-        //         // ตรวจสอบว่าโฟลเดอร์ต้นทางมีไฟล์หรือไม่
-        //         $files = scandir($source);
-        //         if (count($files) <= 2) {
-        //             // โฟลเดอร์ว่างเปล่า (มีแค่ '.' และ '..')
-        //             return false;
-        //         }
-
-        //         if (!is_dir($destination)) {
-        //             if (!mkdir($destination, 0755, true)) {
-        //                 echo 'Failed to create directory: ' . $destination;
-        //                 return false;
-        //             }
-        //         }
-
-        //         foreach ($files as $file) {
-        //             if ($file !== '.' && $file !== '..') {
-        //                 $sourceFile = $source . DIRECTORY_SEPARATOR . $file;
-        //                 $destinationFile = $destination . DIRECTORY_SEPARATOR . $file;
-
-        //                 if (is_dir($sourceFile)) {
-        //                     copyDirectory($sourceFile, $destinationFile);
-        //                 } else {
-        //                     if (!copy($sourceFile, $destinationFile)) {
-        //                         echo 'Failed to copy file: ' . $sourceFile;
-        //                     }
-        //                 }
-        //             }
-        //         }
-
-        //         return true;
-        //     }
-
-        //     $sourceDirectory = env('LOCATION_PATH') . DIRECTORY_SEPARATOR . $folderPathOld; // กำหนดตำแหน่งโฟลเดอร์ต้นทาง
-        //     $destinationDirectory = env('LOCATION_PATH') . DIRECTORY_SEPARATOR . $folderPathNew; // กำหนดตำแหน่งโฟลเดอร์ปลายทาง
-        //     $labourModel->update(['labour_path' => $folderPathNew]);
-
-        //     // ตรวจสอบการคัดลอกและรายงานผลลัพธ์
-        //     if (copyDirectory($sourceDirectory, $destinationDirectory)) {
-        //         // ตรวจสอบว่าโฟลเดอร์ปลายทางมีอยู่หรือไม่
-        //         if (Storage::disk('public')->exists($folderPathOld)) {
-        //             // สร้างโฟลเดอร์ปลายทาง
-        //             Storage::disk('public')->deleteDirectory($folderPathOld);
-        //         }
-        //     } else {
-        //         echo 'No files to copy or failed to copy.';
-        //     }
-        // }
-
+      
         return redirect()->back()->with('success', 'Updated Labour Successfully.');
     }
 
@@ -265,34 +193,29 @@ class labourController extends Controller
     {
         $checkLabour = null;
 
-        if ($request->labour_passport_number !== null) {
-            $checkLabour = labourModel::where('labour_passport_number', $request->labour_passport_number)
-            ->orWhere('labour_firstname', $request->labour_firstname)
-            ->first();
-        }
+        $checkLabour = labourModel::orWhere(function($query) use ($request) {
+            $query->where('labour_firstname', $request->labour_firstname)
+                  ->where('labour_lastname', $request->labour_lastname);
+        })
+        ->first();
+
+        // Edit 16/11/2024
+        // if ($request->labour_passport_number !== null) {
+        //     $checkLabour = labourModel::where('labour_passport_number', $request->labour_passport_number)
+        //         ->orWhere(function($query) use ($request) {
+        //             $query->where('labour_firstname', $request->labour_firstname)
+        //                   ->where('labour_lastname', $request->labour_lastname);
+        //         })
+        //         ->first();
+        // }
 
         if (empty($checkLabour)) {
             $request->merge(['created_by' => Auth::user()->name]);
             $request->merge(['labour_folder_year' => date('Y')]);
             $labourModel = labourModel::create($request->all());
-            // $country = countryModel::where('country_id', $labourModel->labour_country)->first();
-            // $jobGroup = jobGroupModel::where('job_group_id', $labourModel->labour_job_group)->first();
-            // $position = positionModel::where('position_id', $labourModel->labour_position)->first();
-            // $customer = customerModel::where('customer_id', $labourModel->labour_customer)->first();
+         
             $folderYear = $labourModel->labour_folder_year;
-            // $countryName = $country->country_name_en;
-            // $jobGroupName = $jobGroup->job_group_name;
-            // $examinationRound = $labourModel->labour_examination;
-            // $folderNameLabour = $labourModel->labour_firstname . '_' . $labourModel->labour_lastname;
-            // $positionName = $position->position_name;
-
-            // if (empty($request->labour_customer)) {
-            //     $folderPath = $folderYear . '\\BACKUP\\' . $labourModel->labour_firstname . '_' . $labourModel->labour_lastname;
-            // } 
-            // else {
-            //     $customerName = $customer->customer_name;
-            //     $folderPath = $folderYear . '\\' . $countryName . '\\' . $jobGroupName . '\\' . $positionName . '\\' . $examinationRound . '\\' . $customerName . '\\' . $folderNameLabour;
-            // }
+          
             $folderPath = $folderYear.'\\'.date('m').'\\'.$labourModel->labour_firstname . '_' . $labourModel->labour_lastname;
             //สร้าง Forlder
             if (!Storage::disk('public')->exists($folderPath)) {
@@ -327,5 +250,11 @@ class labourController extends Controller
     {
         $labourfiles = labourFileModel::where('labour_id', $labourModel->labour_id)->get();
         return view('labours.modal-combinePDF', compact('labourfiles', 'labourModel'));
+    }
+
+    public function viewDocs(labourModel $labourModel)
+    {
+        $labourfiles = labourFileModel::where('labour_id', $labourModel->labour_id)->get();
+        return view('labours.modal-view-doc', compact('labourfiles', 'labourModel'));
     }
 }

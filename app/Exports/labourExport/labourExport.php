@@ -26,86 +26,139 @@ class labourExport implements FromCollection, WithHeadings, WithMapping, WithCol
     private $labour_staff;
     private $labour_status;
     private $labour_customer;
+    private $labour_examination;
+
+    public function __construct(
+        $labour_disease_date_start,
+        $labour_disease_date_end,
+        $labour_cid_start,
+        $labour_cid_end,
+        $labour_country,
+        $labour_job_group,
+        $labour_staff,
+        $labour_status,
+        $labour_customer,
+        $labour_examination
+    ) {
+        $this->labour_disease_date_start = $labour_disease_date_start;
+        $this->labour_disease_date_end = $labour_disease_date_end;
+        $this->labour_cid_start = $labour_cid_start;
+        $this->labour_cid_end = $labour_cid_end;
+        $this->labour_country = $labour_country;
+        $this->labour_job_group = $labour_job_group;
+        $this->labour_staff = $labour_staff;
+        $this->labour_status = $labour_status;
+        $this->labour_customer = $labour_customer;
+        $this->labour_examination = $labour_examination;
+    }
+
 
     public function collection()
     {
-        $this->labour = labourModel::leftjoin('position', 'position.position_id', 'labours.labour_position')
-        ->leftjoin('staff', 'staff.staff_id', 'labours.labour_staff')
-    
+        //dd($this->labour_staff);
+        // เริ่มการ Query ข้อมูลด้วยการ Join ตารางที่ต้องการ
+        $query = labourModel::leftJoin('position', 'position.position_id', '=', 'labours.labour_position')
+            ->leftJoin('staff', 'staff.staff_id', '=', 'labours.labour_staff')
+            ->leftJoin('customers', 'customers.customer_id', '=', 'labours.labour_customer');
+        
         // ค้นหาผลโรคหมดอายุ
-        ->when(!empty($this->labour_disease_date_start) && !empty($this->labour_disease_date_end), function ($query) {
-            return $query->whereBetween('labours.labour_disease_expriry', [$this->labour_disease_date_start, $this->labour_disease_date_end]);
-        })
-    
+        if (!empty($this->labour_disease_date_start) && !empty($this->labour_disease_date_end)) {
+            $query->whereBetween('labours.labour_disease_expriry', [$this->labour_disease_date_start, $this->labour_disease_date_end]);
+        }
+        
         // ค้นหาผล CID หมดอายุ
-        ->when(!empty($this->labour_cid_start) && !empty($this->labour_cid_end), function ($query) {
-            return $query->whereBetween('labours.labour_cid_expriry', [$this->labour_cid_start, $this->labour_cid_end]);
-        })
+        if (!empty($this->labour_cid_start) && !empty($this->labour_cid_end)) {
+            $query->whereBetween('labours.labour_cid_expriry', [$this->labour_cid_start, $this->labour_cid_end]);
+        }
+        
+        // ค้นหาประเทศ
+        if ($this->labour_country && $this->labour_country != 'all') {
+            $query->where('labours.labour_country', $this->labour_country);
+        }
+        
+        // ค้นหาประเภทงาน
+        if ($this->labour_job_group && $this->labour_job_group != 'all') {
+            $query->where('labours.labour_job_group', $this->labour_job_group);
+        }
+        
+        // ค้นหาชื่อสรรหา
+        if ($this->labour_staff && $this->labour_staff != 'all') {
+            $query->where('labours.labour_staff', $this->labour_staff);
+        }
+        
+        // ค้นหาสถานะ
+        if ($this->labour_status && $this->labour_status != 'all') {
+            $query->where('labours.labour_status', $this->labour_status);
+        }
+        
+        // ค้นหาโรงงาน
+if ($this->labour_customer === 'null') {
+    $query->whereNull('labours.labour_customer');
+} elseif ($this->labour_customer && $this->labour_customer != 'all') {
+    $query->where('labours.labour_customer', $this->labour_customer);
+}
+
+        //labour_examination
+
+        if ($this->labour_examination && $this->labour_examination != 'all') {
+            $query->whereIn('labours.labour_examination', $this->labour_examination);
+        }
+       
+        
+        // เรียงลำดับข้อมูล
+        $query->orderBy('labours.labour_id');
     
-        // ค้นหา ประเทศ
-        ->when($this->labour_country && $this->labour_country != 'all', function ($query) {
-            return $query->where('labours.labour_country', $this->labour_country);
-        })
-    
-        // ค้นหา ประเภทงาน
-        ->when($this->labour_job_group && $this->labour_job_group != 'all', function ($query) {
-            return $query->where('labours.labour_job_group', $this->labour_job_group);
-        })
-    
-        // ค้นหา ชื่อสรรหา
-        ->when($this->labour_staff && $this->labour_staff != 'all', function ($query) {
-            return $query->where('labours.labour_staff', $this->labour_staff);
-        })
-    
-        // ค้นหา สถานะ
-        ->when($this->labour_status && $this->labour_status != 'all', function ($query) {
-            return $query->where('labours.labour_status', $this->labour_status);
-        })
-    
-        // ค้นหา โรงงาน
-        ->when($this->labour_customer && $this->labour_customer != 'all', function ($query) {
-            return $query->where('labours.labour_customer', $this->labour_customer);
-        })
-    
-        ->orderBy('labours.labour_id')
-        ->get();
+        // ดึงข้อมูลทั้งหมด
+        $this->labour = $query->get();
     
         return $this->labour;
     }
+
+    
     public function headings(): array
-    {
-        // ตรวจสอบว่ามีข้อมูลใน $this->labour หรือไม่
-        if (!$this->labour) {
-            $this->collection(); // เรียกฟังก์ชัน collection() เพื่อดึงข้อมูล
-        }
-        // ดึงไฟล์ที่เกี่ยวข้องสำหรับ labour ทั้งหมด
-        $sampleLabourFiles = labourFileModel::whereIn('labour_id', $this->labour->pluck('labour_id'))->get();
-        // สร้าง headers สำหรับ Success และ Wait
+{
+    // ตรวจสอบว่ามีข้อมูลใน $this->labour หรือไม่
+    if (!$this->labour) {
+        $this->collection(); // เรียกฟังก์ชัน collection() เพื่อดึงข้อมูล
+    }
+
+    // ดึงไฟล์ที่เกี่ยวข้องสำหรับ labour ทั้งหมด
+    $sampleLabourFiles = labourFileModel::whereIn('labour_id', $this->labour->pluck('labour_id'))->get();
+
+    // ตรวจสอบว่ามีการตั้งค่า $filePathSuccessHeaders หรือไม่ เพื่อให้ loop ทำงานแค่ครั้งเดียว
+    static $filePathSuccessHeaders = null; 
+    if ($filePathSuccessHeaders === null) {
+        // ถ้ายังไม่มีการตั้งค่าให้สร้างขึ้นมาใหม่
         $filePathSuccessHeaders = [];
         foreach ($sampleLabourFiles as $file) {
             $filePathSuccessHeaders[] = $file->labour_file_name;
         }
-
-        // รวม headers ทั้งหมด
-        return array_merge(
-            [
-                'No.',
-                'First-Name',
-                'Last-Name',
-                'NAME',
-                'Position',
-                'รหัส',
-                'Passport',
-                'Date Issue', // วันเริ่มต้น Passport
-                'Date Expiry', // วันหมด Passport
-                'เบอร์ติดต่อ',
-                'เจ้าหน้าที่ดูแล',
-            ],
-            ['สถานะ', 'Remark'],
-            $filePathSuccessHeaders,
-            
-        );
+        // กำจัดค่าซ้ำออกจาก array
+        $filePathSuccessHeaders = array_unique($filePathSuccessHeaders);
     }
+
+    // รวม headers ทั้งหมด
+    return array_merge(
+        [
+            'No.',
+            'First-Name',
+            'Last-Name',
+            'NAME',
+            'Company Name',
+            'Position',
+            'รหัส',
+            'Passport',
+            'รอบสอบ',
+            'Date Issue', // วันเริ่มต้น Passport
+            'Date Expiry', // วันหมด Passport
+            'เบอร์ติดต่อ',
+            'เจ้าหน้าที่ดูแล',
+        ],
+        ['สถานะ', 'Remark'],
+        $filePathSuccessHeaders
+    );
+}
+
 
     public function map($labour): array
     {
@@ -140,7 +193,17 @@ class labourExport implements FromCollection, WithHeadings, WithMapping, WithCol
 
         // Return ข้อมูลโดยรวม arrays ที่เราทำ loop
         return array_merge(
-            [++$this->num, $labour->labour_firstname, $labour->labour_lastname, $labour->labour_prefix . '.' . $labour->labour_firstname . ' ' . $labour->labour_lastname, $labour->position_name, $labour->labour_register_number, $labour->labour_passport_number, $labour->labour_passport_issue, $labour->labour_passport_expiry, $labour->labour_phone, $labour->staff_name],
+            [++$this->num, $labour->labour_firstname, 
+            $labour->labour_lastname, $labour->labour_prefix . '.' 
+            . $labour->labour_firstname . ' ' 
+            . $labour->labour_lastname, 
+            $labour->customer_name ? $labour->customer_name : 'ยังไม่ระบุ' ,
+            $labour->position_name, 
+            $labour->labour_register_number,
+             $labour->labour_passport_number, 
+            date('d-m-Y',strtotime($labour->labour_examination)), 
+            $labour->labour_passport_issue, 
+            $labour->labour_passport_expiry, $labour->labour_phone, $labour->staff_name],
             [$status, $labour->labour_note],
             $filePathSuccess, // รวมเครื่องหมาย / หรือ X สำหรับ success// รวมเครื่องหมาย / หรือ X สำหรับ wait
            
@@ -154,17 +217,17 @@ class labourExport implements FromCollection, WithHeadings, WithMapping, WithCol
             'B' => 20,
             'C' => 20,
             'D' => 35,
-            'E' => 20,
+            'E' => 25,
             'F' => 15,
             'G' => 15,
             'H' => 15,
             'I' => 15,
             'J' => 20,
-            'K' => 20,
-            'L' => 15,
-            'M' => 45,
-            'N' => 5,
-            'O' => 5,
+            'K' => 30,
+            'L' => 30,
+            'M' => 15,
+            'N' => 15,
+            'O' => 45,
             'P' => 5,
             'Q' => 5,
             'R' => 5,
@@ -177,6 +240,12 @@ class labourExport implements FromCollection, WithHeadings, WithMapping, WithCol
             'Y' => 5,
             'Z' => 5,
             'AA'=> 5,
+            'AB'=> 5,
+            'AC'=> 5,
+            'AF'=> 5,
+            'AD'=> 5,
+            'AE'=> 5,
+            'AG'=> 5,
         ];
     }
 }

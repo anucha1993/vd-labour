@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\formExport;
 
-use App\Exports\labourExport\labourExport;
 use Illuminate\Http\Request;
 use App\Models\staff\staffModel;
 use App\Http\Controllers\Controller;
@@ -10,6 +9,8 @@ use App\Models\country\countryModel;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\jobgroup\jobGroupModel;
 use App\Models\customers\customerModel;
+use App\Exports\labourExport\labourExport;
+use App\Models\examinations\examinationRoundModel;
 
 class labourFormExportController extends Controller
 {
@@ -21,11 +22,12 @@ class labourFormExportController extends Controller
 
     public function index()
     {
+        $examinationRound = examinationRoundModel::where('examination_round_status', 'active')->latest()->get();
         $jobGroup = jobGroupModel::where('job_group_status', 'active')->latest()->get();
         $customers = customerModel::latest()->get();
         $staffs = staffModel::where('staff_status', 'active')->get();
         $country = countryModel::where('country_status', 'active')->get();
-        return view('exports/form-export-labour',compact('jobGroup','customers','staffs','country'));
+        return view('exports/form-export-labour',compact('jobGroup','customers','staffs','country','examinationRound'));
     }
 
     public function export(Request $request)
@@ -40,6 +42,7 @@ class labourFormExportController extends Controller
         $labour_staff = $request->labour_staff;
         $labour_status = $request->labour_status;
         $labour_customer = $request->labour_customer;
+        $labour_examination = $request->labour_examination;
 
         return Excel::download(new labourExport(
             $labour_disease_date_start,
@@ -50,7 +53,8 @@ class labourFormExportController extends Controller
             $labour_job_group,
             $labour_staff,
             $labour_status,
-            $labour_customer
+            $labour_customer,
+            $labour_examination
         ),'labour_'.date('d-m-Y').'.xlsx');
     }
 

@@ -21,7 +21,8 @@
     <link href="{{URL::asset('../dist/css/style.min.css')}}" rel="stylesheet" />
     <script src="{{URL::asset('../assets/libs/jquery/dist/jquery.min.js')}}"></script>
     <script src="{{URL::asset('../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js')}}"></script>
-    
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -29,6 +30,19 @@
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+
+    <style>
+        .modal {
+            width: 1000px;
+            height: 1000px;
+            left: 40%;
+            top: 30%;
+            margin-left: -150px;
+            margin-top: -150px;
+        }
+    </style>
+
+
 </head>
 
 <body>
@@ -281,12 +295,27 @@
                                         class="mdi mdi-settings me-1 ms-1"></i> Account
                                     Setting</a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="javascript:void(0)"><i
-                                        class="fa fa-power-off me-1 ms-1"></i> Logout</a>
+                               
+
+                                        <a class="dropdown-item" href="{{ route('logout') }}"
+                                       onclick="event.preventDefault();
+                                                     document.getElementById('logout-form').submit();">
+                                       <i
+                                       class="fa fa-power-off me-1 ms-1"></i> {{ __('Logout') }}
+                                    </a>
+
+                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                        @csrf
+                                    </form>
+                                    
                                 <div class="dropdown-divider"></div>
                                 <div class="ps-4 p-10">
                                     <a href="javascript:void(0)"
                                         class="btn btn-sm btn-success btn-rounded text-white">View Profile</a>
+                                </div>
+                                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                    
+                                    
                                 </div>
                             </ul>
                         </li>
@@ -549,6 +578,19 @@
     <!-- Bootstrap tether Core JavaScript -->
     
     <!-- slimscrollbar scrollbar JavaScript -->
+
+    <script>
+            function openPdfPopup(url) {
+                var width = 800; // กำหนดความกว้างของหน้าต่าง
+                var height = 600; // กำหนดความสูงของหน้าต่าง
+                var left = (window.innerWidth - width) / 2; // คำนวณตำแหน่งจากด้านซ้ายของหน้าจอ
+                var top = (window.innerHeight - height) / 2; // คำนวณตำแหน่งจากด้านบนของหน้าจอ
+
+                // เปิดหน้าต่างใหม่ด้วยการคำนวณตำแหน่งและขนาด
+                window.open(url, 'PDFPopup', 'width=' + width + ',height=' + height + ',top=' + top + ',left=' + left);
+            }
+        </script>
+        
     <script src="{{URL::asset('../assets/libs/perfect-scrollbar/dist/perfect-scrollbar.jquery.min.js')}}"></script>
     <script src="{{URL::asset('../assets/extra-libs/sparkline/sparkline.js')}}"></script>
     <!--Wave Effects -->

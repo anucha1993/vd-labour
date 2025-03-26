@@ -1,15 +1,18 @@
 <?php
 
-use App\Http\Controllers\categorys\ExaminationRounController;
 use App\Models\labours\labourModel;
+use Illuminate\Support\Facades\Auth;
 use App\Models\files\labourFileModel;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserRoleController;
 use App\Http\Controllers\labours\labourController;
+use App\Http\Controllers\RolePermissionController;
 use App\Http\Controllers\combine\PdfMergeController;
-use App\Http\Controllers\customers\customerController;
-use App\Http\Controllers\formExport\labourFormExportController;
 use App\Http\Controllers\jobgroup\jobGoupController;
+use App\Http\Controllers\customers\customerController;
 use App\Http\Controllers\labours\labourFileController;
+use App\Http\Controllers\categorys\ExaminationRounController;
+use App\Http\Controllers\formExport\labourFormExportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,10 +25,10 @@ use App\Http\Controllers\labours\labourFileController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
+// Route::get('/', function () {
+//     return view('welcome');
+// });
+Route::get('/',[labourController::class,'index'])->name('labour.index');
 Route::get('labour/create',[labourController::class,'create'])->name('labour.create');
 Route::get('labours',[labourController::class,'index'])->name('labour.index');
 Route::post('labour/store',[labourController::class,'store'])->name('labour.store');
@@ -33,6 +36,7 @@ Route::get('labour/edit/{labourModel}',[labourController::class,'edit'])->name('
 Route::put('labour/update/{labourModel}',[labourController::class,'update'])->name('labour.update');
 Route::get('labour/createFolder',[labourController::class,'createFolder'])->name('labour.createFolder');
 Route::get('labour/CombinePDF/{labourModel}',[labourController::class,'CombinePDF'])->name('labour.CombinePDF');
+Route::get('labour/view/doc/{labourModel}',[labourController::class,'viewDocs'])->name('labour.viewDocs');
 
 
 
@@ -54,7 +58,7 @@ Route::get('labour/delete/file/',[labourFileController::class,'delete'])->name('
 Route::get('export/form/labour',[labourFormExportController::class,'index'])->name('export.form.labour');
 
 //export
-Route::get('/export/export-labour', [labourFormExportController::class, 'export'])->name('labour.export');
+Route::post('/export/export-labour', [labourFormExportController::class, 'export'])->name('labour.export');
 
 //รอบสอบ 
 Route::get('category/examination-roun',[ExaminationRounController::class, 'index'])->name('category.examination');
@@ -66,3 +70,23 @@ Route::get('customers',[customerController::class,'index'])->name('customer.inde
 Route::post('customers/store',[customerController::class,'store'])->name('customer.store');
 Route::get('customer/edit/{customerModel}',[customerController::class,'edit'])->name('customer.edit');
 Route::PUT('customer/update/{customerModel}',[customerController::class,'update'])->name('customer.update');
+
+// Route::middleware(['auth', 'role:admin'])->group(function () {
+//     Route::get('/permissions', [RolePermissionController::class, 'index'])->name('permissions.index');
+//     Route::post('/permissions/update', [RolePermissionController::class, 'update'])->name('permissions.update');
+// });
+
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/roles', [RolePermissionController::class, 'index'])->name('roles.index');
+    Route::get('/roles/create', [RolePermissionController::class, 'create'])->name('roles.create'); // เพิ่ม Route นี้
+    Route::post('/roles', [RolePermissionController::class, 'store'])->name('roles.store');
+    Route::get('/roles/{role}/edit', [RolePermissionController::class, 'edit'])->name('roles.edit');
+    Route::put('/roles/{role}', [RolePermissionController::class, 'update'])->name('roles.update');
+    Route::delete('/roles/{role}', [RolePermissionController::class, 'destroy'])->name('roles.destroy');
+});
+    
+    // Routes สำหรับจัดการ Users และการเพิ่ม Users เข้า Roles
+    Route::get('/users', [UserRoleController::class, 'index'])->name('users.index');
+    Route::post('/users/assign-role', [UserRoleController::class, 'assignRole'])->name('users.assignRole');
+

@@ -19,14 +19,10 @@
                     @csrf
                     @method('put')
                     <div class="row mt-3">
+                        {{-- labour info  --}}
                         <h4> ข้อมูลคนงาน </h4>
-                        <span>ตำแหน่งไฟล์ : <a
-                                href="#">{{ env('LOCATION_PATH') }}{{ '\\' . $labourModel->labour_path }}
-                            </a></span>
-
+                        <span>ตำแหน่งไฟล์ : <a href="#">{{ env('LOCATION_DRIVE') }}{{ '\\' . $labourModel->labour_path }}</a></span>
                         <hr>
-                      
-
                         <div class="col-md-1">
                             <label>Prefix</label>
                             <select name="labour_prefix" class="form-select" required>
@@ -37,18 +33,27 @@
                         </div>
 
 
-                        <div class="col-md-4">
+                        <div class="col-md-2">
                             <label>Name</label>
                             <input type="text" class="form-control" name="labour_firstname" placeholder="Firstname"
                                 value="{{ $labourModel->labour_firstname }}" required>
                         </div>
 
-                        <div class="col-md-4">
+                        <div class="col-md-2">
                             <label>Lastname</label>
                             <input type="text" class="form-control" name="labour_lastname" placeholder="Lastname"
                                 value="{{ $labourModel->labour_lastname }}" required>
                         </div>
-                        <div class="col-md-3">
+
+                        <div class="col-md-2">
+                            <label>Birthday <span id="age_result"></span></label>
+                            <input type="date" class="form-control" name="labour_birthday" placeholder="birthday" id="labour_birthday"
+                                value="{{ $labourModel->labour_birthday }}" required>
+                        </div>
+
+                    
+
+                        <div class="col-md-2">
                             <label>Phone.</label>
                             <input type="text" class="form-control" name="labour_phone" placeholder="+66"
                                 value="{{ $labourModel->labour_phone }}">
@@ -91,7 +96,7 @@
                         <div class="col-md-3 mt-3">
                             <label>Register Number.</label>
                             <input type="text" name="labour_register_number" class="form-control"
-                                placeholder="Register Number" value="{{ $labourModel->labour_register_number }}" required>
+                                placeholder="Register Number" value="{{ $labourModel->labour_register_number }}">
                         </div>
                     </div>
 
@@ -105,9 +110,16 @@
                             <label>Disease Expiry (ผลโรคหมดอายุ) คำนวน 30 วัน </label>
                             <input type="date" name="labour_disease_expiry" id="labour_disease_expiry" class="form-control" >
                         </div>
-                        
-                        
+
                         <div class="col-md-3 mt-3">
+                            <label>date disease results (วันรับผลโรค) </label>
+                            <input type="date" name="labour_disease_results_date" id="labour_disease_expiry" value="{{ $labourModel->labour_disease_results_date }}" class="form-control" >
+                        </div>
+        
+                    </div>
+
+                    <div class="row">
+                    <div class="col-md-3 mt-3">
                             <label>CID Start</label>
                             <input type="date" name="labour_cid_start" class="form-control" id="labour_cid_start"
                                 placeholder="Register Number" value="{{ $labourModel->labour_cid_start }}">
@@ -117,21 +129,16 @@
                             <input type="date" name="labour_cid_expiry" class="form-control" id="labour_cid_expiry"
                                 placeholder="CID Expiry" value="" >
                         </div>
-                        
-                        
                     </div>
-
-
-
+                    {{--End labour info  --}}
+                    {{-- labour Group  --}}
                     <hr>
                     <h4>ข้อมูลกลุ่มงาน</h4>
                     <div class="row">
                         <div class="col-md-3 mt-3">
                             <label>Examination round (รอบสอบ)</label>
-                            <select name="labour_examination" class="form-select" required
-                               >
+                            <select name="labour_examination" class="form-select">
                                 <option selected value="{{$labourModel->labour_examination}}">{{ date('d-m-Y',strtotime($labourModel->labour_examination)) }} </option>
-
                                 @forelse ($examinationRound as $item)
                                     <option 
                                         value="{{ $item->examination_round_name }}">{{ date('d-m-Y',strtotime($item->examination_round_name)) }}
@@ -207,6 +214,7 @@
 
                     </div>
                     <hr>
+                    {{-- labour Status  --}}
                     <h4>ข้อมูลสถานะ</h4>
                     <div class="row">
                         <div class="col-md-3">
@@ -225,16 +233,16 @@
                         <div class="col-md-3">
                             <label>สายหาคน</label>
                             <select name="labour_staff_sub" class="form-select" required>
-                                <option value="no-sub">Null</option>
-                               >
-                               
+                                <option @if ($labourModel->labour_staff_sub === 'no-sub') selected @endif value="no-sub">ไม่ระบุ</option>
+                                
                                 @forelse ($staffSub as $item)
-                                    <option @if ($item->staff_sub_id === $labourModel->labour_staff_sub) selected @endif
-                                        value="{{ $item->staff_sub_id }}">
-                                        {{ $item->staff_sub_name }}</option>
+                                    <option @if ($item->staff_sub_id == $labourModel->labour_staff_sub) selected @endif
+                                        value="{{ $item->staff_sub_id }}">{{ $item->staff_sub_name }}</option>
                                 @empty
+                                    <option disabled>ไม่มีข้อมูลพนักงาน</option>
                                 @endforelse
                             </select>
+                            
                         </div>
                         
                         <div class="col-md-3">
@@ -254,7 +262,8 @@
 
                     </div>
                     <hr>
-
+                    {{-- labour Status  --}}
+                    {{-- labour File  --}}
                     <a href="{{ route('labour.CombinePDF', $labourModel->labour_id) }}"
                         class="create-CombinePDF btn btn-primary"><i class="fas fa-file-pdf"></i> CombinePDF</a>
                     <br>
@@ -269,7 +278,7 @@
                                         <td>
                                             @if ($item->labour_file_path)
                                                 <a href="{{ asset('storage/' . $labourModel->labour_path . '/' . $item->labour_file_path) }}"
-                                                    target="_blank"><i class="fas fa-file-pdf text-danger"></i>
+                                                onclick="openPdfPopup(this.href); return false;" ><i class="fas fa-file-pdf text-danger"></i>
                                                     {{ $item->labour_file_path }}</a>
                                             @else
                                                 <input type="hidden" name="labour_file_name[]"
@@ -279,10 +288,13 @@
                                                 <input type="file" name="files[]">
                                             @endif
                                         </td>
-                                        <td> <a href="" data-file-id="{{ $item->labour_file_id }}"
+                                        <td> 
+                                            @can('delete labour')
+                                            <a href="" data-file-id="{{ $item->labour_file_id }}"
                                                 data-labour-id="{{ $labourModel->labour_id }}"
                                                 data-path="{{ $labourModel->labour_path . '/' . $item->labour_file_path }}"
                                                 class="delete-file text-danger"> <i class="fa fa-trash"></i> Delete</a>
+                                                @endcan
                                         </td>
                                     </tr>
                                 @endforeach
@@ -303,29 +315,23 @@
 
                             </tbody>
                         </table>
-
-
                     </div>
-                    <button type="submit" class="btn btn-sm float-end text-success" form="form-create"><i
-                            class="fa fa-save"></i>
-                        อัทเดพข้อมูล</button>
+                    {{-- labour File  --}}
+                    <br>
+                    <br>
+                    @can('update labour')
+                    <button type="submit" class="btn btn-sm float-end btn-success" form="form-create"><i
+                        class="fa fa-save"></i>
+                    อัทเดพข้อมูล</button>
+                    @endcan
+                   
             </div>
         </div>
     </div>
 
 
 
-    <style>
-        .modal {
-            width: 1000px;
-            height: 1000px;
-            left: 40%;
-            top: 30%;
-            margin-left: -150px;
-            margin-top: -150px;
-        }
-    </style>
-
+    
 
 
     <div class="modal fade bd-example-modal-sm modal-lg" id="add-CombinePDF" tabindex="-1" role="dialog"
@@ -339,7 +345,38 @@
 
 
 
+    <script>
+        $(document).ready(function() {
+    // ฟังก์ชันคำนวณอายุ
+    function calculateAge() {
+        const birthDate = new Date($('#labour_birthday').val());
+        const today = new Date();
 
+        if (isNaN(birthDate)) return; // ตรวจสอบว่ามีการกรอกวันที่หรือยัง
+
+        let years = today.getFullYear() - birthDate.getFullYear();
+        let months = today.getMonth() - birthDate.getMonth();
+        let days = today.getDate() - birthDate.getDate();
+
+        // ปรับเดือนและวันกรณีที่คำนวณเป็นลบ
+        if (days < 0) {
+            months--;
+            days += new Date(today.getFullYear(), today.getMonth(), 0).getDate(); // วันสุดท้ายของเดือนก่อนหน้า
+        }
+        if (months < 0) {
+            years--;
+            months += 12;
+        }
+
+        // แสดงผลลัพธ์
+        $('#age_result').text(`${years} ปี ${months} เดือน ${days} วัน`);
+    }
+
+    // เรียกฟังก์ชันเมื่อโหลดหน้าและเมื่อมีการเปลี่ยนแปลงวันที่เกิด
+    calculateAge();
+    $('#labour_birthday').on('change', calculateAge);
+});
+    </script>
 
 
     <script>

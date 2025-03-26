@@ -12,12 +12,15 @@
     @endif
 
 
+
     <div class="card">
         <div class="card-header">
             รายงาน
         </div>
         <div class="card-body">
-            <form action="{{route('labour.export')}}" method="get">
+            <form action="{{route('labour.export')}}" method="post">
+                @csrf
+                @method('post')
               @csrf
 
                 <div class="row">
@@ -53,6 +56,7 @@
                         <label> Customers Name</label>
                         <select name="labour_customer" class="form-select">
                             <option value="all" >All</option>
+                            <option value="null" >ยังไม่ระบุ</option>
                             @forelse ($customers as $item)
                             <option value="{{$item->customer_id}}" >{{$item->customer_name}}</option>
                             @empty
@@ -66,6 +70,7 @@
                         <label> Country Name</label>
                         <select name="labour_country" class="form-select">
                             <option value="all" >All</option>
+                          
                             @forelse ($country as $item)
                             <option value="{{$item->country_id}}" >{{$item->country_name_th}}</option>
                             @empty
@@ -105,6 +110,18 @@
                             <option value="cancel">ยกเลิก</option>
                         </select>
                     </div>
+                    <div class="col-md-8 mt-3">
+                        <label> รอบสอบ</label>
+                        <select name="labour_examination[]" class="form-select selectMulti text-dark"   multiple="multiple" style="width: 100%" >
+                            <option value="">Select a Examination round</option>
+
+                             @forelse ($examinationRound as $item)
+                             <option value="{{$item->examination_round_name}}">{{date('d-m-Y',strtotime($item->examination_round_name))}} ({{$item->examination_round_note}})</option>
+                             @empty
+                                 
+                             @endforelse
+                        </select>
+                    </div>
                 </div>
 
                 <button type="submit" class="btn btn-outline-success mt-3 float-end"> <i class="fa fa-file-excel"></i>
@@ -113,5 +130,12 @@
             </form>
         </div>
     </div>
+ 
+    <script>
+       
+        $(document).ready(function() {
+    $('.selectMulti').select2();
+});
+    </script>
 
 @endsection
