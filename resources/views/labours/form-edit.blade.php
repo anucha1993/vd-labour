@@ -225,7 +225,7 @@
                                 @forelse ($staffs as $item)
                                     <option @if ($item->staff_id === $labourModel->labour_staff) selected @endif
                                         value="{{ $item->staff_id }}">
-                                        {{ $item->staff_name }}({{ $item->staff_nickname }})</option>
+                                        {{ $item->staff_name }}({{ $item->staff_nickname }}) {{$item->staff_phone }}</option>
                                 @empty
                                 @endforelse
                             </select>

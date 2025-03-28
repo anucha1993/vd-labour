@@ -186,7 +186,7 @@
                         <select name="labour_staff" class="form-select" required>
                             <option value="">Select a Staff</option>
                             @forelse ($staffs as $item)
-                            <option value="{{$item->staff_id}}">{{$item->staff_name}}({{$item->staff_nickname}})</option>
+                            <option value="{{$item->staff_id}}">{{$item->staff_name}}({{$item->staff_nickname}}) {{$item->staff_phone }}</option>
                             @empty
                                 
                             @endforelse
