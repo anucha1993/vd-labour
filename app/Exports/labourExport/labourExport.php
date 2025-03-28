@@ -27,6 +27,7 @@ class labourExport implements FromCollection, WithHeadings, WithMapping, WithCol
     private $labour_status;
     private $labour_customer;
     private $labour_examination;
+    private $labour_cid_deposit_status;
 
     public function __construct(
         $labour_disease_date_start,
@@ -38,7 +39,8 @@ class labourExport implements FromCollection, WithHeadings, WithMapping, WithCol
         $labour_staff,
         $labour_status,
         $labour_customer,
-        $labour_examination
+        $labour_examination,
+        $labour_cid_deposit_status
     ) {
         $this->labour_disease_date_start = $labour_disease_date_start;
         $this->labour_disease_date_end = $labour_disease_date_end;
@@ -50,6 +52,7 @@ class labourExport implements FromCollection, WithHeadings, WithMapping, WithCol
         $this->labour_status = $labour_status;
         $this->labour_customer = $labour_customer;
         $this->labour_examination = $labour_examination;
+        $this->labour_examination = $labour_cid_deposit_status;
     }
 
 
@@ -57,62 +60,127 @@ class labourExport implements FromCollection, WithHeadings, WithMapping, WithCol
     {
         //dd($this->labour_staff);
         // เริ่มการ Query ข้อมูลด้วยการ Join ตารางที่ต้องการ
-        $query = labourModel::leftJoin('position', 'position.position_id', '=', 'labours.labour_position')
-            ->leftJoin('staff', 'staff.staff_id', '=', 'labours.labour_staff')
-            ->leftJoin('customers', 'customers.customer_id', '=', 'labours.labour_customer');
+//         $query = labourModel::leftJoin('position', 'position.position_id', '=', 'labours.labour_position')
+//             ->leftJoin('staff', 'staff.staff_id', '=', 'labours.labour_staff')
+//             ->leftJoin('customers', 'customers.customer_id', '=', 'labours.labour_customer');
         
-        // ค้นหาผลโรคหมดอายุ
-        if (!empty($this->labour_disease_date_start) && !empty($this->labour_disease_date_end)) {
-            $query->whereBetween('labours.labour_disease_expriry', [$this->labour_disease_date_start, $this->labour_disease_date_end]);
-        }
+//         // ค้นหาผลโรคหมดอายุ
+//         if (!empty($this->labour_disease_date_start) && !empty($this->labour_disease_date_end)) {
+//             $query->whereBetween('labours.labour_disease_expriry', [$this->labour_disease_date_start, $this->labour_disease_date_end]);
+//         }
         
-        // ค้นหาผล CID หมดอายุ
-        if (!empty($this->labour_cid_start) && !empty($this->labour_cid_end)) {
-            $query->whereBetween('labours.labour_cid_expriry', [$this->labour_cid_start, $this->labour_cid_end]);
-        }
+//         // ค้นหาผล CID หมดอายุ
+//         if (!empty($this->labour_cid_start) && !empty($this->labour_cid_end)) {
+//             $query->whereBetween('labours.labour_cid_expriry', [$this->labour_cid_start, $this->labour_cid_end]);
+//         }
         
-        // ค้นหาประเทศ
-        if ($this->labour_country && $this->labour_country != 'all') {
-            $query->where('labours.labour_country', $this->labour_country);
-        }
+//         // ค้นหาประเทศ
+//         if ($this->labour_country && $this->labour_country != 'all') {
+//             $query->where('labours.labour_country', $this->labour_country);
+//         }
         
-        // ค้นหาประเภทงาน
-        if ($this->labour_job_group && $this->labour_job_group != 'all') {
-            $query->where('labours.labour_job_group', $this->labour_job_group);
-        }
+//         // ค้นหาประเภทงาน
+//         if ($this->labour_job_group && $this->labour_job_group != 'all') {
+//             $query->where('labours.labour_job_group', $this->labour_job_group);
+//         }
         
-        // ค้นหาชื่อสรรหา
-        if ($this->labour_staff && $this->labour_staff != 'all') {
-            $query->where('labours.labour_staff', $this->labour_staff);
-        }
+//         // ค้นหาชื่อสรรหา
+//         if ($this->labour_staff && $this->labour_staff != 'all') {
+//             $query->where('labours.labour_staff', $this->labour_staff);
+//         }
         
-        // ค้นหาสถานะ
-        if ($this->labour_status && $this->labour_status != 'all') {
-            $query->where('labours.labour_status', $this->labour_status);
-        }
+//         // ค้นหาสถานะ
+//         if ($this->labour_status && $this->labour_status != 'all') {
+//             $query->where('labours.labour_status', $this->labour_status);
+//         }
         
-        // ค้นหาโรงงาน
-if ($this->labour_customer === 'null') {
-    $query->whereNull('labours.labour_customer');
-} elseif ($this->labour_customer && $this->labour_customer != 'all') {
-    $query->where('labours.labour_customer', $this->labour_customer);
-}
+//         // ค้นหาโรงงาน
+// if ($this->labour_customer === 'null') {
+//     $query->whereNull('labours.labour_customer');
+// } elseif ($this->labour_customer && $this->labour_customer != 'all') {
+//     $query->where('labours.labour_customer', $this->labour_customer);
+// }
 
-        //labour_examination
+//         //labour_examination
 
-        if ($this->labour_examination && $this->labour_examination != 'all') {
-            $query->whereIn('labours.labour_examination', $this->labour_examination);
-        }
+//         if (is_array($this->labour_examination) && !empty($this->labour_examination)) {
+//             $query->whereIn('labours.labour_examination', $this->labour_examination);
+//         }
+//          //labour_examination
+
+//          if ($this->labour_cid_deposit_status && $this->labour_cid_deposit_status != 'all') {
+//             $query->where('labours.labour_cid_deposit_status', $this->labour_cid_deposit_status);
+//         }
        
         
-        // เรียงลำดับข้อมูล
-        $query->orderBy('labours.labour_id');
+//         // เรียงลำดับข้อมูล
+//         $query->orderBy('labours.labour_id');
     
         // ดึงข้อมูลทั้งหมด
-        $this->labour = $query->get();
+      //  $this->labour = $query->get();
+
+      $query = labourModel::leftJoin('position', 'position.position_id', '=', 'labours.labour_position')
+      ->leftJoin('staff', 'staff.staff_id', '=', 'labours.labour_staff')
+      ->leftJoin('customers', 'customers.customer_id', '=', 'labours.labour_customer');
+
+  // ค้นหาผลโรคหมดอายุ
+  $query->when(!empty($this->labour_disease_date_start) && !empty($this->labour_disease_date_end), function ($q) {
+      $q->whereBetween('labours.labour_disease_expriry', [$this->labour_disease_date_start, $this->labour_disease_date_end]);
+  });
+
+  // ค้นหาผล CID หมดอายุ
+  $query->when(!empty($this->labour_cid_start) && !empty($this->labour_cid_end), function ($q) {
+      $q->whereBetween('labours.labour_cid_expriry', [$this->labour_cid_start, $this->labour_cid_end]);
+  });
+
+  // ค้นหาประเทศ
+  $query->when($this->labour_country && $this->labour_country != 'all', function ($q) {
+      $q->where('labours.labour_country', $this->labour_country);
+  });
+
+  // ค้นหาประเภทงาน
+  $query->when($this->labour_job_group && $this->labour_job_group != 'all', function ($q) {
+      $q->where('labours.labour_job_group', $this->labour_job_group);
+  });
+
+  // ค้นหาชื่อสรรหา
+  $query->when($this->labour_staff && $this->labour_staff != 'all', function ($q) {
+      $q->where('labours.labour_staff', $this->labour_staff);
+  });
+
+  // ค้นหาสถานะ
+  $query->when($this->labour_status && $this->labour_status != 'all', function ($q) {
+      $q->where('labours.labour_status', $this->labour_status);
+  });
+
+  // ค้นหาโรงงาน
+  $query->when(is_null($this->labour_customer), function ($q) {
+      $q->whereNull('labours.labour_customer');
+  }, function ($q) {
+      $q->when($this->labour_customer && $this->labour_customer != 'all', function ($q) {
+          $q->where('labours.labour_customer', $this->labour_customer);
+      });
+  });
+
+  // ค้นหาผลการตรวจร่างกาย
+  $query->when(is_array($this->labour_examination) && !empty($this->labour_examination), function ($q) {
+      $q->whereIn('labours.labour_examination', $this->labour_examination);
+  });
+
+  // ค้นหาสถานะการวางเงินมัดจำ CID
+  $query->when($this->labour_cid_deposit_status && $this->labour_cid_deposit_status != 'all', function ($q) {
+      $q->where('labours.labour_cid_deposit_status', $this->labour_cid_deposit_status);
+  });
+
+  // เรียงลำดับข้อมูล
+  $query->orderBy('labours.labour_id');
+
+  // ดึงข้อมูลทั้งหมด
+  $this->labour = $query->get();
+
+  return $this->labour;
+}
     
-        return $this->labour;
-    }
 
     
     public function headings(): array

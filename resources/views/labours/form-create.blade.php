@@ -211,6 +211,61 @@
 
                         </select>
                     </div>
+
+                    <br>
+                    <hr>
+
+
+                    <h4>ข้อมูลบัญชี</h4>
+
+                <div class="row">
+                    <div class="col-md-3 mt-3">
+                        <label>วันที่ วางเงินประกัน </label>
+                        <input type="date" name="labour_cid_deposit_date" class="form-control" >
+                    </div>
+                    <div class="col-md-3 mt-3">
+                        <label>จำนวนเงิน วางเงินประกัน</label>
+                        <input type="number" name="labour_cid_deposit_total" class="form-control"  step="0.01" placeholder="0.00">
+                    </div>
+                    <div class="col-md-3 mt-3">
+                        <label>Date CID-P</label>
+                        <input type="date" name="labour_cidp_date" class="form-control">
+                    </div>
+                    <div class="col-md-3 mt-3">
+                        <label>CID-P Total</label>
+                        <input type="number" name="labour_cidp_total" class="form-control" step="0.01" placeholder="0.00">
+                    </div>
+                    <div class="col-md-3 mt-3">
+                        <label>วันที่รับ Date CID-P</label>
+                        <input type="date" name="labour_cidp_in_date" class="form-control" >
+                    </div>
+                    <div class="col-md-3 mt-3">
+                        <label>จำนวนเงิน รับ CID-P Total</label>
+                        <input type="number" name="labour_cidp_in_total" class="form-control"  step="0.01" placeholder="0.00">
+                    </div>
+                    <div class="col-md-3 mt-3">
+                        <label>สถานะการคืนเงินประกัน</label>
+                        <select name="labour_cid_deposit_status" id="" class="form-select">
+                            
+                            <option value="None">None</option>
+                            <option value="ยกเลิก-คืนเงินประกัน">ยกเลิก-คืนเงินประกัน</option>
+                            <option value="ยกเลิก-ไม่คืนเงินประกัน">ยกเลิก-ไม่คืนเงินประกัน</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-3 mt-3">
+                        <label>วันที่คืนเงินวางประกัน</label>
+                        <input type="date" name="labour_refund_deposit_date" class="form-control" >
+                    </div>
+                    <div class="col-md-3 mt-3">
+                        <label>จำนวนเงินคืนวางเงินประกัน</label>
+                        <input type="number" name="labour_refund_deposit_total" class="form-control" step="0.01" placeholder="0.00">
+                    </div>
+                </div>
+
+
+
+
                     <div class="col-md-6">
                         <label for="">บันทึกเพิ่มเติม</label>
                         <textarea name="labour_note" class="form-control" cols="30" rows="3" placeholder="บันทึกเพิ่มเติม"></textarea>

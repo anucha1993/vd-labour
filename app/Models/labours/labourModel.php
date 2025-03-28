@@ -2,6 +2,8 @@
 
 namespace App\Models\labours;
 
+use App\Models\customers\customerModel;
+use App\Models\files\labourFileModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -41,6 +43,26 @@ class labourModel extends Model
        'created_by',
        'updated_by',
        'labour_disease_results_date',
-       'labour_birthday'
+       'labour_birthday',
+       'labour_cid_deposit_date',
+       'labour_cid_deposit_total',
+       'labour_cidp_date',
+       'labour_cidp_total',
+       'labour_cidp_in_date',
+       'labour_cidp_in_total',
+       'labour_cid_deposit_status',
+       'labour_refund_deposit_date',
+       'labour_refund_deposit_total',
     ];
+
+
+    public function customer()
+    {
+        return $this->belongsTo(customerModel::class, 'labour_customer', 'customer_id');
+    }
+    public function labourFile()
+    {
+        return $this->hasMany(labourFileModel::class, 'labour_id', 'labour_id');
+    }
+
 }
