@@ -237,7 +237,11 @@
                                 
                                 @forelse ($staffSub as $item)
                                     <option @if ($item->staff_sub_id == $labourModel->labour_staff_sub) selected @endif
+<<<<<<< HEAD
                                         value="{{ $item->staff_sub_id }}">{{ $item->staff_sub_name }} {{ $item->staff_sub_phone }}</option>
+=======
+                                        value="{{ $item->staff_sub_id }}">{{ $item->staff_sub_name }} {{ $item->staff_sub_phone ? '('.$item->staff_sub_phone.')' : '' }}</option>
+>>>>>>> 3ab9b829cde5274451f722f99ec92333b18ea0b9
                                 @empty
                                     <option disabled>ไม่มีข้อมูลพนักงาน</option>
                                 @endforelse
@@ -255,6 +259,58 @@
                                 <option @if ($labourModel->labour_status === 'cancel') selected @endif value="cancel">ยกเลิก</option>
                             </select>
                         </div>
+                        <br>
+                        <hr>
+
+
+                        <h4>ข้อมูลบัญชี</h4>
+
+                    <div class="row">
+                        <div class="col-md-3 mt-3">
+                            <label>วันที่ วางเงินประกัน </label>
+                            <input type="date" name="labour_cid_deposit_date" class="form-control" value="{{$labourModel->labour_cid_deposit_date}}">
+                        </div>
+                        <div class="col-md-3 mt-3">
+                            <label>จำนวนเงิน วางเงินประกัน</label>
+                            <input type="number" name="labour_cid_deposit_total" class="form-control" value="{{$labourModel->labour_cid_deposit_total}}" step="0.01" placeholder="0.00">
+                        </div>
+                        <div class="col-md-3 mt-3">
+                            <label>Date CID-P</label>
+                            <input type="date" name="labour_cidp_date" class="form-control" value="{{$labourModel->labour_cidp_date}}">
+                        </div>
+                        <div class="col-md-3 mt-3">
+                            <label>CID-P Total</label>
+                            <input type="number" name="labour_cidp_total" class="form-control" value="{{$labourModel->labour_cidp_total}}"  step="0.01" placeholder="0.00">
+                        </div>
+                        <div class="col-md-3 mt-3">
+                            <label>วันที่รับ Date CID-P</label>
+                            <input type="date" name="labour_cidp_in_date" class="form-control" value="{{$labourModel->labour_cidp_in_date}}">
+                        </div>
+                        <div class="col-md-3 mt-3">
+                            <label>จำนวนเงิน รับ CID-P Total</label>
+                            <input type="number" name="labour_cidp_in_total" class="form-control" value="{{$labourModel->labour_cidp_in_total}}" step="0.01" placeholder="0.00">
+                        </div>
+                        <div class="col-md-3 mt-3">
+                            <label>สถานะการคืนเงินประกัน</label>
+                            <select name="labour_cid_deposit_status" id="" class="form-select">
+                                <option @if($labourModel->labour_cid_deposit_status === 'None') selected @endif value="None">None</option>
+                                <option @if($labourModel->labour_cid_deposit_status === 'ยกเลิก-คืนเงินประกัน') selected @endif value="ยกเลิก-คืนเงินประกัน">ยกเลิก-คืนเงินประกัน</option>
+                                <option @if($labourModel->labour_cid_deposit_status === 'ยกเลิก-ไม่คืนเงินประกัน') selected @endif value="ยกเลิก-ไม่คืนเงินประกัน">ยกเลิก-ไม่คืนเงินประกัน</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-3 mt-3">
+                            <label>วันที่คืนเงินวางประกัน</label>
+                            <input type="date" name="labour_refund_deposit_date" class="form-control" value="{{$labourModel->labour_refund_deposit_date}}">
+                        </div>
+                        <div class="col-md-3 mt-3">
+                            <label>จำนวนเงินคืนวางเงินประกัน</label>
+                            <input type="number" name="labour_refund_deposit_total" class="form-control" value="{{$labourModel->labour_refund_deposit_total}}" step="0.01" placeholder="0.00">
+                        </div>
+
+
+                    </div>
+                    
                         <div class="col-md-6">
                             <label for="">บันทึกเพิ่มเติม</label>
                             <textarea name="labour_note" class="form-control" cols="30" rows="3" placeholder="บันทึกเพิ่มเติม">{{ $labourModel->labour_note }}</textarea>
