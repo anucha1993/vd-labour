@@ -11,7 +11,7 @@
     <meta name="description"
         content="Matrix Admin Lite Free Version is powerful and clean admin dashboard template, inpired from Bootstrap Framework" />
     <meta name="robots" content="noindex,nofollow" />
-    <title>Matrix Admin Lite Free Versions Template by WrapPixel</title>
+    <title>Labours Vdragon</title>
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="{{URL::asset('../assets/images/favicon.png')}}" />
     <!-- Custom CSS -->
@@ -75,13 +75,15 @@
                             <!--You can put here icon as well // <i class="wi wi-sunset"></i> //-->
                             <!-- Dark Logo icon -->
                             <img src="{{URL::asset('../assets/images/logo-icon.png')}}" alt="homepage" class="light-logo"
-                                width="25" />
+                                width="50" />
                         </b>
                         <!--End Logo icon -->
                         <!-- Logo text -->
-                        <span class="logo-text ms-2">
+                        <span class="">
                             <!-- dark Logo text -->
-                            <img src="{{URL::asset('../assets/images/logo-text.png')}}" alt="homepage" class="light-logo" />
+                            <h6 alt="homepage" class="light-logo" >Labours Thailand</h6>
+
+                            {{-- <img src="{{URL::asset('../assets/images/logo-text.png')}}" alt="homepage" class="light-logo" /> --}}
                         </span>
                         <!-- Logo icon -->
                         <!-- <b class="logo-icon"> -->

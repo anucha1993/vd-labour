@@ -1,5 +1,7 @@
 @extends('layouts.main')
 @section('content')
+
+
     @if ($message = Session::get('success'))
         <div class="alert alert-success">
             <strong>{{ $message }}</strong>
@@ -153,13 +155,14 @@
         <div class="card-header">
             Table Labours
 
-            <form action="" method="post">
+            <form action="{{route('labour.export')}}" method="post">
                 @csrf
                 @method('POST')
                 <input type="hidden" name="labour_ids" value="{{$labours->pluck('labour_id')}}">
 
                 <button class="btn btn-success text-white"> <i class="fa fa-file-excel text-white"></i> Export To Excel</button>
             </form>
+            
         </div>
         <div class="card-body">
             <table class="table table">

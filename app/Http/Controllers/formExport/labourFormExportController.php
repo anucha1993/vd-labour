@@ -95,7 +95,7 @@ class labourFormExportController extends Controller
         if($request->all()) { // ตรวจสอบว่า request มีข้อมูลใดๆ
             $labours = $query->latest()->get();
         } else {
-            $labours = $query->latest()->limit(1)->get();
+            $labours = $query->latest()->limit(10)->get();
         }
        
 
@@ -104,36 +104,17 @@ class labourFormExportController extends Controller
 
     public function export(Request $request)
     {
-        //dd($request);
-        $labour_disease_date_start = $request->labour_disease_date_start;
-        $labour_disease_date_end = $request->labour_disease_date_end;
-        $labour_cid_start = $request->labour_cid_start;
-        $labour_cid_end = $request->labour_cid_end;
-        $labour_country = $request->labour_country;
-        $labour_job_group = $request->labour_job_group;
-        $labour_staff = $request->labour_staff;
-        $labour_status = $request->labour_status;
-        $labour_customer = $request->labour_customer;
-        $labour_examination = $request->labour_examination;
-        $labour_examination = $request->labour_examination;
-        $labour_cid_deposit_status = $request->labour_cid_deposit_status;
+        $labourString= $request->labour_ids;
 
-        $labours = labourModel::get();
+        
+        $labourIdsArray = explode(',', trim($labourString, ']'));
+          //dd($labourIdsArray);
+        // ลบ '[' ออกจาก index แรก
+        if (isset($labourIdsArray[0])) {
+            $labourIdsArray[0] = str_replace('[', '', $labourIdsArray[0]);
+        }
+    
 
-        //dd($labour_cid_deposit_status);
-
-        // return Excel::download(new labourExport(
-        //     $labour_disease_date_start,
-        //     $labour_disease_date_end,
-        //     $labour_cid_start,
-        //     $labour_cid_end,
-        //     $labour_country,
-        //     $labour_job_group,
-        //     $labour_staff,
-        //     $labour_status,
-        //     $labour_customer,
-        //     $labour_examination,
-        //     $labour_cid_deposit_status
-        // ),'labour_'.date('d-m-Y').'.xlsx');
+        return Excel::download(new labourExport($labourIdsArray),'labour_'.date('d-m-Y').'.xlsx');
     }
 }

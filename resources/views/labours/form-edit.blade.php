@@ -237,7 +237,7 @@
                                 
                                 @forelse ($staffSub as $item)
                                     <option @if ($item->staff_sub_id == $labourModel->labour_staff_sub) selected @endif
-                                        value="{{ $item->staff_sub_id }}">{{ $item->staff_sub_name }}</option>
+                                        value="{{ $item->staff_sub_id }}">{{ $item->staff_sub_name }} {{ $item->staff_sub_phone ? '('.$item->staff_sub_phone.')' : '' }}</option>
                                 @empty
                                     <option disabled>ไม่มีข้อมูลพนักงาน</option>
                                 @endforelse
