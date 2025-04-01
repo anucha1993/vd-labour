@@ -198,7 +198,7 @@
                         <select name="labour_staff_sub" class="form-select" required>
                             <option value="no-sub">Null</option>
                             @forelse ($staffSub as $item)
-                            <option value="{{$item->staff_sub_id}}">{{$item->staff_sub_name}}</option>
+                            <option value="{{$item->staff_sub_id}}">{{$item->staff_sub_name}} {{ $item->staff_sub_phone }}</option>
                             @empty
                                 
                             @endforelse
