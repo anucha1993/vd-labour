@@ -16,14 +16,13 @@ class labourExport implements FromCollection, WithHeadings, WithMapping, WithCol
      */
     private $num = 0;
     private $labour;
-
     private $labourIdsArray;
 
     public function __construct($labourIdsArray)
     {
         $this->labourIdsArray = $labourIdsArray;
     }
-
+     
     public function collection()
     {
         //dd($this->labour_staff);

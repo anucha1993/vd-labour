@@ -256,12 +256,13 @@
                             </select>
                         </div>
                         <br>
+                        <br>
+                       
+                    <div class="row mt-3">
                         <hr>
-
-
                         <h4>ข้อมูลบัญชี</h4>
+                       
 
-                    <div class="row">
                         <div class="col-md-3 mt-3">
                             <label>วันที่ วางเงินประกัน </label>
                             <input type="date" name="labour_cid_deposit_date" class="form-control" value="{{$labourModel->labour_cid_deposit_date}}">
@@ -276,15 +277,34 @@
                         </div>
                         <div class="col-md-3 mt-3">
                             <label>CID-P Total</label>
-                            <input type="number" name="labour_cidp_total" class="form-control" value="{{$labourModel->labour_cidp_total}}"  step="0.01" placeholder="0.00">
+                            <select name="labour_cidp_total" class="form-select">
+                                <option value="">--Select--</option>
+                                <option value="V1">V1</option>
+                                <option value="V2">V2</option>
+                               </select>
                         </div>
+                        
+                        <div class="col-md-3 mt-3">
+                            <label>ประเภทการชำระเงิน</label>
+                            <select name="payment_type" class="form-select">
+                                <option value="">--Select--</option>
+                                <option value="เงินสด">เงินสด</option>
+                                <option value="SCB">SCB</option>
+                                <option value="BBL">BBL</option>
+                               </select>
+                        </div>
+
                         <div class="col-md-3 mt-3">
                             <label>วันที่รับ Date CID-P</label>
                             <input type="date" name="labour_cidp_in_date" class="form-control" value="{{$labourModel->labour_cidp_in_date}}">
                         </div>
                         <div class="col-md-3 mt-3">
                             <label>จำนวนเงิน รับ CID-P Total</label>
-                            <input type="number" name="labour_cidp_in_total" class="form-control" value="{{$labourModel->labour_cidp_in_total}}" step="0.01" placeholder="0.00">
+                           <select name="labour_cidp_in_total" class="form-select">
+                            <option value="">--Select--</option>
+                            <option value="V1">V1</option>
+                            <option value="V2">V2</option>
+                           </select>
                         </div>
                         <div class="col-md-3 mt-3">
                             <label>สถานะการคืนเงินประกัน</label>

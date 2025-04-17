@@ -12,6 +12,7 @@ use App\Http\Controllers\jobgroup\jobGoupController;
 use App\Http\Controllers\customers\customerController;
 use App\Http\Controllers\labours\labourFileController;
 use App\Http\Controllers\categorys\ExaminationRounController;
+use App\Http\Controllers\dashboards\dashboardController;
 use App\Http\Controllers\formExport\labourFormExportController;
 
 /*
@@ -89,4 +90,7 @@ Route::middleware(['auth'])->group(function () {
     // Routes สำหรับจัดการ Users และการเพิ่ม Users เข้า Roles
     Route::get('/users', [UserRoleController::class, 'index'])->name('users.index');
     Route::post('/users/assign-role', [UserRoleController::class, 'assignRole'])->name('users.assignRole');
+
+
+    Route::resource('dashboards', dashboardController::class);
 

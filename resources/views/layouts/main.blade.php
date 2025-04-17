@@ -356,6 +356,12 @@
                                     class="hide-menu">Widgets</span></a>
                         </li> --}}
                         <li class="sidebar-item">
+                            <a class="sidebar-link waves-effect waves-dark sidebar-link" href="{{route('dashboards.index')}}"
+                                aria-expanded="false"><i class="mdi mdi-view-dashboard"></i><span
+                                    class="hide-menu">Dashboard</span></a>
+                        </li>
+
+                        <li class="sidebar-item">
                             <a class="sidebar-link waves-effect waves-dark sidebar-link" href="{{route('labour.index')}}"
                                 aria-expanded="false"><i class="mdi mdi-border-inside"></i><span
                                     class="hide-menu">ข้อมูลคนงาน</span></a>
