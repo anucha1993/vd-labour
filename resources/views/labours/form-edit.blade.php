@@ -217,9 +217,28 @@
                     {{-- labour Status  --}}
                     <h4>ข้อมูลสถานะ</h4>
                     <div class="row">
+                       
+                        <div class="col-md-3">
+                            <label>สายหาคน</label>
+                            <select name="labour_staff_sub" class="form-select" required>
+                                <option @if ($labourModel->labour_staff_sub === 'no-sub') selected @endif value="no-sub">ไม่ระบุ</option>
+                                
+                                @forelse ($staffSub as $item)
+                                    <option @if ($item->staff_sub_id == $labourModel->labour_staff_sub) selected @endif 
+                                        value="{{ $item->staff_sub_id }}">
+                                        {{ $item->staff_sub_name }} {{ $item->staff_sub_phone ? '('.$item->staff_sub_phone.')' : '' }}
+                                    </option>
+
+                                @empty
+                                    <option disabled>ไม่มีข้อมูลพนักงาน</option>
+                                @endforelse
+                            </select>
+                            
+                        </div>
+
                         <div class="col-md-3">
                             <label>Staff</label>
-                            <select name="labour_staff" class="form-select" required
+                            <select name="labour_staff" class="form-select" 
                                >
                                 <option value="">Select a Staff</option>
                                 @forelse ($staffs as $item)
@@ -230,28 +249,10 @@
                                 @endforelse
                             </select>
                         </div>
-                        <div class="col-md-3">
-                            <label>สายหาคน</label>
-                            <select name="labour_staff_sub" class="form-select" required>
-                                <option @if ($labourModel->labour_staff_sub === 'no-sub') selected @endif value="no-sub">ไม่ระบุ</option>
-                                
-                                @forelse ($staffSub as $item)
-                                    <option @if ($item->staff_sub_id == $labourModel->labour_staff_sub) selected @endif
-<<<<<<< HEAD
-                                        value="{{ $item->staff_sub_id }}">{{ $item->staff_sub_name }} {{ $item->staff_sub_phone }}</option>
-=======
-                                        value="{{ $item->staff_sub_id }}">{{ $item->staff_sub_name }} {{ $item->staff_sub_phone ? '('.$item->staff_sub_phone.')' : '' }}</option>
->>>>>>> 3ab9b829cde5274451f722f99ec92333b18ea0b9
-                                @empty
-                                    <option disabled>ไม่มีข้อมูลพนักงาน</option>
-                                @endforelse
-                            </select>
-                            
-                        </div>
                         
                         <div class="col-md-3">
                             <label>Status</label>
-                            <select name="labour_status" class="form-select" required>
+                            <select name="labour_status" class="form-select" >
                                 <option @if ($labourModel->labour_status === 'wait') selected @endif value="wait">กำลังดำเนินการ
                                 </option>
                                 <option @if ($labourModel->labour_status === 'success') selected @endif value="success">บินแล้ว
@@ -283,8 +284,8 @@
                             <label>CID-P Total</label>
                             <select name="labour_cidp_total" class="form-select">
                                 <option value="">--Select--</option>
-                                <option value="V1">V1</option>
-                                <option value="V2">V2</option>
+                                <option  @if($labourModel->labour_cidp_total === 'V1') selected @endif value="V1">V1</option>
+                                <option  @if($labourModel->labour_cidp_total === 'V2') selected @endif value="V2">V2</option>
                                </select>
                         </div>
                         
@@ -292,9 +293,9 @@
                             <label>ประเภทการชำระเงิน</label>
                             <select name="payment_type" class="form-select">
                                 <option value="">--Select--</option>
-                                <option value="เงินสด">เงินสด</option>
-                                <option value="SCB">SCB</option>
-                                <option value="BBL">BBL</option>
+                                <option @if($labourModel->payment_type === 'เงินสด') selected @endif  value="เงินสด">เงินสด</option>
+                                <option @if($labourModel->payment_type === 'SCB') selected @endif  value="SCB">SCB</option>
+                                <option @if($labourModel->payment_type === 'BBL') selected @endif  value="BBL">BBL</option>
                                </select>
                         </div>
 
@@ -305,9 +306,9 @@
                         <div class="col-md-3 mt-3">
                             <label>จำนวนเงิน รับ CID-P Total</label>
                            <select name="labour_cidp_in_total" class="form-select">
-                            <option value="">--Select--</option>
-                            <option value="V1">V1</option>
-                            <option value="V2">V2</option>
+                            <option   value="">--Select--</option>
+                            <option  @if($labourModel->labour_cidp_in_total === 'V1') selected @endif  value="V1">V1</option>
+                            <option  @if($labourModel->labour_cidp_in_total === 'V2') selected @endif  value="V2">V2</option>
                            </select>
                         </div>
                         <div class="col-md-3 mt-3">

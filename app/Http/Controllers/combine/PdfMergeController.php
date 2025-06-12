@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Combine;
 
+use ZipArchive;
 use Illuminate\Http\Request;
 use App\Models\labours\labourModel;
 use App\Http\Controllers\Controller;
@@ -115,6 +116,42 @@ foreach ($orderedPaths as $path) {
     } else {
         return response()->json(['message' => 'Failed to merge PDFs.', 'error' => implode("\n", $output)], 500);
     }
+}
+
+
+
+
+public function downloadZip(Request $request)
+{
+    $paths = $request->input('checkNum', []);
+    $zip = new ZipArchive();
+
+    // สร้างไฟล์ zip ชั่วคราว
+    $zipFileName = 'labour_files_' . now()->format('Ymd_His') . '.zip';
+    $zipFilePath = storage_path('app/public/tmp/' . $zipFileName);
+
+    // ตรวจสอบว่ามีไฟล์ให้ zip
+    if (empty($paths)) {
+        return response()->json(['message' => 'No files selected.'], 400);
+    }
+
+    if (!file_exists(dirname($zipFilePath))) {
+        mkdir(dirname($zipFilePath), 0777, true);
+    }
+
+    if ($zip->open($zipFilePath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === TRUE) {
+        foreach ($paths as $path) {
+            $filePath = str_replace('\\', '/', trim($path));
+            if (file_exists($filePath)) {
+                $zip->addFile($filePath, basename($filePath));
+            }
+        }
+        $zip->close();
+    } else {
+        return response()->json(['message' => 'Cannot create ZIP file.'], 500);
+    }
+
+    return response()->download($zipFilePath)->deleteFileAfterSend(true);
 }
 
     

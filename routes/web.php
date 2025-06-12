@@ -1,7 +1,9 @@
 <?php
 
+use App\Exports\LabourAlertsExport;
 use App\Models\labours\labourModel;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Models\files\labourFileModel;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserRoleController;
@@ -11,8 +13,8 @@ use App\Http\Controllers\combine\PdfMergeController;
 use App\Http\Controllers\jobgroup\jobGoupController;
 use App\Http\Controllers\customers\customerController;
 use App\Http\Controllers\labours\labourFileController;
-use App\Http\Controllers\categorys\ExaminationRounController;
 use App\Http\Controllers\dashboards\dashboardController;
+use App\Http\Controllers\categorys\ExaminationRounController;
 use App\Http\Controllers\formExport\labourFormExportController;
 
 /*
@@ -94,3 +96,12 @@ Route::middleware(['auth'])->group(function () {
 
     Route::resource('dashboards', dashboardController::class);
 
+    Route::get('/export/labour-alerts', function () {
+        return Excel::download(new LabourAlertsExport, 'แจ้งเตือนเอกสารแรงงาน.xlsx');
+    })->name('labours.export.alerts');
+
+    Route::get('/labours/alert/{type}', [App\Http\Controllers\LabourAlertController::class, 'show'])
+    ->name('labours.alert.list');
+
+    Route::post('/download-zip', [\App\Http\Controllers\Combine\PdfMergeController::class, 'downloadZip'])
+    ->name('download.zip');

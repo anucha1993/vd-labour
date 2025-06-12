@@ -2,9 +2,15 @@
 
 namespace App\Models\labours;
 
+use App\Models\country\countryModel;
 use Carbon\Carbon;
 use App\Models\files\labourFileModel;
 use App\Models\customers\customerModel;
+use App\Models\jobgroup\jobGroupModel;
+use App\Models\locationTest\locationTestModel;
+use App\Models\positions\positionModel;
+use App\Models\staff\staffModel;
+use App\Models\staff\staffSubModel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -62,63 +68,86 @@ class labourModel extends Model
     {
         return $this->belongsTo(customerModel::class, 'labour_customer', 'customer_id');
     }
+    public function country()
+    {
+        return $this->belongsTo(countryModel::class, 'labour_country', 'country_id');
+    }
+    public function jobGroup()
+    {
+        return $this->belongsTo(jobGroupModel::class, 'labour_job_group', 'job_group_id');
+    }
+    public function position()
+    {
+        return $this->belongsTo(positionModel::class, 'labour_position', 'position_id');
+    }
+    public function locationTest()
+    {
+        return $this->belongsTo(locationTestModel::class, 'labour_location_test', 'location_test_id');
+    }
+    public function staff()
+    {
+        return $this->belongsTo(staffModel::class, 'labour_staff', 'staff_id');
+    }
+    public function staffSub()
+    {
+        return $this->belongsTo(staffSubModel::class, 'labour_staff_sub', 'staff_sub_id');
+    }
+    
+
     public function labourFile()
     {
         return $this->hasMany(labourFileModel::class, 'labour_id', 'labour_id');
     }
 
 
-    //แจ้งเตือนผลโรค ก่อสร้าง ก่อนหมดอายุ 15 วัน
+    // แจ้งเตือนผลโรค ก่อสร้าง ภายใน 15 วัน (รวมหมดอายุ)
     public function scopeExpiringDiseaseConstruct($query)
     {
-        $today = Carbon::now();
-        $expiryDate = $today->addDays(15)->toDateString();
-        return $query->where('labour_job_group', 1)->where('labour_status', 'wait')
+        $expiryDate = Carbon::now()->copy()->addDays(15)->toDateString();
+        return $query->where('labour_job_group', 1)
+                     ->where('labour_status', 'wait')
                      ->whereNotNull('labour_disease_expriry')
-                     ->where('labour_disease_expriry', '<=', $expiryDate) // แก้ไขเป็น <= เพื่อแจ้งเตือนก่อนหมดอายุ
-                     ->where('labour_disease_expriry', '>=', $today->toDateString());
-    }
-      //แจ้งเตือนผลโรค โรงงาน ก่อนหมดอายุ 10 วัน
-    public function scopeExpiringDiseaseFactory($query)
-    {
-        $today = Carbon::now();
-        $expiryDate = $today->addDays(10)->toDateString();
-        return $query->where('labour_job_group', 2)->where('labour_status', 'wait')
-                     ->whereNotNull('labour_disease_expriry')
-                     ->where('labour_disease_expriry', '<=', $expiryDate) // แก้ไขเป็น <= เพื่อแจ้งเตือนก่อนหมดอายุ
-                     ->where('labour_disease_expriry', '>=', $today->toDateString());
-    }
-  //แจ้งเตือน CID ก่อสร้าง ก่อนหมดอายุ 15 วัน
-    public function scopeExpiringCIDConstruct($query)
-    {
-        $today = Carbon::now();
-        $expiryDate = $today->addDays(15)->toDateString();
-        return $query->where('labour_job_group', 1)->where('labour_status', 'wait')
-                     ->whereNotNull('labour_cid_expriry')
-                     ->where('labour_cid_expriry', '<=', $expiryDate) // แก้ไขเป็น <= เพื่อแจ้งเตือนก่อนหมดอายุ
-                     ->where('labour_cid_expriry', '>=', $today->toDateString());
-    }
-    //แจ้งเตือน CID ก่อสร้าง ก่อนหมดอายุ 15 วัน
-    public function scopeExpiringCIDFactory($query)
-    {
-        $today = Carbon::now();
-        $expiryDate = $today->addDays(15)->toDateString();
-        return $query->where('labour_job_group', 2)->where('labour_status', 'wait')
-                     ->whereNotNull('labour_cid_expriry')
-                     ->where('labour_cid_expriry', '<=', $expiryDate) // แก้ไขเป็น <= เพื่อแจ้งเตือนก่อนหมดอายุ
-                     ->where('labour_cid_expriry', '>=', $today->toDateString());
+                     ->where('labour_disease_expriry', '<=', $expiryDate);
     }
 
-     //แจ้งเตือน Passport ก่อนหมดอายุ 15 วัน
-     public function scopeExpiringPassport($query)
-     {
-         $today = Carbon::now();
-         $expiryDate = $today->addDays(15)->toDateString();
-         return $query->where('labour_status', 'wait')
-                      ->whereNotNull('labour_passport_expiry')
-                      ->where('labour_passport_expiry', '<=', $expiryDate) // แก้ไขเป็น <= เพื่อแจ้งเตือนก่อนหมดอายุ
-                      ->where('labour_passport_expiry', '>=', $today->toDateString());
-     }
+    // แจ้งเตือนผลโรค โรงงาน ภายใน 10 วัน (รวมหมดอายุ)
+    public function scopeExpiringDiseaseFactory($query)
+    {
+        $expiryDate = Carbon::now()->copy()->addDays(15)->toDateString();
+        return $query->where('labour_job_group', 2)
+                     ->where('labour_status', 'wait')
+                     ->whereNotNull('labour_disease_expriry')
+                     ->where('labour_disease_expriry', '<=', $expiryDate);
+    }
+
+    // แจ้งเตือน CID ก่อสร้าง ภายใน 15 วัน (รวมหมดอายุ)
+    public function scopeExpiringCIDConstruct($query)
+    {
+        $expiryDate = Carbon::now()->copy()->addDays(15)->toDateString();
+        return $query->where('labour_job_group', 1)
+                     ->where('labour_status', 'wait')
+                     ->whereNotNull('labour_cid_expriry')
+                     ->where('labour_cid_expriry', '<=', $expiryDate);
+    }
+
+    // แจ้งเตือน CID โรงงาน ภายใน 15 วัน (รวมหมดอายุ)
+    public function scopeExpiringCIDFactory($query)
+    {
+        $expiryDate = Carbon::now()->copy()->addDays(15)->toDateString();
+        return $query->where('labour_job_group', 2)
+                     ->where('labour_status', 'wait')
+                     ->whereNotNull('labour_cid_expriry')
+                     ->where('labour_cid_expriry', '<=', $expiryDate);
+    }
+
+    // แจ้งเตือนพาสปอร์ต ภายใน 15 วัน (รวมหมดอายุ)
+    public function scopeExpiringPassport($query)
+    {
+        $expiryDate = Carbon::now()->copy()->addDays(15)->toDateString();
+        return $query->where('labour_status', 'wait')
+                     ->whereNotNull('labour_passport_expiry')
+                     ->where('labour_passport_expiry', '<=', $expiryDate);
+    }
 
      public function scopeCountCancel($query)
     {
