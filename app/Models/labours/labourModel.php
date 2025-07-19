@@ -66,6 +66,8 @@ class labourModel extends Model
        'labour_cid_results_file',
        'labour_cid_stand_date',
        'labour_disease_status',
+       'labour_affidavit_start',
+       'labour_affidavit_expriry',
     ];
 
     
@@ -116,6 +118,14 @@ class labourModel extends Model
                      ->whereNotNull('labour_cid_stand_date')
                      ->where(DB::raw('COALESCE(labour_cid_deposit_total, 0)'), '<=', 30000)
                      ->where('labour_cid_stand_date', '<=', $expiryDate);
+    }
+
+    public function scopeExpiringAffidavit($query)
+    {
+        $expiryDate = Carbon::now()->copy()->addDays(180)->toDateString();
+        return $query->where('labour_status', 'wait')
+                     ->whereNotNull('labour_affidavit_expriry')
+                     ->where('labour_affidavit_expriry', '<=', $expiryDate);
     }
 
 

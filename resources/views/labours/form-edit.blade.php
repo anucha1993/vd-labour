@@ -145,6 +145,18 @@
                     <input type="date" name="labour_cid_stand_date" class="form-control"
                         @cannot('update labour') disabled @endcannot value="{{ $labourModel->labour_cid_stand_date }}">
                 </div>
+                  <div class="col-md-3 mt-3">
+                    <label>Affidavit issues Date :</label>
+                    <input type="date" name="labour_affidavit_start" class="form-control" id="labour_affidavit_start"
+                        @cannot('update labour') disabled @endcannot value="{{ $labourModel->labour_affidavit_start }}">
+                </div>
+
+                 <div class="col-md-3 mt-3">
+                    <label>Affidavit Date Expriry :</label>
+                    <input type="date" name="labour_affidavit_expriry" class="form-control" id="labour_affidavit_expriry"
+                        @cannot('update labour') disabled @endcannot value="{{ $labourModel->labour_affidavit_expriry }}">
+                </div>
+
 
 
             </div>
@@ -591,8 +603,12 @@
             $('#labour_cid_start').on('change', function() {
                 calculateCIDExpiry();
             });
+             $('#labour_affidavit_start').on('change', function() {
+                calculateAffidavitExpiry();
+            });
             calculateDiseaseExpiry();
             calculateCIDExpiry();
+            calculateAffidavitExpiry();
         });
 
 
@@ -618,6 +634,28 @@
             const formattedDate = `${yyyy}-${mm}-${dd}`;
 
             $('#labour_cid_expriry').val(formattedDate);
+        }
+
+         function calculateAffidavitExpiry() {
+            const startValue = $('#labour_affidavit_start').val();
+
+            if (!startValue) {
+                $('#labour_affidavit_expriry').val('');
+                return;
+            }
+
+            const startDate = new Date(startValue);
+            const cidDuration = 180; // 180 วัน (รวมเสาร์อาทิตย์)
+
+            const expiryDate = new Date(startDate);
+            expiryDate.setDate(expiryDate.getDate() + cidDuration); // เพิ่มไปอีก 180 วันรวมวันหยุด
+
+            const yyyy = expiryDate.getFullYear();
+            const mm = String(expiryDate.getMonth() + 1).padStart(2, '0');
+            const dd = String(expiryDate.getDate()).padStart(2, '0');
+            const formattedDate = `${yyyy}-${mm}-${dd}`;
+
+            $('#labour_affidavit_expriry').val(formattedDate);
         }
 
 

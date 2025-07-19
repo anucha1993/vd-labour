@@ -97,7 +97,23 @@
                 </div>
             </a>
         </div>
+
+         {{-- บล็อกที่สี่ --}}
+
+        <div class="col-12 col-sm-6 col-md-3">
+            <a href="{{ route('labours.alert.list', ['type' => 'affidavit']) }}" class="text-decoration-none">
+                <div class="bg-danger text-white text-center p-3 rounded shadow">
+                    <i class="mdi mdi-account fs-3 mb-2"></i>
+                    <h1 class="mb-1">{{ number_format($scopeExpiringAffidavit) }}</h1>
+                    <small>แจ้งเตือน Affidavit หมดอายุ</small><br>
+                    <small>ก่อนหมดอายุ 180 วัน</small>
+                </div>
+            </a>
+        </div>
+   
+
     </div>
+   
 
     {{-- ปุ่ม Export --}}
     <div class="row mt-4">

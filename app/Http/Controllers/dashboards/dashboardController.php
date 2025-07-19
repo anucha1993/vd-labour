@@ -22,12 +22,13 @@ class dashboardController extends Controller
         $scopeExpiringCIDFactory   = labourModel::query()->ExpiringCIDFactory()->count();
         $scopeExpiringPassport   = labourModel::query()->ExpiringPassport()->count();
         $scopeExpiringCidMoney   = labourModel::query()->ExpiringCidMoney()->count();
+        $scopeExpiringAffidavit = labourModel::query()->ExpiringAffidavit()->count();
 
         $countCancel = labourModel::query()->CountCancel()->count();
         $countAll = labourModel::query()->CountAll()->count();
         $countSuccess = labourModel::query()->CountSuccess()->count();
 
 
-        return view('dashboards.index', compact( 'countCancel', 'countAll','scopeExpiringCidMoney', 'countSuccess','scopeExpiringPassport','scopeExpiringDiseaseConstruct','scopeExpiringDiseaseFactory','scopeExpiringCIDConstruct','scopeExpiringCIDFactory'));
+        return view('dashboards.index', compact( 'countCancel', 'countAll','scopeExpiringCidMoney', 'countSuccess','scopeExpiringPassport','scopeExpiringDiseaseConstruct','scopeExpiringDiseaseFactory','scopeExpiringCIDConstruct','scopeExpiringCIDFactory','scopeExpiringAffidavit'));
     }
 }

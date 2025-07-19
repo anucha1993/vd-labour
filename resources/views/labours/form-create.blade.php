@@ -106,9 +106,8 @@
                             <input type="date" name="labour_cid_stand_date" class="form-control"  >
                         </div>
                     
-                </div>
+                
 
-                <div class="row">
                 <div class="col-md-3 mt-3">
                         <label>CID Start</label>
                         <input type="date" name="labour_cid_start" class="form-control" id="labour_cid_start"
@@ -119,7 +118,7 @@
                         <input type="date" name="labour_cid_expriry" class="form-control" id="labour_cid_expriry"
                             placeholder="CID Expiry" value="" >
                     </div>
-                </div>
+                
                 <div class="col-md-3 mt-3">
                     <label>CID Results</label>
                     <select name="labour_cid_results" class="form-select">
@@ -131,10 +130,28 @@
                         @endforelse
                     </select>
                 </div>
-                <div class="col-md-3 mt-3">
+
+          
+                  <div class="col-md-3 mt-3">
+                    <label>Affidavit issues Date :</label>
+                    <input type="date" name="labour_affidavit_start" class="form-control" id="labour_affidavit_start"
+                        >
+                </div>
+
+                 <div class="col-md-3 mt-3">
+                    <label>Affidavit Date Expriry :</label>
+                    <input type="date" name="labour_affidavit_expriry" class="form-control" id="labour_affidavit_expriry"
+                       >
+                </div>
+                
+
+
+                <div class="col-md-3 mt-3 mb-3">
                     <label>CID File</label>
                 <input type="file" name="" class="form-control" disabled>
                 </div>
+                <br>
+                <br>
 
                 <hr>
                 <h4>ข้อมูลกลุ่มงาน</h4>
@@ -351,8 +368,12 @@ $(document).ready(function() {
     $('#labour_cid_start').on('change', function() {
         calculateCIDExpiry();
     });
+      $('#labour_affidavit_start').on('change', function() {
+                calculateAffidavitExpiry();
+            });
     calculateDiseaseExpiry();
     calculateCIDExpiry();
+    calculateAffidavitExpiry();
 });
 
 
@@ -378,6 +399,29 @@ function calculateCIDExpiry() {
 
     $('#labour_cid_expriry').val(formattedDate);
 }
+
+ function calculateAffidavitExpiry() {
+            const startValue = $('#labour_affidavit_start').val();
+
+            if (!startValue) {
+                $('#labour_affidavit_expriry').val('');
+                return;
+            }
+
+            const startDate = new Date(startValue);
+            const cidDuration = 180; // 180 วัน (รวมเสาร์อาทิตย์)
+
+            const expiryDate = new Date(startDate);
+            expiryDate.setDate(expiryDate.getDate() + cidDuration); // เพิ่มไปอีก 180 วันรวมวันหยุด
+
+            const yyyy = expiryDate.getFullYear();
+            const mm = String(expiryDate.getMonth() + 1).padStart(2, '0');
+            const dd = String(expiryDate.getDate()).padStart(2, '0');
+            const formattedDate = `${yyyy}-${mm}-${dd}`;
+
+            $('#labour_affidavit_expriry').val(formattedDate);
+        }
+
 
 
 
