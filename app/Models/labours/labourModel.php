@@ -122,7 +122,7 @@ class labourModel extends Model
 
     public function scopeExpiringAffidavit($query)
     {
-        $expiryDate = Carbon::now()->copy()->addDays(180)->toDateString();
+        $expiryDate = Carbon::now()->copy()->addDays(15)->toDateString();
         return $query->where('labour_status', 'wait')
                      ->whereNotNull('labour_affidavit_expriry')
                      ->where('labour_affidavit_expriry', '<=', $expiryDate);

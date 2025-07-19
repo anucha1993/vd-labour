@@ -106,7 +106,7 @@
                     <i class="mdi mdi-account fs-3 mb-2"></i>
                     <h1 class="mb-1">{{ number_format($scopeExpiringAffidavit) }}</h1>
                     <small>แจ้งเตือน Affidavit หมดอายุ</small><br>
-                    <small>ก่อนหมดอายุ 180 วัน</small>
+                    <small>ก่อนหมดอายุ 15 วัน</small>
                 </div>
             </a>
         </div>
