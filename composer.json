@@ -17,6 +17,7 @@
         "mikehaertl/php-pdftk": "^0.13.1",
         "setasign/fpdf": "1.8.*",
         "setasign/fpdi": "^2.5",
+        "simplesoftwareio/simple-qrcode": "^4.2",
         "spatie/laravel-permission": "^6.9"
     },
     "require-dev": {

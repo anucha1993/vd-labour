@@ -13,6 +13,7 @@ use App\Http\Controllers\combine\PdfMergeController;
 use App\Http\Controllers\jobgroup\jobGoupController;
 use App\Http\Controllers\customers\customerController;
 use App\Http\Controllers\labours\labourFileController;
+use App\Http\Controllers\labours\labourPrintController;
 use App\Http\Controllers\dashboards\dashboardController;
 use App\Http\Controllers\categorys\ExaminationRounController;
 use App\Http\Controllers\formExport\labourFormExportController;
@@ -105,3 +106,6 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/download-zip', [\App\Http\Controllers\Combine\PdfMergeController::class, 'downloadZip'])
     ->name('download.zip');
+
+    Route::get('labour/{labour}/cidfile-delete', [LabourController::class, 'deleteCidFile'])->name('labour.cidfile.delete');
+    Route::get('/labour/{id}/print', [labourPrintController::class, 'print'])->name('labour.print');

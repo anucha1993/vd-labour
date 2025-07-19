@@ -6,6 +6,11 @@ use App\Models\labours\labourModel;
 
 class LabourAlertController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+    
     public function show($type)
     {
         $labours = match ($type) {
@@ -14,6 +19,7 @@ class LabourAlertController extends Controller
             'disease-factory'   => labourModel::ExpiringDiseaseFactory()->with('customer')->get(),
             'cid-construct'     => labourModel::ExpiringCIDConstruct()->with('customer')->get(),
             'cid-factory'       => labourModel::ExpiringCIDFactory()->with('customer')->get(),
+            'cid-money'         => labourModel::ExpiringCidMoney()->with('customer')->get(),
             default             => collect(),
         };
 

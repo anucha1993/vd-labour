@@ -1,31 +1,41 @@
+
 <div class="card">
     <div class="card-body">
         <h4>CombinePDF</h4>
         <hr>
         <div class="container">
-            <form action="{{ route('merge-pdfs') }}" id="test" method="post">
+            <form action="{{ route('merge-pdfs') }}" method="post" id="combineForm">
                 @csrf
-                <input type="hidden" name="labour_id" value="{{$labourModel->labour_id}}">
+                <input type="hidden" name="labour_id" value="{{ $labourModel->labour_id }}">
                 <table>
                     @foreach ($labourfiles as $item)
                         @if ($item->labour_file_path)
                             <tr>
                                 <td><input type="number" class="form-control no" name="no[]" placeholder="ลำดับ"
-                                        style="width: 100px" readonly></td>
-                                <td>&nbsp; <input type="checkbox" name="checkNum[]" class="checkNum" value="{{ env('LOCATION_PATH') }}\\{{ $labourModel->labour_path }}\\{{ $item->labour_file_path }}">
-                                    {{ $item->labour_file_path }}</td>
+                                    style="width: 100px" readonly></td>
+                                <td>
+                                    &nbsp;
+                                    <input type="checkbox" name="checkNum[]" class="checkNum" value="{{ asset('storage/LABOURS/' . $labourModel->labour_path . '/' . $item->labour_file_path) }}">
+                                    <a href="{{ asset('storage/LABOURS/' . $labourModel->labour_path . '/' . $item->labour_file_path) }}"
+                                       onclick="openPdfPopup(this.href); return false;">
+                                        <i class="fas fa-file-pdf text-danger"></i> {{ $item->labour_file_path }}
+                                    </a>
+                                </td>
                                 <td>[ {{ $item->labour_file_note }} ]</td>
                             </tr>
                         @endif
                     @endforeach
                 </table>
-        
-                <button type="submit" class="float-end btn btn-danger">CombinePDF</button>
-        
+            
+                <div class="d-flex justify-content-end gap-2 mt-3">
+                    <button type="submit" class="btn btn-danger">Combine PDF</button>
+                    <button type="button" id="downloadZipBtn" class="btn btn-primary">Download ZIP</button>
+                </div>
             </form>
+            
          </div>
     </div>
-</div>
+
 
     <script>
  
@@ -73,3 +83,32 @@
         });
  
     </script>
+
+
+<script>
+    document.getElementById('downloadZipBtn').addEventListener('click', function () {
+        const form = document.getElementById('combineForm');
+        const formData = new FormData(form);
+        fetch("{{ route('download.zip') }}", {
+            method: "POST",
+            body: formData,
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            }
+        })
+        .then(response => {
+            if (!response.ok) throw new Error("Download failed");
+            return response.blob();
+        })
+        .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = "selected-files.zip";
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+        })
+        .catch(error => alert("ไม่สามารถดาวน์โหลดไฟล์ ZIP ได้"));
+    });
+</script>

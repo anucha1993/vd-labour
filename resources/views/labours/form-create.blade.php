@@ -30,7 +30,7 @@
                     </div>
                     <div class="col-md-2">
                         <label>Birthday <span id="age_result"></span></label>
-                        <input type="date" class="form-control" name="labour_birthday" placeholder="birthday" id="labour_birthday"
+                        <input type="date" class="form-control" name="labour_birthday" placeholder="birthday" id="labour_birthday" required
                            >
                     </div>
                     <div class="col-md-2">
@@ -81,13 +81,29 @@
                             placeholder="Disease Start">
                     </div>
                     <div class="col-md-3 mt-3">
-                        <label>Disease Expiry (ผลโรคหมดอายุ) คำนวน 30 วัน </label>
-                        <input type="date" name="labour_disease_expiry" id="labour_disease_expiry" class="form-control" >
+                        <label>Disease Expiry (ผลโรคหมดอายุ) คำนวน 90 วัน </label>
+                        <input type="date" name="labour_disease_expriry" id="labour_disease_expriry" class="form-control" >
                     </div>
+                   
 
                     <div class="col-md-3 mt-3">
                             <label>date disease results (วันรับผลโรค) </label>
-                            <input type="date" name="labour_disease_results_date" id="labour_disease_expiry"  class="form-control" >
+                            <input type="date" name="labour_disease_results_date" id="labour_disease_expriry"  class="form-control" >
+                        </div>
+
+                        <div class="col-md-3 mt-3">
+                            <label>Status Disease (สถานะผลโรค)</label>
+                           <select name="labour_disease_status" class="form-select">
+                            <option value="5">--ไม่ระบุ---</option>
+                            <option value="0">รอตรวจผลโรค</option>
+                            <option value="1">ผลโรคผ่าน</option>
+                            <option value="2">รอตรวจผลโรคซ้ำ</option>
+                           </select>
+                        </div>
+
+                        <div class="col-md-3 mt-3">
+                            <label>วันที่ยื่น CID</label>
+                            <input type="date" name="labour_cid_stand_date" class="form-control"  >
                         </div>
                     
                 </div>
@@ -100,9 +116,24 @@
                     </div>
                     <div class="col-md-3 mt-3">
                         <label>CID Expiry</label>
-                        <input type="date" name="labour_cid_expiry" class="form-control" id="labour_cid_expiry"
+                        <input type="date" name="labour_cid_expriry" class="form-control" id="labour_cid_expriry"
                             placeholder="CID Expiry" value="" >
                     </div>
+                </div>
+                <div class="col-md-3 mt-3">
+                    <label>CID Results</label>
+                    <select name="labour_cid_results" class="form-select">
+                        <option value="">ไม่ระบุ</option>
+                        @forelse ($CidResults as $item)
+                            <option  value="{{$item->cid_results_id}}">{{$item->cid_results_name}}</option>
+                        @empty
+                        ไม่มีข้อมูล
+                        @endforelse
+                    </select>
+                </div>
+                <div class="col-md-3 mt-3">
+                    <label>CID File</label>
+                <input type="file" name="" class="form-control" disabled>
                 </div>
 
                 <hr>
@@ -123,7 +154,7 @@
 
                     <div class="col-md-3 mt-3">
                         <label>Country</label>
-                        <select name="labour_country" class="form-select country" required>
+                        <select name="labour_country" class="form-select country" required >
                             <option value="">Select a Country</option>
                             @forelse ($country as $item)
                                 <option value="{{ $item->country_id }}">{{ $item->country_name_en }}</option>
@@ -325,70 +356,49 @@ $(document).ready(function() {
 });
 
 
-// ฟังก์ชันสำหรับคำนวณวันหมดอายุของ CID โดยไม่นับวันเสาร์และอาทิตย์
+// ฟังก์ชันสำหรับคำนวณวันหมดอายุของ CID โดยนับรวมวันเสาร์และอาทิตย์ (180 วัน)
 function calculateCIDExpiry() {
-    var startDate = new Date($('#labour_cid_start').val());
-    var diseaseDuration = 30; // ระยะเวลาหมดอายุใน 30 วัน
+    const startValue = $('#labour_cid_start').val();
 
-    if ($('#labour_cid_start').val() === "") {
-        $('#labour_cid_expiry').val('');
+    if (!startValue) {
+        $('#labour_cid_expriry').val('');
         return;
     }
 
-    var currentDate = new Date(startDate);
-    var daysAdded = 0;
+    const startDate = new Date(startValue);
+    const cidDuration = 180; // 180 วัน (รวมเสาร์อาทิตย์)
 
-    // ลูปเพื่อเพิ่มจำนวนวัน โดยไม่นับรวมวันเสาร์และอาทิตย์
-    while (daysAdded < diseaseDuration) {
-        currentDate.setDate(currentDate.getDate() + 1);
+    const expiryDate = new Date(startDate);
+    expiryDate.setDate(expiryDate.getDate() + cidDuration); // เพิ่มไปอีก 180 วันรวมวันหยุด
 
-        // ตรวจสอบว่าวันปัจจุบันไม่ใช่วันเสาร์ (6) หรือวันอาทิตย์ (0)
-        if (currentDate.getDay() !== 0 && currentDate.getDay() !== 6) {
-            daysAdded++;
-        }
-    }
+    const yyyy = expiryDate.getFullYear();
+    const mm = String(expiryDate.getMonth() + 1).padStart(2, '0');
+    const dd = String(expiryDate.getDate()).padStart(2, '0');
+    const formattedDate = `${yyyy}-${mm}-${dd}`;
 
-    // ตั้งค่าใน input ของวันหมดอายุ
-    var yyyy = currentDate.getFullYear();
-    var mm = String(currentDate.getMonth() + 1).padStart(2, '0'); // เดือนจะต้องบวก 1 เพราะมันนับจาก 0
-    var dd = String(currentDate.getDate()).padStart(2, '0');
-    var formattedExpiryDate = yyyy + '-' + mm + '-' + dd;
-
-    $('#labour_cid_expiry').val(formattedExpiryDate);
+    $('#labour_cid_expriry').val(formattedDate);
 }
+
 
 
 // ฟังก์ชันสำหรับคำนวณวันหมดอายุของโรค โดยไม่นับวันเสาร์และอาทิตย์
 function calculateDiseaseExpiry() {
-    var startDate = new Date($('#labour_disease_start').val());
-    var diseaseDuration = 30; // สมมติว่าผลโรคจะหมดอายุใน 14 วัน (กำหนดตามความต้องการ)
+            const startValue = $('#labour_disease_start').val();
+            if (!startValue) {
+                $('#labour_disease_expriry').val('');
+                return;
+            }
+            const startDate = new Date(startValue);
+            const diseaseDuration = 90; // นับรวมทุกวัน
+            const expiryDate = new Date(startDate);
+            expiryDate.setDate(expiryDate.getDate() + diseaseDuration); // เพิ่มวันต่อเนื่อง 90 วัน
+            const yyyy = expiryDate.getFullYear();
+            const mm = String(expiryDate.getMonth() + 1).padStart(2, '0');
+            const dd = String(expiryDate.getDate()).padStart(2, '0');
+            const formattedDate = `${yyyy}-${mm}-${dd}`;
 
-    if ($('#labour_disease_start').val() === "") {
-        $('#labour_disease_expiry').val('');
-        return;
-    }
-
-    var currentDate = new Date(startDate);
-    var daysAdded = 0;
-
-    // ลูปเพื่อเพิ่มจำนวนวัน โดยไม่นับรวมวันเสาร์และอาทิตย์
-    while (daysAdded < diseaseDuration) {
-        currentDate.setDate(currentDate.getDate() + 1);
-
-        // ตรวจสอบว่าวันปัจจุบันไม่ใช่วันเสาร์ (6) หรือวันอาทิตย์ (0)
-        if (currentDate.getDay() !== 0 && currentDate.getDay() !== 6) {
-            daysAdded++;
+            $('#labour_disease_expriry').val(formattedDate);
         }
-    }
-
-    // ตั้งค่าใน input ของวันหมดอายุ
-    var yyyy = currentDate.getFullYear();
-    var mm = String(currentDate.getMonth() + 1).padStart(2, '0'); // เดือนจะต้องบวก 1 เพราะมันนับจาก 0
-    var dd = String(currentDate.getDate()).padStart(2, '0');
-    var formattedExpiryDate = yyyy + '-' + mm + '-' + dd;
-
-    $('#labour_disease_expiry').val(formattedExpiryDate);
-}
 
 
 

@@ -1,13 +1,14 @@
 <?php
 namespace App\Exports;
 
-use App\Exports\Sheets\ExpiringPassportSheet;
-use App\Exports\Sheets\ExpiringDiseaseConstructSheet;
-use App\Exports\Sheets\ExpiringDiseaseFactorySheet;
-use App\Exports\Sheets\ExpiringCIDConstructSheet;
-use App\Exports\Sheets\ExpiringCIDFactorySheet;
 use Maatwebsite\Excel\Concerns\Exportable;
+use App\Exports\Sheets\ExpiringCidMoneySheet;
+use App\Exports\Sheets\ExpiringPassportSheet;
+use App\Exports\Sheets\ExpiringCIDFactorySheet;
+use App\Exports\Sheets\ExpiringCIDConstructSheet;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
+use App\Exports\Sheets\ExpiringDiseaseFactorySheet;
+use App\Exports\Sheets\ExpiringDiseaseConstructSheet;
 
 class LabourAlertsExport implements WithMultipleSheets
 {
@@ -21,6 +22,8 @@ class LabourAlertsExport implements WithMultipleSheets
             new ExpiringDiseaseFactorySheet(),
             new ExpiringCIDConstructSheet(),
             new ExpiringCIDFactorySheet(),
+            new ExpiringCidMoneySheet(),
+ 
         ];
     }
 }

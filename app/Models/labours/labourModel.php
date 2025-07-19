@@ -2,16 +2,17 @@
 
 namespace App\Models\labours;
 
-use App\Models\country\countryModel;
 use Carbon\Carbon;
-use App\Models\files\labourFileModel;
-use App\Models\customers\customerModel;
-use App\Models\jobgroup\jobGroupModel;
-use App\Models\locationTest\locationTestModel;
-use App\Models\positions\positionModel;
 use App\Models\staff\staffModel;
+use Illuminate\Support\Facades\DB;
 use App\Models\staff\staffSubModel;
+use App\Models\country\countryModel;
+use App\Models\files\labourFileModel;
+use App\Models\jobgroup\jobGroupModel;
+use App\Models\customers\customerModel;
+use App\Models\positions\positionModel;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\locationTest\locationTestModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class labourModel extends Model
@@ -61,12 +62,20 @@ class labourModel extends Model
        'labour_refund_deposit_date',
        'labour_refund_deposit_total',
        'payment_type',
+       'labour_cid_results',
+       'labour_cid_results_file',
+       'labour_cid_stand_date',
+       'labour_disease_status',
     ];
 
     
     public function customer()
     {
         return $this->belongsTo(customerModel::class, 'labour_customer', 'customer_id');
+    }
+    public function cid()
+    {
+        return $this->belongsTo(CIDresultsModel::class, 'labour_cid_results', 'cid_results_id');
     }
     public function country()
     {
@@ -97,6 +106,16 @@ class labourModel extends Model
     public function labourFile()
     {
         return $this->hasMany(labourFileModel::class, 'labour_id', 'labour_id');
+    }
+
+
+    public function scopeExpiringCidMoney($query)
+    {
+        $expiryDate = Carbon::now()->copy()->addDays(15)->toDateString();
+        return $query->where('labour_status', 'wait')
+                     ->whereNotNull('labour_cid_stand_date')
+                     ->where(DB::raw('COALESCE(labour_cid_deposit_total, 0)'), '<=', 30000)
+                     ->where('labour_cid_stand_date', '<=', $expiryDate);
     }
 
 

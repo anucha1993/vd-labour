@@ -134,10 +134,18 @@
                         </select>
                     </div>
 
-
-
-
-
+                    <div class="col-md-3 mt-3">
+                        <label>CID Results</label>
+                        <select name="labour_cid_results" class="form-select">
+                            <option value="">ไม่ระบุ</option>
+                            @forelse ($CidResults as $item)
+                                <option @if ($item->cid_results_id === $request->labour_cid_results) selected @endif
+                                    value="{{ $item->cid_results_id }}">{{ $item->cid_results_name }}</option>
+                            @empty
+                                ไม่มีข้อมูล
+                            @endforelse
+                        </select>
+                    </div>
                 </div>
 
                 <button type="submit" class="btn btn-outline-success mt-3 float-end">
@@ -165,6 +173,7 @@
             
         </div>
         <div class="card-body">
+            <div class="table-responsive">
             <table class="table table">
                 <thead>
                     <tr>
@@ -206,6 +215,7 @@
                 @endforelse
                 </tbody>
             </table>
+            </div>
         </div>
     </div>
 

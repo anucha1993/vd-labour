@@ -10,6 +10,7 @@ use App\Models\country\countryModel;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\jobgroup\jobGroupModel;
 use App\Models\customers\customerModel;
+use App\Models\labours\CIDresultsModel;
 use App\Exports\labourExport\labourExport;
 use App\Models\examinations\examinationRoundModel;
 
@@ -28,6 +29,7 @@ class labourFormExportController extends Controller
         $customers = customerModel::latest()->get();
         $staffs = staffModel::where('staff_status', 'active')->get();
         $country = countryModel::where('country_status', 'active')->get();
+        $CidResults = CIDresultsModel::get();
 
         $labour_disease_date_start = $request->labour_disease_date_start;
         $labour_disease_date_end = $request->labour_disease_date_end;
@@ -41,6 +43,7 @@ class labourFormExportController extends Controller
         $labour_examination = $request->labour_examination;
         $labour_examination = $request->labour_examination;
         $labour_cid_deposit_status = $request->labour_cid_deposit_status;
+        $labour_cid_results = $request->labour_cid_results;
 
         //dd($labour_customer);
         $query = labourModel::with('customer');
@@ -92,6 +95,9 @@ class labourFormExportController extends Controller
         if ($labour_cid_deposit_status && $labour_cid_deposit_status != 'all') {
             $query->where('labour_cid_deposit_status', $labour_cid_deposit_status);
         }
+        if ($labour_cid_results) {
+            $query->where('labour_cid_results', $labour_cid_results);
+        }
         if($request->all()) { // ตรวจสอบว่า request มีข้อมูลใดๆ
             $labours = $query->latest()->get();
         } else {
@@ -99,7 +105,7 @@ class labourFormExportController extends Controller
         }
        
 
-        return view('exports/form-export-labour', compact('jobGroup', 'customers', 'staffs', 'country', 'examinationRound', 'labours','request'));
+        return view('exports/form-export-labour', compact('jobGroup','CidResults','customers', 'staffs', 'country', 'examinationRound', 'labours','request'));
     }
 
     public function export(Request $request)

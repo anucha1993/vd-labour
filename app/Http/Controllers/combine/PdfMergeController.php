@@ -69,19 +69,17 @@ foreach ($selectedNos as $no) {
 // แปลง backslashes เป็น forward slashes และตรวจสอบไฟล์
 $pdfFiles = [];
 foreach ($orderedPaths as $path) {
-    $filePath = trim(str_replace('\\', '/', $path));
-    if (!file_exists($filePath)) {
-        return response()->json(['message' => "File not found: $filePath"], 404);
+    $relativePath = trim(str_replace('\\', '/', $path));
+    $relativePath = preg_replace('/^\/?storage\//', '', $relativePath); // แก้ path
+
+    $fullStoragePath = storage_path('app/public/' . $relativePath);
+
+    if (!file_exists($fullStoragePath)) {
+        return response()->json(['message' => "File not found: $fullStoragePath"], 404);
     }
-    $pdfFiles[] = $filePath;
+
+    $pdfFiles[] = $fullStoragePath; // ใช้ path ที่ถูกต้อง
 }
-
-
-
-//dd($nos,$paths, $pdfFiles);
-
-
-
 
 
     // เรียงไฟล์ตามลำดับ
@@ -100,7 +98,6 @@ foreach ($orderedPaths as $path) {
 
     // เส้นทางสำหรับไฟล์ PDF ที่รวมแล้ว
     $outputFile =  $labourModel->labour_firstname . '_' . $labourModel->labour_lastname . '.pdf';
-
     // ตั้งค่าตัวแปร PATH
     putenv('PATH=C:\\Program Files (x86)\\PDFtk\\bin;' . getenv('PATH'));
 
@@ -126,14 +123,12 @@ public function downloadZip(Request $request)
     $paths = $request->input('checkNum', []);
     $zip = new ZipArchive();
 
-    // สร้างไฟล์ zip ชั่วคราว
-    $zipFileName = 'labour_files_' . now()->format('Ymd_His') . '.zip';
-    $zipFilePath = storage_path('app/public/tmp/' . $zipFileName);
-
-    // ตรวจสอบว่ามีไฟล์ให้ zip
     if (empty($paths)) {
         return response()->json(['message' => 'No files selected.'], 400);
     }
+
+    $zipFileName = 'labour_files_' . now()->format('Ymd_His') . '.zip';
+    $zipFilePath = storage_path('app/public/tmp/' . $zipFileName);
 
     if (!file_exists(dirname($zipFilePath))) {
         mkdir(dirname($zipFilePath), 0777, true);
@@ -141,17 +136,27 @@ public function downloadZip(Request $request)
 
     if ($zip->open($zipFilePath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === TRUE) {
         foreach ($paths as $path) {
-            $filePath = str_replace('\\', '/', trim($path));
+            $relativePath = preg_replace('/^\/?storage\//', '', str_replace('\\', '/', trim($path)));
+            $filePath = storage_path('app/public/' . $relativePath);
+    
             if (file_exists($filePath)) {
                 $zip->addFile($filePath, basename($filePath));
+            } else {
+                \Log::warning("File not added to zip (not found or invalid): " . $filePath);
             }
         }
-        $zip->close();
+        $zip->close(); // ✅ ปิด zip แน่นอน
     } else {
         return response()->json(['message' => 'Cannot create ZIP file.'], 500);
     }
-
+    
+    // ตรวจสอบอีกทีว่า zip ถูกสร้างจริง
+    if (!file_exists($zipFilePath)) {
+        return response()->json(['message' => 'ZIP file was not created.'], 500);
+    }
+    
     return response()->download($zipFilePath)->deleteFileAfterSend(true);
+    
 }
 
     

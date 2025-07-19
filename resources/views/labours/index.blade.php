@@ -201,10 +201,13 @@
                                             <div class="dropdown-menu">
                                                 <a class="dropdown-item"
                                                     href="{{ route('labour.edit', $item->labour_id) }}">แก้ไขข้อมูล</a>
-                                                    @can('view labour')
-                                                    <a class="dropdown-item view-doc" href="{{route('labour.viewDocs',$item->labour_id)}}">ดูเอกสาร</a>
-                                                    @endcan
-                                               
+              
+                                                    <a class="dropdown-item view-doc" href="{{ route('labour.viewDocs', $item->labour_id) }}">ดูเอกสาร</a>
+                                                    <a class="dropdown-item text-danger" target="_blink" href="{{ route('labour.print', $item->labour_id) }}"><i class="fa fa-print"></i> พิมพ์ข้อมูล</a></a>
+                          
+                                                        
+
+
 
                                             </div>
                                         </div>
@@ -221,27 +224,46 @@
     </div>
 
 
-    <div class="modal fade bd-example-modal-sm modal-lg" id="view-doc" tabindex="-1" role="dialog"
-    aria-labelledby="mySmallModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            ...
+    <div class="modal fade" id="view-doc" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-sm-down">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">แสดงเอกสาร</h5>
+                    <button type="button" class="close-modal-btn btn-close" data-bs-dismiss="modal" aria-label="ปิด"></button>
+                </div>
+                <div class="modal-body p-3">
+                    <div class="text-center">กำลังโหลด...</div>
+                </div>
+            </div>
         </div>
     </div>
-</div>
-
+    <style>
+        @media (max-width: 576px) {
+            .modal-body {
+                max-height: 80vh;
+                overflow-y: auto;
+            }
+        }
+    </style>
     <script>
-        $(document).ready(function() {
+       let viewModal; // ตัวแปร global
 
-            // modal add user
-            $(".view-doc").click("click", function(e) {
-                e.preventDefault();
-                $("#view-doc")
-                    .modal("show")
-                    .addClass("modal-lg")
-                    .find(".modal-content")
-                    .load($(this).attr("href"));
-            });
-        });
+$(document).on("click", ".view-doc", function (e) {
+    e.preventDefault();
+    const url = $(this).attr("href");
+    const modalEl = document.getElementById("view-doc");
+
+    viewModal = new bootstrap.Modal(modalEl);
+    $("#view-doc .modal-body").html("กำลังโหลด...");
+    $("#view-doc .modal-body").load(url, function () {
+        viewModal.show();
+    });
+});
+
+// ปุ่มสั่งปิด
+$(document).on("click", ".close-modal-btn", function () {
+    if (viewModal) viewModal.hide();
+});
+
     </script>
 @endsection

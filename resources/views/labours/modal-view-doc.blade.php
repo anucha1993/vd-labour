@@ -1,3 +1,4 @@
+
 <div class="card">
     <div class="card-body">
         <h4>CombinePDF</h4>
@@ -14,8 +15,8 @@
                                     style="width: 100px" readonly></td>
                                 <td>
                                     &nbsp;
-                                    <input type="checkbox" name="checkNum[]" class="checkNum" value="{{ env('LOCATION_PATH') }}\\{{ $labourModel->labour_path }}\\{{ $item->labour_file_path }}">
-                                    <a href="{{ asset('storage/' . $labourModel->labour_path . '/' . $item->labour_file_path) }}"
+                                    <input type="checkbox" name="checkNum[]" class="checkNum" value="{{ asset('storage/LABOURS/' . $labourModel->labour_path . '/' . $item->labour_file_path) }}">
+                                    <a href="{{ asset('storage/LABOURS/' . $labourModel->labour_path . '/' . $item->labour_file_path) }}"
                                        onclick="openPdfPopup(this.href); return false;">
                                         <i class="fas fa-file-pdf text-danger"></i> {{ $item->labour_file_path }}
                                     </a>
@@ -34,7 +35,7 @@
             
          </div>
     </div>
-</div>
+
 
     <script>
  

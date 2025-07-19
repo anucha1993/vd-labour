@@ -35,22 +35,14 @@ return [
         ],
         'labour_documents' => [
             'driver' => 'local',
-            'root' => env('LOCATION_DRIVE', '\\192.168.1.252\LABOURS'),
+            'root' => storage_path('app/public/labours'), // ถ้าจะใช้ ก็ให้ใช้ path ที่อยู่ใน public
             'visibility' => 'public',
         ],
 
-        // 'public' => [
-        //     'driver' => 'local',
-        //     'root' => storage_path('app/public'),
-        //     'url' => env('APP_URL') . '\\192.168.10.110\DOCUMENTS\LABOURS',
-        //     'visibility' => 'public',
-        //     'throw' => false,
-        // ],
-
         'public' => [
             'driver' => 'local',
-            'root' => 'D:\\LABOURS', // ใช้ \\ สำหรับเส้นทางในเครื่องบน Windows
-            'url' => env('APP_URL') . '/storage', // URL ของ public disk
+            'root' => storage_path('app/public'), // ✅ ถูกต้อง
+            'url' => env('APP_URL') . '/storage',
             'visibility' => 'public',
             'throw' => false,
         ],

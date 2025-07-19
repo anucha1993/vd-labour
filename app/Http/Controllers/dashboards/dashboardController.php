@@ -9,6 +9,10 @@ use Illuminate\Http\Request;
 class dashboardController extends Controller
 {
     //
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
     public function index()
     {
@@ -17,12 +21,13 @@ class dashboardController extends Controller
         $scopeExpiringCIDConstruct    = labourModel::query()->ExpiringCIDConstruct()->count();
         $scopeExpiringCIDFactory   = labourModel::query()->ExpiringCIDFactory()->count();
         $scopeExpiringPassport   = labourModel::query()->ExpiringPassport()->count();
+        $scopeExpiringCidMoney   = labourModel::query()->ExpiringCidMoney()->count();
 
         $countCancel = labourModel::query()->CountCancel()->count();
         $countAll = labourModel::query()->CountAll()->count();
         $countSuccess = labourModel::query()->CountSuccess()->count();
 
 
-        return view('dashboards.index', compact( 'countCancel', 'countAll', 'countSuccess','scopeExpiringPassport','scopeExpiringDiseaseConstruct','scopeExpiringDiseaseFactory','scopeExpiringCIDConstruct','scopeExpiringCIDFactory'));
+        return view('dashboards.index', compact( 'countCancel', 'countAll','scopeExpiringCidMoney', 'countSuccess','scopeExpiringPassport','scopeExpiringDiseaseConstruct','scopeExpiringDiseaseFactory','scopeExpiringCIDConstruct','scopeExpiringCIDFactory'));
     }
 }

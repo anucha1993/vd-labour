@@ -4,20 +4,21 @@ namespace App\Http\Controllers\labours;
 
 use Illuminate\Http\Request;
 use App\Models\staff\staffModel;
+use App\Models\files\listFileModel;
+use App\Models\labours\labourModel;
+use App\Models\staff\staffSubModel;
 use App\Http\Controllers\Controller;
 use App\Models\country\countryModel;
-use App\Models\customers\customerModel;
-use App\Models\examinations\examinationRoundModel;
+use Illuminate\Support\Facades\Auth;
 use App\Models\files\fileManageModel;
 use App\Models\files\labourFileModel;
-use App\Models\files\listFileModel;
 use App\Models\jobgroup\jobGroupModel;
-use App\Models\labours\labourModel;
+use App\Models\customers\customerModel;
+use App\Models\labours\CIDresultsModel;
+use App\Models\positions\positionModel;
 use Illuminate\Support\Facades\Storage;
 use App\Models\locationTest\locationTestModel;
-use App\Models\positions\positionModel;
-use App\Models\staff\staffSubModel;
-use Illuminate\Support\Facades\Auth;
+use App\Models\examinations\examinationRoundModel;
 
 class labourController extends Controller
 {
@@ -25,9 +26,10 @@ class labourController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('permission:view labour', ['only' => ['index']]);
+        $this->middleware('permission:view labour', ['only' => ['index', 'edit']]);
         $this->middleware('permission:create labour', ['only' => ['create', 'store']]);
-        $this->middleware('permission:update labour', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:account update labour|update labour', ['only' => ['update']]);
+
         $this->middleware('permission:delete labour', ['only' => ['destroy']]);
     }
 
@@ -125,6 +127,7 @@ class labourController extends Controller
         $position = positionModel::where('position_id', $labourModel->labour_position)->first();
         $labourfiles = labourFileModel::where('labour_id', $labourModel->labour_id)->get();
         $customers = customerModel::where('customer_status', 'active')->get();
+        $CidResults = CIDresultsModel::get();
 
 
 
@@ -132,11 +135,12 @@ class labourController extends Controller
         $listFiles = listFileModel::where('file_manage_id',$labourModel->labour_location_doc)->whereNotIn('list_file_id',$fileID)->get();
         
         $staffSub = staffSubModel::where('staff_sub_status', 'active')->get();
-        return view('labours.form-edit', compact('listFiles', 'customers', 'labourModel','staffSub', 'country', 'jobGroup', 'locationtest', 'staffs', 'fileManage', 'examinationRound', 'position', 'labourfiles'));
+        return view('labours.form-edit', compact('listFiles', 'customers', 'labourModel','CidResults','staffSub', 'country', 'jobGroup', 'locationtest', 'staffs', 'fileManage', 'examinationRound', 'position', 'labourfiles'));
     }
 
     public function create()
     {
+        $CidResults = CIDresultsModel::get();
         $country = countryModel::where('country_status', 'active')->latest()->get();
         $jobGroup = jobGroupModel::where('job_group_status', 'active')->latest()->get();
         $locationtest = locationTestModel::where('location_test_status', 'active')->get();
@@ -146,14 +150,17 @@ class labourController extends Controller
         $staffSub = staffSubModel::where('staff_sub_status', 'active')->get();
 
         $examinationRound = examinationRoundModel::where('examination_round_status', 'active')->latest()->get();
-        return view('labours.form-create', compact('country', 'jobGroup', 'locationtest', 'staffs', 'fileManage', 'examinationRound', 'customers','staffSub'));
+        return view('labours.form-create', compact('country','CidResults', 'jobGroup', 'locationtest', 'staffs', 'fileManage', 'examinationRound', 'customers','staffSub'));
     }
 
     public function update(labourModel $labourModel, Request $request)
     {
+
+        //dd($request->all());
         $labourModel->update($request->all());
         labourFileModel::where('labour_id', $labourModel->labour_id)->update(['labour_passport_number' => $labourModel->labour_passport_number]);
         $files = $request->file('files');
+        $fullPath = 'LABOURS/' . $labourModel->labour_path;
         if ($files) {
             foreach ($files as $key => $file) {
                 // สร้างชื่อไฟล์ที่ไม่ซ้ำกัน
@@ -162,12 +169,12 @@ class labourController extends Controller
                 $uniqueName = $request->labour_file_name[$key] . '_' . $labourModel->labour_firstname . '_' . $labourModel->labour_lastname . '.' . $extension; // แก้ไขให้ใช้ $labourModel->id แทน $labourModel
 
                  //สร้าง Forlder
-            if (!Storage::disk('public')->exists($labourModel->labour_path)) {
-                Storage::disk('public')->makeDirectory($labourModel->labour_path);
-            }
+                 if (!Storage::disk('public')->exists($fullPath)) {
+                    Storage::disk('public')->makeDirectory($fullPath);
+                }
 
                 // อัปโหลดไฟล์ไปยัง disk ที่กำหนด
-                $path = $file->storeAs($labourModel->labour_path, $uniqueName, 'public');
+                $path = $file->storeAs($fullPath, $uniqueName, 'public');
 
                 // ตรวจสอบผลลัพธ์ของการอัปโหลด
                 if ($path) {
@@ -177,6 +184,35 @@ class labourController extends Controller
                 }
             }
         }
+
+        //CID Upload 
+        if ($request->hasFile('cid_file')) {
+            $file = $request->file('cid_file');
+        
+            // สร้างชื่อไฟล์ใหม่ เช่น cid_ชื่อ_นามสกุล.jpg
+            $extension = $file->getClientOriginalExtension();
+            $uniqueName = 'cid_' . $labourModel->labour_firstname . '_' . $labourModel->labour_lastname . '.' . $extension;
+        
+            // ตรวจสอบและสร้างโฟลเดอร์ หากยังไม่มี
+            if (!Storage::disk('public')->exists($labourModel->labour_path)) {
+                Storage::disk('public')->makeDirectory($labourModel->labour_path);
+            }
+        
+            // อัปโหลดไฟล์ไปยังโฟลเดอร์ที่กำหนดใน disk 'public'
+            $path = $file->storeAs($labourModel->labour_path, $uniqueName, 'public');
+        
+            // ถ้าอัปโหลดสำเร็จ อัปเดตฟิลด์ labour_cid_results_file
+            if ($path) {
+                labourModel::where('labour_id', $labourModel->labour_id)->update([
+                    'labour_cid_results_file' => $uniqueName,
+                ]);
+            }
+        }
+      
+
+
+        
+        
 
         $counFile = labourFileModel::where('labour_id', $labourModel->labour_id)->count('labour_file_id');
         $counFileNotNull = labourFileModel::where('labour_id', $labourModel->labour_id)
@@ -189,6 +225,25 @@ class labourController extends Controller
         return redirect()->back()->with('success', 'Updated Labour Successfully.');
     }
 
+    public function deleteCidFile($labourId)
+{
+    $labour = labourModel::findOrFail($labourId);
+
+    if ($labour->labour_cid_results_file) {
+        $filePath = $labour->labour_path . '/' . $labour->labour_cid_results_file;
+
+        if (Storage::disk('public')->exists($filePath)) {
+            Storage::disk('public')->delete($filePath);
+        }
+
+        // เคลียร์ชื่อไฟล์ออกจากฐานข้อมูล
+        $labour->update(['labour_cid_results_file' => null]);
+    }
+
+    return redirect()->back()->with('success', 'ลบไฟล์เรียบร้อยแล้ว');
+}
+
+
     public function store(Request $request)
     {
         $checkLabour = null;
@@ -199,15 +254,7 @@ class labourController extends Controller
         })
         ->first();
 
-        // Edit 16/11/2024
-        // if ($request->labour_passport_number !== null) {
-        //     $checkLabour = labourModel::where('labour_passport_number', $request->labour_passport_number)
-        //         ->orWhere(function($query) use ($request) {
-        //             $query->where('labour_firstname', $request->labour_firstname)
-        //                   ->where('labour_lastname', $request->labour_lastname);
-        //         })
-        //         ->first();
-        // }
+       
 
         if (empty($checkLabour)) {
             $request->merge(['created_by' => Auth::user()->name]);
@@ -215,8 +262,8 @@ class labourController extends Controller
             $labourModel = labourModel::create($request->all());
          
             $folderYear = $labourModel->labour_folder_year;
-          
-            $folderPath = $folderYear.'\\'.date('m').'\\'.$labourModel->labour_firstname . '_' . $labourModel->labour_lastname;
+            $folderMonth = date('m');
+            $folderPath = 'LABOURS/' . $folderYear . '/' . $folderMonth . '/' . $labourModel->labour_firstname . '_' . $labourModel->labour_lastname;
             //สร้าง Forlder
             if (!Storage::disk('public')->exists($folderPath)) {
                 Storage::disk('public')->makeDirectory($folderPath);
@@ -257,4 +304,8 @@ class labourController extends Controller
         $labourfiles = labourFileModel::where('labour_id', $labourModel->labour_id)->get();
         return view('labours.modal-view-doc', compact('labourfiles', 'labourModel'));
     }
+
+
+  
+
 }
