@@ -17,7 +17,12 @@ class labourFileController extends Controller
 
     public function delete(Request $request)
     {
-        $path = str_replace('/', DIRECTORY_SEPARATOR, $request->path); // แปลงสแลชให้เป็นแบบถูกต้อง
+        // Laravel Storage ใช้ / เสมอ และ path ต้องสัมพันธ์กับ storage/app/public
+        $path = str_replace('\\', '/', $request->path); // แก้ \ เป็น /
+        $path = ltrim($path, '/'); // ตัด / นำหน้า (ถ้ามี)
+        if (strpos($path, 'storage/') === 0) {
+            $path = substr($path, strlen('storage/'));
+        }
 
         if (Storage::disk('public')->exists($path)) {
             Storage::disk('public')->delete($path); // ลบไฟล์ที่ระบุ

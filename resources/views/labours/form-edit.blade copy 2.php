@@ -530,108 +530,67 @@
                             <br>
                             <hr>
 
-                            <div class="row g-3">
-
-                                @foreach ($labourfiles as $key => $item)
-    @php
-        $filePath = asset(
-            'storage/LABOURS/' .
-                str_replace('\\', '/', $labourModel->labour_path) .
-                '/' .
-                str_replace('\\', '/', $item->labour_file_path)
-        );
-        $timestamp = $item->updated_at ? $item->updated_at->timestamp : time();
-        $ext = strtolower(pathinfo($item->labour_file_path, PATHINFO_EXTENSION));
-    @endphp
-                                    @if (!empty($item->labour_file_path))
-                                        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                                            <div class="card shadow-sm h-100 border-0">
-                                                <div class="card-body d-flex flex-column align-items-center p-3">
-                                                    @if (in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp']))
-                                                        <a href="{{ $filePath . '?v=' . $timestamp }}" target="_blank">
-                                                            <img src="{{ $filePath . '?v=' . $timestamp }}"
-                                                                alt="preview"
-                                                                style="width:90px; height:120px; object-fit:contain; border:1px solid #eee; border-radius:8px; background:#fafbfc;" />
-                                                        </a>
-                                                    @elseif($ext === 'pdf')
-                                                        <a href="{{ $filePath . '?v=' . $timestamp }}" target="_blank"
-                                                            style="display:block;">
-                                                            <iframe src="{{ $filePath . '?v=' . $timestamp }}"
-                                                                style="width:150px; height:200px; border:1px solid #eee; border-radius:8px; background:#fafbfc;"
-                                                                frameborder="0" loading="lazy"
-                                                                onerror="this.style.display='none'; this.parentNode.querySelector('.pdf-icon').style.display='block';"></iframe>
-                                                            <img class="pdf-icon"
-                                                                src="https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/pdf.svg"
-                                                                alt="PDF"
-                                                                style="width:60px; height:80px; margin-top:10px; display:none; position:absolute; left:50%; transform:translateX(-50%);" />
+                            <div class="row">
+                                <table class="table table-bordered ">
+                                    <tbody>
+                                        @foreach ($labourfiles as $key => $item)
+                                            <tr>
+                                                <td> {{ $key + 1 }}.{{ $item->labour_file_note }}-<b>({{ $item->labour_file_name }})</b>
+                                                </td>
+                                                <td>
+                                                    @if ($item->labour_file_path)
+                                                        @php
+                                                            $filePath = asset(
+                                                                'storage/LABOURS/' .
+                                                                    $labourModel->labour_path .
+                                                                    '/' .
+                                                                    $item->labour_file_path,
+                                                            );
+                                                            $timestamp = $item->updated_at
+                                                                ? $item->updated_at->timestamp
+                                                                : time();
+                                                        @endphp
+                                                        <a href="{{ $filePath . '?v=' . $timestamp }}"
+                                                            onclick="openPdfPopup(this.href); return false;">
+                                                            <i class="fas fa-file-pdf text-danger"></i>
+                                                            {{ $item->labour_file_path }}
                                                         </a>
                                                     @else
-                                                        <a href="{{ $filePath . '?v=' . $timestamp }}" target="_blank">
-                                                            <i class="fas fa-file-alt fa-3x text-secondary"></i>
-                                                        </a>
+                                                        <input type="hidden" name="labour_file_name[]"
+                                                            value="{{ $item->labour_file_name }}">
+                                                        <input type="hidden" name="labour_file_id[]"
+                                                            value="{{ $item->labour_file_id }}">
+                                                        <input type="file" name="files[]">
                                                     @endif
-                                                    <div class="mt-2 text-center small"
-                                                        style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:110px;">
-                                                        {{ $item->labour_file_path }}</div>
-                                                    <div class="mt-1 text-muted small">{{ $item->labour_file_note }} |
-                                                        {{ $item->labour_file_path ?? 'ไม่พบไฟล์' }}</div>
-                                                    <div class="d-flex gap-2 mt-2">
-                                                        <a href="{{ $filePath . '?v=' . $timestamp }}"
-                                                            class="btn btn-sm btn-outline-primary" target="_blank"><i
-                                                                class="fas fa-eye"></i> ดู</a>
-
-                                                                 {{-- @can('delete labour')
+                                                </td>
+                                                <td>
+                                                    @can('delete labour')
                                                         <a href="" data-file-id="{{ $item->labour_file_id }}"
                                                             data-labour-id="{{ $labourModel->labour_id }}"
                                                             data-path="{{ $labourModel->labour_path . '/' . $item->labour_file_path }}"
                                                             class="delete-file text-danger"> <i class="fa fa-trash"></i>
                                                             Delete</a>
-                                                    @endcan --}}
+                                                    @endcan
+                                                </td>
+                                            </tr>
+                                        @endforeach
 
-                                                         
-                                                         @can('delete labour')
-                                                            <a href="#" data-file-id="{{ $item->labour_file_id }}"
-                                                                data-labour-id="{{ $labourModel->labour_id }}"
-                                                                data-path="{{ $filePath }}"
-                                                                class="delete-file btn btn-sm btn-outline-danger">ลบ</a>
-                                                        @endcan 
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @else
-                                        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                                            <div
-                                                class="card shadow-sm h-100 border-0 d-flex flex-column align-items-center justify-content-center p-4 text-center">
-                                                <div class="mb-2"><i
-                                                        class="fas fa-cloud-upload-alt fa-3x text-secondary"></i></div>
-                                                <div class="mb-2 text-muted">
-                                                    </b>{{ $item->labour_file_note }}-({{ $item->labour_file_name }}</div>
-                                                <input type="file" name="files[]"
-                                                    class="form-control form-control-sm mb-2" multiple>
-                                                <input type="hidden" name="labour_file_name[]"
-                                                    value="{{ $item->labour_file_name }}">
-                                                <input type="hidden" name="labour_file_id[]"
-                                                    value="{{ $item->labour_file_id }}">
+                                        @foreach ($listFiles as $itemNew)
+                                            <tr style="margin-bottom: 10px">
+                                                <td> {{ $key }}.{{ $itemNew->list_file_note }}-<b>({{ $itemNew->list_file_name }})</b>
+                                                </td>
+                                                <td>
+                                                    <input type="hidden" name="labour_file_name[]"
+                                                        value="{{ $itemNew->labour_file_name }}">
+                                                    <input type="hidden" name="labour_file_id[]"
+                                                        value="{{ $itemNew->labour_file_id }}">
+                                                    <input type="file" name="filesNew[]">
+                                                </td>
+                                            </tr>
+                                        @endforeach
 
-                                                <div class="small text-muted">เลือกไฟล์เพื่ออัปโหลด</div>
-                                            </div>
-                                        </div>
-                                    @endif
-                                @endforeach
-                                {{-- @foreach ($listFiles as $itemNew)
-                                    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                                        <div class="card shadow-sm h-100 border-0 d-flex flex-column align-items-center justify-content-center p-3">
-                                            <div class="text-muted small mb-2">{{ $itemNew->list_file_note }}</div>
-                                            <div class="mb-2"><i class="fas fa-file-upload fa-2x text-secondary"></i></div>
-                                            <input type="hidden" name="labour_file_name[]" value="{{ $itemNew->labour_file_name }}">
-                                            <input type="hidden" name="labour_file_id[]" value="{{ $itemNew->labour_file_id }}">
-                                            <input type="file" name="filesNew[]" class="form-control form-control-sm mb-2">
-                                            <button type="submit" class="btn btn-sm btn-success"><i class="fa fa-upload"></i> อัปโหลด</button>
-                                            <div class="mt-2 text-center small" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:110px;">{{ $itemNew->list_file_name }}</div>
-                                        </div>
-                                    </div>
-                                @endforeach --}}
+                                    </tbody>
+                                </table>
                             </div>
                             {{-- labour File  --}}
                         </div>

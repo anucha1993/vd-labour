@@ -19,7 +19,7 @@
             <div class="modal-content">
                 <div class="card">
                     <div class="card-body">
-                        <h4>ค้านหาข้อมูล</h4>
+                        <h4>ค้นหาข้อมูล</h4>
                         <hr>
                         <form action="" method="get">
                             <div class="row">
@@ -131,94 +131,128 @@
 
 
 
-    <div class="card">
+
+    <div class="card card-custom mb-4">
         <div class="card-body">
-            <div class="row">
-                <h4>ข้อมูลคนงาน
-                    <button type="button" class="btn btn-outline-secondary float-end" data-toggle="modal"
-                        data-target=".bd-example-modal-lg">Search</button>
-                    <a href="{{ route('labour.create') }}" class="btn btn-sm btn-primary "> <i class="fa fa-user"></i>
-                        เพิ่มข้อมูล</a>
-                </h4>
-
-                <br>
-                <div class="table-responsive">
-                    <table class="table table">
-                        <thead>
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+                <h4 class="mb-0"><i class="bi bi-people-fill me-2 text-primary"></i>ข้อมูลคนงาน</h4>
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal"
+                        data-bs-target=".bd-example-modal-lg">
+                        <i class="bi bi-search"></i> ค้นหา
+                    </button>
+                    <a href="{{ route('labour.create') }}" class="btn btn-primary">
+                        <i class="bi bi-person-plus-fill"></i> เพิ่มข้อมูล
+                    </a>
+                </div>
+            </div>
+            <div class="table-responsive card card-custom p-0">
+                <table class="table table-hover table-striped align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th class="text-center">#</th>
+                            <th><i class="bi bi-person-badge me-1"></i> Full-Name</th>
+                            <th><i class="bi bi-passport me-1"></i> Passport No.</th>
+                            <th><i class="bi bi-telephone me-1"></i> Phone</th>
+                            <th><i class="bi bi-folder-check me-1"></i> Docs.</th>
+                            <th><i class="bi bi-flag me-1"></i> Status</th>
+                            <th><i class="bi bi-person-lines-fill me-1"></i> Staff</th>
+                            <th class="text-center"><i class="bi bi-gear me-1"></i> Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($labours as $key => $item)
                             <tr>
-                                <th>#</th>
-                                <th>Full-Name</th>
-                                <th>Passport No.</th>
-                                <th>Phone</th>
-                                <th>Docs.</th>
-                                <th>Status.</th>
-                                <th>staff</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($labours as $key => $item)
-                                <tr>
-                                    <th>{{ $key + 1 }}</th>
-                                    <th>{{ $item->labour_prefix . '.' . $item->labour_firstname . ' ' . $item->labour_lastname }}
-                                    </th>
+                                <td class="text-center">{{ $key + 1 }}</td>
+                                <td>{{ $item->labour_prefix . '.' . $item->labour_firstname . ' ' . $item->labour_lastname }}</br>
+                                    <span class="text-muted">นายจ้าง :
+                                        {{ $item->customer->customer_name ?? 'ยังไม่มีนายจ้าง' }}</span>
 
-                                    <th>{{ $item->labour_passport_number ? $item->labour_passport_number : 'ไม่พบข้อมูล' }}
-                                    </th>
-                                    <th>{{ $item->labour_phone }}</th>
-                                    <th>
-                                        @php
-                                            $progress = ($item->labour_file_list / $item->labour_file_count) * 100;
+                                </td>
+                                <td>
+                                    {{ $item->labour_passport_number ? $item->labour_passport_number : 'ไม่พบข้อมูล' }}</br>
+                                    <span class="text-success">อายุ :
+                                        {{ $item->labour_birthday ? \Carbon\Carbon::parse($item->labour_birthday)->age : 'ไม่พบข้อมูล' }}</span>
 
-                                        @endphp
-                                        <div class="progress mt-3">
-                                            <div class="progress-bar bg-success" role="progressbar"
-                                                style="width: {{ $progress }}%" aria-valuenow="{{ $progress }}"
-                                                aria-valuemin="0" aria-valuemax="100">
-
-                                            </div>
+                                </td>
+                                <td>{{ $item->labour_phone }}</br>
+                                    <span class="text-primary">Country :
+                                        {{ $item->country->country_name_th ?? 'ไม่พบข้อมูล' }}</span>
+                                </td>
+                                <td>
+                                    @php
+                                        $progress =
+                                            $item->labour_file_count > 0
+                                                ? ($item->labour_file_list / $item->labour_file_count) * 100
+                                                : 0;
+                                    @endphp
+                                    <div class="progress" style="height: 18px; background: #fbeee6;">
+                                        <div class="progress-bar bg-success" role="progressbar"
+                                            style="width: {{ $progress }}%" aria-valuenow="{{ $progress }}"
+                                            aria-valuemin="0" aria-valuemax="100">
+                                            {{ round($progress) }}%
                                         </div>
-                                    </th>
 
-                                    <th>
-                                        @if ($item->labour_status === 'wait')
-                                            <span class="badge rounded-pill bg-primary">กำลังดำเนินการ</span>
-                                        @endif
-                                        @if ($item->labour_status === 'success')
-                                            <span class="badge rounded-pill bg-success">บินแล้ว</span>
-                                        @endif
-                                        @if ($item->labour_status === 'cancel')
-                                            <span class="badge rounded-pill bg-danger">ยกเลิก</span>
-                                        @endif
-                                    </th>
-                                    <th>{{ $item->staff_nickname }}</th>
-                                    <th>
-                                        <div class="btn-group">
-                                            <button type="button" class="btn btn-sm btn-secondary dropdown-toggle"
-                                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                Actions
-                                            </button>
-                                            <div class="dropdown-menu">
+                                    </div>
+                                    </br>
+                                    <span class="text-muted">Job :
+                                        {{ $item->jobGroup->job_group_name ?? 'ไม่พบข้อมูล' }}</span>
+
+                                </td>
+                                <td>
+                                    @if ($item->labour_status === 'wait')
+                                        <span class="badge rounded-pill bg-primary"><i class="bi bi-hourglass-split"></i>
+                                            กำลังดำเนินการ</span>
+                                    @elseif ($item->labour_status === 'success')
+                                        <span class="badge rounded-pill bg-success"><i class="bi bi-check-circle"></i>
+                                            บินแล้ว</span>
+                                    @elseif ($item->labour_status === 'cancel')
+                                        <span class="badge rounded-pill bg-danger"><i class="bi bi-x-circle"></i>
+                                            ยกเลิก</span>
+                                    @else
+                                        <span class="badge rounded-pill bg-secondary">-</span>
+                                    @endif
+                                    </br>
+
+                                    <span class="text-muted">Position :
+                                        {{ $item->position->position_name ?? 'ไม่พบข้อมูล' }}</span>
+                                </td>
+                                <td>{{ $item->staff_nickname }}</td>
+                                <td class="text-center">
+                                    <div class="btn-group dropdown">
+                                        <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle"
+                                            data-bs-toggle="dropdown" aria-expanded="false" tabindex="0">
+                                            <i class="bi bi-three-dots-vertical"></i>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li>
                                                 <a class="dropdown-item"
-                                                    href="{{ route('labour.edit', $item->labour_id) }}">แก้ไขข้อมูล</a>
-              
-                                                    <a class="dropdown-item view-doc" href="{{ route('labour.viewDocs', $item->labour_id) }}">ดูเอกสาร</a>
-                                                    <a class="dropdown-item text-danger" target="_blink" href="{{ route('labour.print', $item->labour_id) }}"><i class="fa fa-print"></i> พิมพ์ข้อมูล</a></a>
-                          
-                                                        
-
-
-
-                                            </div>
-                                        </div>
-                                    </th>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                                                    href="{{ route('labour.edit', $item->labour_id) }}">
+                                                    <i class="bi bi-pencil-square me-1"></i> แก้ไขข้อมูล
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item view-doc"
+                                                    href="{{ route('labour.viewDocs', $item->labour_id) }}">
+                                                    <i class="bi bi-folder2-open me-1"></i> ดูเอกสาร
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item text-danger" target="_blank"
+                                                    href="{{ route('labour.print', $item->labour_id) }}">
+                                                    <i class="bi bi-printer me-1"></i> พิมพ์ข้อมูล
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+                <div class="pt-3">
                     {!! $labours->withQueryString()->links('pagination::bootstrap-5') !!}
                 </div>
-
             </div>
         </div>
     </div>
@@ -229,7 +263,8 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">แสดงเอกสาร</h5>
-                    <button type="button" class="close-modal-btn btn-close" data-bs-dismiss="modal" aria-label="ปิด"></button>
+                    <button type="button" class="close-modal-btn btn-close" data-bs-dismiss="modal"
+                        aria-label="ปิด"></button>
                 </div>
                 <div class="modal-body p-3">
                     <div class="text-center">กำลังโหลด...</div>
@@ -245,25 +280,26 @@
             }
         }
     </style>
+
     <script>
-       let viewModal; // ตัวแปร global
+        let viewModal; // ตัวแปร global
 
-$(document).on("click", ".view-doc", function (e) {
-    e.preventDefault();
-    const url = $(this).attr("href");
-    const modalEl = document.getElementById("view-doc");
+        $(document).on("click", ".view-doc", function(e) {
+            e.preventDefault();
+            const url = $(this).attr("href");
+            const modalEl = document.getElementById("view-doc");
 
-    viewModal = new bootstrap.Modal(modalEl);
-    $("#view-doc .modal-body").html("กำลังโหลด...");
-    $("#view-doc .modal-body").load(url, function () {
-        viewModal.show();
-    });
-});
+            viewModal = new bootstrap.Modal(modalEl);
+            $("#view-doc .modal-body").html("กำลังโหลด...");
+            $("#view-doc .modal-body").load(url, function() {
+                viewModal.show();
+            });
+        });
+        // ปุ่มสั่งปิด
+        $(document).on("click", ".close-modal-btn", function() {
+            if (viewModal) viewModal.hide();
+        });
 
-// ปุ่มสั่งปิด
-$(document).on("click", ".close-modal-btn", function () {
-    if (viewModal) viewModal.hide();
-});
-
+        // ...existing code...
     </script>
 @endsection

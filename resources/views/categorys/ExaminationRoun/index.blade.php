@@ -32,48 +32,56 @@
                     
                 </div>
                 <h4>ข้อมูลรอบสอบ  
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-sm">เพิ่มข้อมูล</button>
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target=".bd-example-modal-sm">เพิ่มข้อมูล</button>
                 </h4>
 
                 <br>
                 <div class="table-responsive">
-                    <table class="table table">
-                        <thead>
+                    <table class="table table-striped table-hover table-bordered align-middle datatable" id="examination-round-table">
+                        <thead class="table-primary text-center align-middle">
                             <tr>
-                                <th>#</th>
+                                <th style="width: 50px;">#</th>
                                 <th>วันที่สอบ</th>
                                 <th>ข้อมูลรอบสอบ</th>
                                 <th>สถานะ</th>
                                 <th>Date Created</th>
-                                <th>Actions</th>
+                                <th style="width: 120px;">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse ($ExaminationRoun as $key => $item)
                                 <tr>
-                                    <td>{{ $key+1}}</td>
+                                    <td class="text-center">{{ $key+1}}</td>
                                     <td>{{ date('d-m-Y',strtotime($item->examination_round_name))}}</td>
                                     <td>{{ $item->examination_round_note ? $item->examination_round_note : "NULL" }}</td>
-                                    <td>{{ $item->examination_round_status}}</td>
-                                    
+                                    <td class="text-center">
+                                      <span class="badge {{ $item->examination_round_status === 'active' ? 'bg-success' : 'bg-secondary' }}">
+                                        {{ $item->examination_round_status === 'active' ? 'Active' : 'Disable' }}
+                                      </span>
+                                    </td>
                                     <td>{{date('d-m-Y',strtotime($item->created_at))}}</td>
-                                    <td>
-                                        <a href="{{route('category.examination.cancel',$item->examination_round_id)}}" onclick="return confirm('ยืนยันการยกเลิกรอบสอบ')" class="btn btn-sm text-danger"> </i> Cancel</a>
+                                    <td class="text-center">
+                                        <a href="{{route('category.examination.cancel',$item->examination_round_id)}}" onclick="return confirm('ยืนยันการยกเลิกรอบสอบ')" class="btn btn-outline-danger btn-sm" title="Cancel"><i class="bi bi-x-circle"></i> Cancel</a>
                                     </td>
                                 </tr>
                             @empty
-                                
+                                <tr><td colspan="6" class="text-center text-muted">ไม่มีข้อมูล</td></tr>
                             @endforelse
                         </tbody>
                     </table>
                 </div>
+                <script>
+                  $(function() {
+                    $('#examination-round-table').DataTable();
+                  });
+                </script>
                 
             </div>
         </div>
     </div>
 
     <div class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-sm">
+        <div class="modal-dialog modal-lg">
           <div class="modal-content">
             <div class="modal-body">
                 <form action="{{route('category.examination.store')}}" method="POST" >
@@ -94,6 +102,7 @@
                     <label for="message-text" class="col-form-label">บันทึกเพิ่มเติม:</label>
                     <textarea class="form-control" name="examination_round_note" id="message-text"></textarea>
                   </div>
+                  <br>
                   <div class="form-group">
                     <button type="submit" class="btn btn-primary">บันทึก</button>
                   </div>

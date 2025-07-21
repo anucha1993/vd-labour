@@ -1,6 +1,10 @@
 <div class="card">
     <div class="card-body">
-        <h4> ข้อมูลนายจ้าง</h4>
+       <div class="modal-header">
+                <h4 class="modal-title">ข้อมูลนายจ้าง</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+     
                 <form action="{{route('customer.update',$customerModel->customer_id)}}" method="POST" >
                     @csrf
                     @method('PUT')
@@ -32,6 +36,7 @@
                     <label for="message-text" class="col-form-label">บันทึกเพิ่มเติม:</label>
                     <textarea class="form-control" name="customer_note" id="message-text" placeholder="บันทึกเพิ่มเติม">{{$customerModel->customer_note}}</textarea>
                   </div>
+                  <br>
                   <div class="form-group">
                     <button type="submit" class="btn btn-primary">บันทึก</button>
                   </div>

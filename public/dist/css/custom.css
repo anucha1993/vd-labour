@@ -1,0 +1,300 @@
+/* Minimal, theme-friendly custom dashboard styles */
+@import url('https://fonts.googleapis.com/css2?family=Prompt:wght@400;600&family=Sarabun:wght@400;700&display=swap');
+
+:root {
+  --radius: 12px;
+  --shadow: 0 2px 8px 0 rgba(33,150,243,0.08);
+  --input-bg: #f8fafc;
+  --input-border: #d0d7de;
+  --hover: #f0f4f8;
+body, html {
+  font-family: 'Prompt', 'Sarabun', 'Segoe UI', 'sans-serif' !important;
+  font-size: 16px;
+.card, .modal, .dropdown-menu {
+  border-radius: var(--radius) !important;
+  box-shadow: var(--shadow) !important;
+.btn, button {
+  border-radius: 8px !important;
+  font-weight: 600;
+.btn-primary, .btn-primary:focus {
+  background: #2196f3 !important;
+  border-color: #2196f3 !important;
+.btn-primary:hover {
+  background: #1565c0 !important;
+  border-color: #1565c0 !important;
+input, select, textarea {
+  border-radius: 8px !important;
+  border: 1.2px solid var(--input-border) !important;
+input:focus, select:focus, textarea:focus {
+  border-color: #2196f3 !important;
+  box-shadow: 0 0 0 2px rgba(33,150,243,0.10) !important;
+.card {
+  margin-bottom: 18px !important;
+  padding: 18px 16px !important;
+table.dataTable, table {
+  border-radius: var(--radius) !important;
+  overflow: hidden !important;
+table.dataTable thead, table thead {
+  background: #f5f7fa !important;
+  color: #222 !important;
+table.dataTable tbody tr:hover, table tbody tr:hover {
+  background: var(--hover) !important;
+  transition: background 0.2s !important;
+table.dataTable td, table td {
+  vertical-align: middle !important;
+}
+.dropdown-menu {
+  border-radius: 10px !important;
+  box-shadow: 0 2px 8px 0 rgba(33,150,243,0.08) !important;
+.dropdown-item {
+  border-radius: 6px !important;
+  margin: 2px 8px !important;
+.dropdown-item:hover, .dropdown-item:focus {
+  background: var(--hover) !important;
+  color: #2196f3 !important;
+.page-breadcrumb, .page-title, .breadcrumb {
+  background: transparent;
+  color: #2196f3;
+.breadcrumb-item.active {
+  color: #1565c0 !important;
+}
+.modal {
+  border-radius: var(--radius) !important;
+  box-shadow: 0 4px 16px 0 rgba(33,150,243,0.10) !important;
+::-webkit-scrollbar {
+  width: 8px;
+  background: #e3f2fd;
+::-webkit-scrollbar-thumb {
+  background: #b3e5fc;
+  border-radius: 8px;
+/* Custom modern dashboard styles for Labours Vdragon */
+@import url('https://fonts.googleapis.com/css2?family=Prompt:wght@400;600&family=Sarabun:wght@400;700&display=swap');
+
+
+body:root {
+  --primary: #2196f3;
+  --primary-dark: #1565c0;
+  --secondary: #43e97b;
+  --secondary-dark: #38f9d7;
+  --background: #f6fbff;
+  --card-bg: #fff;
+  --text: #222;
+  --sidebar-bg: linear-gradient(135deg, #2196f3 60%, #38f9d7 100%);
+  --sidebar-active: #fff;
+  --sidebar-icon: #fff;
+  --shadow: 0 4px 24px 0 rgba(33,150,243,0.10);
+  --radius: 18px;
+  --input-bg: #f4f8fb;
+  --input-border: #b3e5fc;
+  --hover: #e3f2fd;
+}
+
+
+body, html {
+  font-family: 'Prompt', 'Sarabun', 'Segoe UI', 'sans-serif' !important;
+  background: var(--background) !important;
+  color: var(--text) !important;
+  font-size: 16px !important;
+  letter-spacing: 0.01em !important;
+}
+
+
+
+body .card, body .modal, body .page-wrapper, body .container-fluid, body .dropdown-menu, body .footer {
+  border-radius: var(--radius) !important;
+  box-shadow: var(--shadow) !important;
+  background: var(--card-bg) !important;
+}
+
+
+body .navbar, body .topbar {
+  background: linear-gradient(90deg, var(--primary), var(--secondary-dark)) !important;
+  color: #fff !important;
+  border-radius: 0 0 var(--radius) var(--radius) !important;
+  box-shadow: 0 2px 12px 0 rgba(33,150,243,0.10) !important;
+}
+
+
+body .footer {
+  background: #fff !important;
+  color: var(--primary) !important;
+  border-radius: var(--radius) var(--radius) 0 0 !important;
+  box-shadow: 0 -2px 12px 0 rgba(33,150,243,0.06) !important;
+}
+
+.navbar, .topbar, .footer {
+  background: var(--primary) !important;
+  color: #fff !important;
+}
+
+
+.left-sidebar, .sidebar {
+  background: var(--sidebar-bg) !important;
+  box-shadow: var(--shadow) !important;
+  border-radius: 0 var(--radius) var(--radius) 0 !important;
+}
+.sidebar-nav ul li a {
+  border-radius: 10px !important;
+  margin-bottom: 8px !important;
+  color: var(--sidebar-icon) !important;
+  font-weight: 500 !important;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s !important;
+  padding: 10px 18px 10px 18px !important;
+  display: flex !important;
+  align-items: center !important;
+}
+.sidebar-nav ul li a i {
+  color: var(--sidebar-icon) !important;
+  margin-right: 10px !important;
+}
+.sidebar-nav ul li a:hover, .sidebar-nav ul li a.active {
+  background: var(--sidebar-active) !important;
+  color: var(--primary) !important;
+  box-shadow: 0 2px 8px 0 rgba(33,150,243,0.10) !important;
+}
+.sidebar-nav ul li a.active i, .sidebar-nav ul li a:hover i {
+  color: var(--primary) !important;
+}
+
+
+.btn, button {
+  border-radius: 10px !important;
+  background: linear-gradient(90deg, var(--primary), var(--secondary-dark)) !important;
+  color: #fff !important;
+  font-weight: 600 !important;
+  padding: 8px 22px !important;
+  border: none !important;
+  transition: background 0.2s, box-shadow 0.2s, transform 0.1s !important;
+  box-shadow: 0 2px 8px 0 rgba(33,150,243,0.10) !important;
+}
+.btn:hover, button:hover, .btn:focus, button:focus {
+  background: linear-gradient(90deg, var(--secondary-dark), var(--primary)) !important;
+  color: #fff !important;
+  box-shadow: 0 6px 24px 0 rgba(33,150,243,0.18) !important;
+  transform: translateY(-2px) scale(1.03) !important;
+}
+
+
+input, select, textarea {
+  border-radius: 8px !important;
+  border: 1.5px solid var(--input-border) !important;
+  background: var(--input-bg) !important;
+  transition: border 0.2s, box-shadow 0.2s !important;
+  font-family: 'Prompt', 'Sarabun', 'Segoe UI', 'sans-serif' !important;
+  padding: 8px 14px !important;
+  font-size: 1em !important;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 2px rgba(33,150,243,0.15) !important;
+  background: #fff !important;
+}
+
+
+/* Card and container spacing */
+body .card, body .container-fluid, body .page-wrapper {
+  margin-bottom: 22px !important;
+  padding: 24px 22px !important;
+  border: none !important;
+}
+
+
+
+
+/* Table styling */
+table.dataTable, table {
+  border-radius: var(--radius) !important;
+  overflow: hidden !important;
+  background: #fff !important;
+  box-shadow: 0 2px 12px 0 rgba(33,150,243,0.06) !important;
+  font-size: 1em !important;
+}
+table.dataTable thead, table thead {
+  background: linear-gradient(90deg, var(--primary), var(--secondary-dark)) !important;
+  color: #fff !important;
+  font-weight: 600 !important;
+}
+table.dataTable tbody tr:hover, table tbody tr:hover {
+  background: var(--hover) !important;
+  transition: background 0.2s !important;
+}
+table.dataTable td, table td {
+  vertical-align: middle !important;
+}
+
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  .sidebar, .left-sidebar {
+    position: fixed;
+    width: 80vw;
+    left: -80vw;
+    top: 0;
+    z-index: 9999;
+    transition: left 0.3s;
+    border-radius: 0 18px 18px 0;
+  }
+  .sidebar.open, .left-sidebar.open {
+    left: 0;
+  }
+  .navbar, .topbar, .page-wrapper, .container-fluid {
+    padding: 8px !important;
+  }
+  .card {
+    margin-bottom: 16px;
+    padding: 12px 8px;
+  }
+  .sidebar-nav ul li a {
+    padding: 10px 10px 10px 16px;
+    font-size: 1em;
+  }
+}
+
+
+/* Modal improvements */
+.modal {
+  border-radius: var(--radius) !important;
+  box-shadow: 0 8px 32px 0 rgba(33,150,243,0.18);
+  background: #fff;
+}
+
+
+/* Breadcrumb and header */
+.page-breadcrumb, .page-title, .breadcrumb {
+  background: transparent;
+  color: var(--primary);
+  font-weight: 700;
+  font-family: 'Prompt', 'Sarabun', 'Segoe UI', 'sans-serif';
+  font-size: 1.2em;
+  letter-spacing: 0.01em;
+}
+.breadcrumb-item.active {
+  color: var(--primary-dark) !important;
+}
+
+
+/* Misc */
+::-webkit-scrollbar {
+  width: 8px;
+  background: #e3f2fd;
+}
+::-webkit-scrollbar-thumb {
+  background: #b3e5fc;
+  border-radius: 8px;
+}
+/* Dropdown menu modern */
+.dropdown-menu {
+  border-radius: 12px !important;
+  box-shadow: 0 4px 24px 0 rgba(33,150,243,0.10) !important;
+  border: none !important;
+  padding: 10px 0 !important;
+}
+.dropdown-item {
+  border-radius: 8px !important;
+  margin: 2px 8px !important;
+  transition: background 0.2s, color 0.2s !important;
+}
+.dropdown-item:hover, .dropdown-item:focus {
+  background: var(--hover) !important;
+  color: var(--primary) !important;
+}

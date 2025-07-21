@@ -1,132 +1,284 @@
 @extends('layouts.main')
 @section('content')
 
-<div class="container-fluid">
+<style>
+  .alert-card {
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 2px 8px 0 rgba(0,0,0,0.06);
+    padding: 1.2rem 1.2rem 1rem 1.2rem;
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    margin-bottom: 1.2rem;
+    border: none;
+    position: relative;
+  }
+  .alert-card .alert-label {
+    color: #6c757d;
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+    font-weight: 500;
+  }
+  .alert-card .alert-value {
+    font-size: 2.1rem;
+    font-weight: bold;
+    color: #222;
+    margin-bottom: 0.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .alert-card .alert-desc {
+    color: #a0a0a0;
+    font-size: 0.95rem;
+    margin-bottom: 0.2rem;
+  }
+  .alert-icon {
+    font-size: 1.7rem;
+    border-radius: 50%;
+    padding: 0.4rem;
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 0.5rem;
+  }
+  .alert-icon.bg-blue { background: #2196f3; }
+  .alert-icon.bg-green { background: #4caf50; }
+  .alert-icon.bg-orange { background: #ff9800; }
+  .alert-icon.bg-red { background: #f44336; }
+  .alert-icon.bg-cyan { background: #00bcd4; }
+  .alert-icon.bg-purple { background: #673ab7; }
+  .alert-badge {
+    position: absolute;
+    top: 1rem;
+    right: 1.2rem;
+    background: #f44336;
+    color: #fff;
+    font-size: 0.85rem;
+    border-radius: 12px;
+    padding: 0.2rem 0.7rem;
+    font-weight: 500;
+  }
+  .alert-sparkline {
+    width: 100%;
+    height: 30px;
+    margin-bottom: 0.3rem;
+  }
+</style>
 
-    {{-- บล็อกแรก --}}
-    <div class="row g-3">
+<div class="container-fluid py-4" style="background:#f5f7fa;">
+
+ <a href="{{ route('labours.export.alerts') }}" class="btn btn-success btn-lg">
+                        <i class="fas fa-file-excel"></i> Export แจ้งเตือนทั้งหมด (Excel)
+                    </a>
+                 <br>
+                 <br>
+    <!-- Alert Cards (Multi-style) -->
+    <div class="row g-3 mb-3">
         <div class="col-12 col-sm-6 col-md-3">
-            <div class="bg-info text-white text-center p-3 rounded shadow">
-                <i class="mdi mdi-account fs-3 mb-2"></i>
-                <h1 class="mb-1">{{ number_format($countAll) }}</h1>
-                <small>ข้อมูลคนงานทั้งหมด</small><br>
-                <small>ทั้งหมดในระบบ</small>
+            <div class="alert-card">
+                <span class="alert-icon bg-blue"><i class="mdi mdi-account"></i></span>
+                <span class="alert-badge">รวม</span>
+                <div class="alert-label">ข้อมูลคนงานทั้งหมด</div>
+                <div class="alert-value">{{ number_format($countAll) }}</div>
+                <div class="alert-desc">ทั้งหมดในระบบ</div>
             </div>
         </div>
         <div class="col-12 col-sm-6 col-md-3">
-            <div class="bg-success text-white text-center p-3 rounded shadow">
-                <i class="mdi mdi-account fs-3 mb-2"></i>
-                <h1 class="mb-1">{{ number_format($countSuccess) }}</h1>
-                <small>จำนวนแรงงานไปทำงานแล้ว</small><br>
-                <small>คนงานที่บินแล้วทั้งหมด</small>
+            <div class="alert-card">
+                <span class="alert-icon bg-green"><i class="mdi mdi-airplane"></i></span>
+                <span class="alert-badge" style="background:#4caf50;">Active</span>
+                <div class="alert-label">ไปทำงานแล้ว</div>
+                <div class="alert-value">{{ number_format($countSuccess) }}</div>
+                <div class="alert-desc">คนงานที่บินแล้วทั้งหมด</div>
             </div>
         </div>
+        <div class="col-12 col-sm-6 col-md-3">
+            <div class="alert-card">
+                <span class="alert-icon bg-orange"><i class="mdi mdi-close-circle"></i></span>
+                <span class="alert-badge" style="background:#ff9800;">ยกเลิก</span>
+                <div class="alert-label">จำนวนคนงานยกเลิก</div>
+                <div class="alert-value">{{ number_format($countCancel) }}</div>
+                <div class="alert-desc">ยกเลิกทั้งหมด</div>
+            </div>
+        </div>
+        <div class="col-12 col-sm-6 col-md-3">
+            <div class="alert-card">
+                <span class="alert-icon bg-red"><i class="mdi mdi-bell-alert"></i></span>
+                <span class="alert-badge">แจ้งเตือน</span>
+                <div class="alert-label">แจ้งเตือนรวม</div>
+                <div class="alert-value">{{ number_format($scopeExpiringPassport + $scopeExpiringCIDConstruct + $scopeExpiringCIDFactory + $scopeExpiringDiseaseConstruct + $scopeExpiringDiseaseFactory + $scopeExpiringCidMoney + $scopeExpiringAffidavit) }}</div>
+                <div class="alert-desc">รวมทุกประเภท</div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Alert Cards (แจ้งเตือนแต่ละประเภท) -->
+    <div class="row g-3 mb-3">
         <div class="col-12 col-sm-6 col-md-3">
             <a href="{{ route('labours.alert.list', ['type' => 'disease-construct']) }}" class="text-decoration-none">
-                <div class="bg-danger text-white text-center p-3 rounded shadow">
-                    <i class="mdi mdi-account fs-3 mb-2"></i>
-                    <h1 class="mb-1">{{ number_format($scopeExpiringDiseaseConstruct) }}</h1>
-                    <small>แจ้งเตือนผลโรค ก่อสร้าง</small><br>
-                    <small>ก่อนหมดอายุ 15 วัน</small>
+                <div class="alert-card">
+                    <span class="alert-icon bg-cyan"><i class="mdi mdi-hospital-box"></i></span>
+                    <span class="alert-badge" style="background:#00bcd4;">ก่อสร้าง</span>
+                    <div class="alert-label">แจ้งเตือนผลโรค ก่อสร้าง</div>
+                    <div class="alert-value">{{ number_format($scopeExpiringDiseaseConstruct) }}</div>
+                    <div class="alert-desc">ก่อนหมดอายุ 15 วัน</div>
                 </div>
             </a>
         </div>
         <div class="col-12 col-sm-6 col-md-3">
             <a href="{{ route('labours.alert.list', ['type' => 'disease-factory']) }}" class="text-decoration-none">
-                <div class="bg-danger text-white text-center p-3 rounded shadow">
-                    <i class="mdi mdi-account fs-3 mb-2"></i>
-                    <h1 class="mb-1">{{ number_format($scopeExpiringDiseaseFactory) }}</h1>
-                    <small>แจ้งเตือนผลโรค โรงงาน</small><br>
-                    <small>ก่อนหมดอายุ 15 วัน</small>
+                <div class="alert-card">
+                    <span class="alert-icon bg-purple"><i class="mdi mdi-hospital"></i></span>
+                    <span class="alert-badge" style="background:#673ab7;">โรงงาน</span>
+                    <div class="alert-label">แจ้งเตือนผลโรค โรงงาน</div>
+                    <div class="alert-value">{{ number_format($scopeExpiringDiseaseFactory) }}</div>
+                    <div class="alert-desc">ก่อนหมดอายุ 15 วัน</div>
                 </div>
             </a>
         </div>
-    </div>
-
-    {{-- บล็อกที่สอง --}}
-    <div class="row g-3 mt-3">
-        <div class="col-12 col-sm-6 col-md-3">
-            <div class="bg-warning text-white text-center p-3 rounded shadow">
-                <i class="mdi mdi-account fs-3 mb-2"></i>
-                <h1 class="mb-1">{{ $countCancel }}</h1>
-                <small>จำนวนคนงานยกเลิก</small><br>
-                <small>ยกเลิกทั้งหมด</small>
-            </div>
-        </div>
         <div class="col-12 col-sm-6 col-md-3">
             <a href="{{ route('labours.alert.list', ['type' => 'passport']) }}" class="text-decoration-none">
-                <div class="bg-danger text-white text-center p-3 rounded shadow">
-                    <i class="mdi mdi-account fs-3 mb-2"></i>
-                    <h1 class="mb-1">{{ number_format($scopeExpiringPassport) }}</h1>
-                    <small>พาสปอร์ตหมดอายุ</small><br>
-                    <small>ก่อนหมดอายุ 15 วัน</small>
+                <div class="alert-card">
+                    <span class="alert-icon bg-blue"><i class="mdi mdi-passport"></i></span>
+                    <span class="alert-badge" style="background:#2196f3;">Passport</span>
+                    <div class="alert-label">พาสปอร์ตหมดอายุ</div>
+                    <div class="alert-value">{{ number_format($scopeExpiringPassport) }}</div>
+                    <div class="alert-desc">ก่อนหมดอายุ 15 วัน</div>
                 </div>
             </a>
         </div>
         <div class="col-12 col-sm-6 col-md-3">
             <a href="{{ route('labours.alert.list', ['type' => 'cid-construct']) }}" class="text-decoration-none">
-                <div class="bg-danger text-white text-center p-3 rounded shadow">
-                    <i class="mdi mdi-account fs-3 mb-2"></i>
-                    <h1 class="mb-1">{{ number_format($scopeExpiringCIDConstruct) }}</h1>
-                    <small>แจ้งเตือน CID หมดอายุ ก่อสร้าง</small><br>
-                    <small>ก่อนหมดอายุ 15 วัน</small>
+                <div class="alert-card">
+                    <span class="alert-icon bg-orange"><i class="mdi mdi-card-account-details"></i></span>
+                    <span class="alert-badge" style="background:#ff9800;">CID ก่อสร้าง</span>
+                    <div class="alert-label">CID หมดอายุ (ก่อสร้าง)</div>
+                    <div class="alert-value">{{ number_format($scopeExpiringCIDConstruct) }}</div>
+                    <div class="alert-desc">ก่อนหมดอายุ 15 วัน</div>
                 </div>
             </a>
         </div>
         <div class="col-12 col-sm-6 col-md-3">
             <a href="{{ route('labours.alert.list', ['type' => 'cid-factory']) }}" class="text-decoration-none">
-                <div class="bg-danger text-white text-center p-3 rounded shadow">
-                    <i class="mdi mdi-account fs-3 mb-2"></i>
-                    <h1 class="mb-1">{{ number_format($scopeExpiringCIDFactory) }}</h1>
-                    <small>แจ้งเตือน CID หมดอายุ โรงงาน</small><br>
-                    <small>ก่อนหมดอายุ 15 วัน</small>
+                <div class="alert-card">
+                    <span class="alert-icon bg-orange"><i class="mdi mdi-card-account-details-outline"></i></span>
+                    <span class="alert-badge" style="background:#ff9800;">CID โรงงาน</span>
+                    <div class="alert-label">CID หมดอายุ (โรงงาน)</div>
+                    <div class="alert-value">{{ number_format($scopeExpiringCIDFactory) }}</div>
+                    <div class="alert-desc">ก่อนหมดอายุ 15 วัน</div>
                 </div>
             </a>
         </div>
-    </div>
-
-    {{-- บล็อกที่สาม (เหลือบล็อกเดียว) --}}
-    <div class="row g-3 mt-3">
         <div class="col-12 col-sm-6 col-md-3">
             <a href="{{ route('labours.alert.list', ['type' => 'cid-money']) }}" class="text-decoration-none">
-                <div class="bg-danger text-white text-center p-3 rounded shadow">
-                    <i class="mdi mdi-account fs-3 mb-2"></i>
-                    <h1 class="mb-1">{{ number_format($scopeExpiringCidMoney) }}</h1>
-                    <small>แจ้งเตือนคนงานที่ยังไม่ได้จ่ายเงินประกัน</small><br>
-                    <small>ยื่น CID ไปแล้ว 15 วัน</small>
+                <div class="alert-card">
+                    <span class="alert-icon bg-red"><i class="mdi mdi-cash"></i></span>
+                    <span class="alert-badge">เงินประกัน</span>
+                    <div class="alert-label">ยังไม่ได้จ่ายเงินประกัน</div>
+                    <div class="alert-value">{{ number_format($scopeExpiringCidMoney) }}</div>
+                    <div class="alert-desc">ยื่น CID ไปแล้ว 15 วัน</div>
                 </div>
             </a>
         </div>
-
-         {{-- บล็อกที่สี่ --}}
-
         <div class="col-12 col-sm-6 col-md-3">
             <a href="{{ route('labours.alert.list', ['type' => 'affidavit']) }}" class="text-decoration-none">
-                <div class="bg-danger text-white text-center p-3 rounded shadow">
-                    <i class="mdi mdi-account fs-3 mb-2"></i>
-                    <h1 class="mb-1">{{ number_format($scopeExpiringAffidavit) }}</h1>
-                    <small>แจ้งเตือน Affidavit หมดอายุ</small><br>
-                    <small>ก่อนหมดอายุ 15 วัน</small>
+                <div class="alert-card">
+                    <span class="alert-icon bg-blue"><i class="mdi mdi-file-document"></i></span>
+                    <span class="alert-badge" style="background:#2196f3;">Affidavit</span>
+                    <div class="alert-label">แจ้งเตือน Affidavit หมดอายุ</div>
+                    <div class="alert-value">{{ number_format($scopeExpiringAffidavit) }}</div>
+                    <div class="alert-desc">ก่อนหมดอายุ 15 วัน</div>
                 </div>
             </a>
         </div>
-   
-
-    </div>
-   
-
-    {{-- ปุ่ม Export --}}
-    <div class="row mt-4">
-        <div class="col-12">
-            <div class="card shadow-sm">
-                <div class="card-body text-center">
-                    <a href="{{ route('labours.export.alerts') }}" class="btn btn-success btn-lg">
-                        <i class="fas fa-file-excel"></i> Export แจ้งเตือนทั้งหมด (Excel)
-                    </a>
+         <div class="row mb-4">
+        <div class="col-12 col-lg-10">
+            <div class="card shadow-sm p-4">
+                <h5 class="mb-3">เปรียบเทียบจำนวนแจ้งเตือนแต่ละประเภทกับจำนวนคนงานทั้งหมด</h5>
+                <div style="height:340px;">
+                  <canvas id="alertCompareChart"></canvas>
                 </div>
             </div>
         </div>
     </div>
+
+    </div>
+
+
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Chart: เปรียบเทียบการแจ้งเตือนกับจำนวนคนงานทั้งหมด -->
+
+   
+
+
+<script>
+  const alertCompareCtx = document.getElementById('alertCompareChart').getContext('2d');
+  new Chart(alertCompareCtx, {
+    type: 'bar',
+    data: {
+      labels: [
+        'คนงานทั้งหมด',
+        'ผลโรค ก่อสร้าง',
+        'ผลโรค โรงงาน',
+        'พาสปอร์ตหมดอายุ',
+        'CID ก่อสร้าง',
+        'CID โรงงาน',
+        'ยังไม่ได้จ่ายเงินประกัน',
+        'Affidavit หมดอายุ'
+      ],
+      datasets: [{
+        label: 'จำนวน',
+        data: [
+          {{ $countAll ?? 0 }},
+          {{ $scopeExpiringDiseaseConstruct ?? 0 }},
+          {{ $scopeExpiringDiseaseFactory ?? 0 }},
+          {{ $scopeExpiringPassport ?? 0 }},
+          {{ $scopeExpiringCIDConstruct ?? 0 }},
+          {{ $scopeExpiringCIDFactory ?? 0 }},
+          {{ $scopeExpiringCidMoney ?? 0 }},
+          {{ $scopeExpiringAffidavit ?? 0 }}
+        ],
+        backgroundColor: [
+          '#2196f3', '#00bcd4', '#673ab7', '#2196f3', '#ff9800', '#ff9800', '#f44336', '#2196f3'
+        ],
+        borderRadius: 10,
+        maxBarThickness: 60
+      }]
+    },
+    options: {
+      responsive: true,
+      aspectRatio: 2.5,
+      layout: {
+        padding: { top: 20, bottom: 10, left: 10, right: 10 }
+      },
+      plugins: {
+        legend: { display: false },
+        title: { display: false },
+        tooltip: {
+          bodyFont: { size: 16 },
+          titleFont: { size: 15 }
+        }
+      },
+      scales: {
+        x: {
+          ticks: { font: { size: 15 } }
+        },
+        y: {
+          beginAtZero: true,
+          ticks: { stepSize: 1, font: { size: 15 } }
+        }
+      }
+    }
+  });
+</script>
 
 </div>
 

@@ -32,36 +32,40 @@
                     
                 </div>
                 <h4>  
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-sm">เพิ่มนายจ้าง</button>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target=".bd-example-modal-sm">เพิ่มนายจ้าง</button>
                 </h4>
 
                 <br>
                 <div class="table-responsive">
-                    <table class="table table" id="customer">
-                        <thead>
+                    <table class="table table-striped table-hover table-bordered align-middle datatable" id="customer">
+                        <thead class="table-primary text-center align-middle">
                             <tr>
-                                <th>#</th>
+                                <th style="width: 50px;">#</th>
                                 <th>ชื่อนายจ้าง</th>
                                 <th>ประเทศ</th>
                                 <th>สถานะ</th>
                                 <th>Date Created</th>
-                                <th>Actions</th>
+                                <th style="width: 120px;">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                           @forelse ($customers as $key => $item)
                               <tr>
-                                <td>{{$key+1}}</td>
+                                <td class="text-center">{{$key+1}}</td>
                                 <td>{{$item->customer_name}}</td>
                                 <td>{{$item->country_name_th}}</td>
-                                <td>{{$item->customer_status === 'active' ? 'Active' : 'Disable'}}</td>
-                                <td>{{date('d-m-Y',strtotime($item->created_at))}}</td>
                                 <td>
-                                    <a href="{{route('customer.edit',$item->customer_id)}}" class="btn btn-info btn-sm customer-edit"> แก้ไข</a>
+                                  <span class="badge {{ $item->customer_status === 'active' ? 'bg-success' : 'bg-secondary' }}">
+                                    {{$item->customer_status === 'active' ? 'Active' : 'Disable'}}
+                                  </span>
+                                </td>
+                                <td>{{date('d-m-Y',strtotime($item->created_at))}}</td>
+                                <td class="text-center">
+                                    <a href="{{route('customer.edit',$item->customer_id)}}" class="btn btn-outline-primary btn-sm customer-edit" title="แก้ไข"><i class="bi bi-pencil-square"></i></a>
                                 </td>
                               </tr>
                           @empty
-                              
+                              <tr><td colspan="6" class="text-center text-muted">ไม่มีข้อมูล</td></tr>
                           @endforelse
                         </tbody>
                     </table>
@@ -74,8 +78,11 @@
     <div class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl">
           <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">เพิ่มข้อมูลนายจ้าง</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
             <div class="modal-body">
-                <h4> เพิ่มข้อมูลนายจ้าง</h4>
                 <form action="{{route('customer.store')}}" method="POST" >
                     @csrf
                     @method('POST')
@@ -107,6 +114,7 @@
                     <label for="message-text" class="col-form-label">บันทึกเพิ่มเติม:</label>
                     <textarea class="form-control" name="customer_note" id="message-text" placeholder="บันทึกเพิ่มเติม"></textarea>
                   </div>
+                  <br>
                   <div class="form-group">
                     <button type="submit" class="btn btn-primary">บันทึก</button>
                   </div>
@@ -130,7 +138,9 @@
 
       <div class="modal fade bd-example-modal-sm modal-lg" id="edit-customer" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-lg">
+        
           <div class="modal-content">
+            
               ...
           </div>
       </div>
