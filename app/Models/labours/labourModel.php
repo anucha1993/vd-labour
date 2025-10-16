@@ -68,6 +68,13 @@ class labourModel extends Model
        'labour_disease_status',
        'labour_affidavit_start',
        'labour_affidavit_expriry',
+       'labour_visa_submit_date',
+       'labour_visa_approved_date',
+       'labour_visa_status',
+       'labour_visa_note',
+       'labour_visa_reject_date',
+       'labour_visa_start_date',
+       'labour_visa_file',
     ];
 
     
@@ -193,8 +200,37 @@ class labourModel extends Model
         return $query->where('labour_status', 'success');
     }
 
+    // แจ้งเตือน VISA ไม่ Update (วันที่ยืนวีซ่าเกิน 75 วัน และ status = none)
+    public function scopeVisaNotUpdate($query)
+    {
+        $checkDate = Carbon::now()->copy()->subDays(75)->toDateString();
+        return $query->where('labour_status', 'wait')
+                     ->whereNotNull('labour_visa_submit_date')
+                     ->where('labour_visa_submit_date', '<=', $checkDate)
+                     ->where(function($q) {
+                         $q->whereNull('labour_visa_status')
+                           ->orWhere('labour_visa_status', 'none');
+                     });
+    }
 
+    // แจ้งเตือน VISA อนุมัติแล้ว (วันที่ยืนวีซ่าเกิน 75 วัน และ status = approved)
+    public function scopeVisaApproved($query)
+    {
+        $checkDate = Carbon::now()->copy()->subDays(75)->toDateString();
+        return $query->where('labour_status', 'wait')
+                     ->whereNotNull('labour_visa_submit_date')
+                     ->where('labour_visa_submit_date', '<=', $checkDate)
+                     ->where('labour_visa_status', 'approved');
+    }
 
-    
+    // แจ้งเตือน VISA ไม่อนุมัติ (วันที่ยืนวีซ่าเกิน 75 วัน และ status = rejected)
+    public function scopeVisaRejected($query)
+    {
+        $checkDate = Carbon::now()->copy()->subDays(75)->toDateString();
+        return $query->where('labour_status', 'wait')
+                     ->whereNotNull('labour_visa_submit_date')
+                     ->where('labour_visa_submit_date', '<=', $checkDate)
+                     ->where('labour_visa_status', 'rejected');
+    }
 
 }

@@ -111,7 +111,7 @@
                 <span class="alert-icon bg-red"><i class="mdi mdi-bell-alert"></i></span>
                 <span class="alert-badge">แจ้งเตือน</span>
                 <div class="alert-label">แจ้งเตือนรวม</div>
-                <div class="alert-value">{{ number_format($scopeExpiringPassport + $scopeExpiringCIDConstruct + $scopeExpiringCIDFactory + $scopeExpiringDiseaseConstruct + $scopeExpiringDiseaseFactory + $scopeExpiringCidMoney + $scopeExpiringAffidavit) }}</div>
+                <div class="alert-value">{{ number_format($scopeExpiringPassport + $scopeExpiringCIDConstruct + $scopeExpiringCIDFactory + $scopeExpiringDiseaseConstruct + $scopeExpiringDiseaseFactory + $scopeExpiringCidMoney + $scopeExpiringAffidavit + $visaNotUpdate + $visaApproved + $visaRejected) }}</div>
                 <div class="alert-desc">รวมทุกประเภท</div>
             </div>
         </div>
@@ -197,6 +197,42 @@
                 </div>
             </a>
         </div>
+        
+        <!-- VISA Notifications Row -->
+        <div class="col-12 col-sm-6 col-md-3">
+            <a href="{{ route('labours.alert.list', ['type' => 'visa-not-update']) }}" class="text-decoration-none">
+                <div class="alert-card">
+                    <span class="alert-icon bg-red"><i class="mdi mdi-passport"></i></span>
+                    <span class="alert-badge" style="background:#f44336;">VISA</span>
+                    <div class="alert-label">VISA ไม่ Update</div>
+                    <div class="alert-value">{{ number_format($visaNotUpdate) }}</div>
+                    <div class="alert-desc">ยืนวีซ่าเกิน 75 วัน</div>
+                </div>
+            </a>
+        </div>
+        <div class="col-12 col-sm-6 col-md-3">
+            <a href="{{ route('labours.alert.list', ['type' => 'visa-approved']) }}" class="text-decoration-none">
+                <div class="alert-card">
+                    <span class="alert-icon bg-green"><i class="mdi mdi-check-circle"></i></span>
+                    <span class="alert-badge" style="background:#4caf50;">VISA</span>
+                    <div class="alert-label">VISA อนุมัติแล้ว</div>
+                    <div class="alert-value">{{ number_format($visaApproved) }}</div>
+                    <div class="alert-desc">ยืนวีซ่าเกิน 75 วัน</div>
+                </div>
+            </a>
+        </div>
+        <div class="col-12 col-sm-6 col-md-3">
+            <a href="{{ route('labours.alert.list', ['type' => 'visa-rejected']) }}" class="text-decoration-none">
+                <div class="alert-card">
+                    <span class="alert-icon bg-orange"><i class="mdi mdi-close-circle"></i></span>
+                    <span class="alert-badge" style="background:#ff9800;">VISA</span>
+                    <div class="alert-label">VISA ไม่อนุมัติ</div>
+                    <div class="alert-value">{{ number_format($visaRejected) }}</div>
+                    <div class="alert-desc">ยืนวีซ่าเกิน 75 วัน</div>
+                </div>
+            </a>
+        </div>
+
          <div class="row mb-4">
         <div class="col-12 col-lg-10">
             <div class="card shadow-sm p-4">
@@ -232,7 +268,10 @@
         'CID ก่อสร้าง',
         'CID โรงงาน',
         'ยังไม่ได้จ่ายเงินประกัน',
-        'Affidavit หมดอายุ'
+        'Affidavit หมดอายุ',
+        'VISA ไม่ Update',
+        'VISA อนุมัติแล้ว',
+        'VISA ไม่อนุมัติ'
       ],
       datasets: [{
         label: 'จำนวน',
@@ -244,10 +283,13 @@
           {{ $scopeExpiringCIDConstruct ?? 0 }},
           {{ $scopeExpiringCIDFactory ?? 0 }},
           {{ $scopeExpiringCidMoney ?? 0 }},
-          {{ $scopeExpiringAffidavit ?? 0 }}
+          {{ $scopeExpiringAffidavit ?? 0 }},
+          {{ $visaNotUpdate ?? 0 }},
+          {{ $visaApproved ?? 0 }},
+          {{ $visaRejected ?? 0 }}
         ],
         backgroundColor: [
-          '#2196f3', '#00bcd4', '#673ab7', '#2196f3', '#ff9800', '#ff9800', '#f44336', '#2196f3'
+          '#2196f3', '#00bcd4', '#673ab7', '#2196f3', '#ff9800', '#ff9800', '#f44336', '#2196f3', '#f44336', '#4caf50', '#ff9800'
         ],
         borderRadius: 10,
         maxBarThickness: 60

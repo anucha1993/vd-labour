@@ -20,6 +20,10 @@ class LabourAlertController extends Controller
             'cid-construct'     => labourModel::ExpiringCIDConstruct()->with('customer')->get(),
             'cid-factory'       => labourModel::ExpiringCIDFactory()->with('customer')->get(),
             'cid-money'         => labourModel::ExpiringCidMoney()->with('customer')->get(),
+            'affidavit'         => labourModel::ExpiringAffidavit()->with('customer')->get(),
+            'visa-not-update'   => labourModel::VisaNotUpdate()->with('customer')->get(),
+            'visa-approved'     => labourModel::VisaApproved()->with('customer')->get(),
+            'visa-rejected'     => labourModel::VisaRejected()->with('customer')->get(),
             default             => collect(),
         };
 

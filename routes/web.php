@@ -108,4 +108,5 @@ Route::middleware(['auth'])->group(function () {
     ->name('download.zip');
 
     Route::get('labour/{labour}/cidfile-delete', [LabourController::class, 'deleteCidFile'])->name('labour.cidfile.delete');
+    Route::get('labour/{labour}/visafile-delete', [LabourController::class, 'deleteVisaFile'])->name('labour.visafile.delete');
     Route::get('/labour/{id}/print', [labourPrintController::class, 'print'])->name('labour.print');

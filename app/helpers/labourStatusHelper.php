@@ -55,3 +55,22 @@ if (!function_exists('getExpiringAffidavit')) {
         return labourModel::expiringAffidavit()->count();
     }
 }
+
+// VISA Helper Functions
+if (!function_exists('getVisaNotUpdate')) {
+    function getVisaNotUpdate() {
+        return labourModel::VisaNotUpdate()->count();
+    }
+}
+
+if (!function_exists('getVisaApproved')) {
+    function getVisaApproved() {
+        return labourModel::VisaApproved()->count();
+    }
+}
+
+if (!function_exists('getVisaRejected')) {
+    function getVisaRejected() {
+        return labourModel::VisaRejected()->count();
+    }
+}

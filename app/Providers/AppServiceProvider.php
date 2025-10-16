@@ -32,6 +32,9 @@ class AppServiceProvider extends ServiceProvider
                 'scopeExpiringCIDFactory' => getExpiringCIDFactory(),
                 'scopeExpiringCidMoney' => getExpiringCidMoney(),
                 'scopeExpiringAffidavit' => getExpiringAffidavit(),
+                'visaNotUpdate' => getVisaNotUpdate(),
+                'visaApproved' => getVisaApproved(),
+                'visaRejected' => getVisaRejected(),
             ]);
         });
     }

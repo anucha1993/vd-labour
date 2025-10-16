@@ -24,11 +24,16 @@ class dashboardController extends Controller
         $scopeExpiringCidMoney   = labourModel::query()->ExpiringCidMoney()->count();
         $scopeExpiringAffidavit = labourModel::query()->ExpiringAffidavit()->count();
 
+        // VISA Notifications
+        $visaNotUpdate = labourModel::query()->VisaNotUpdate()->count();
+        $visaApproved = labourModel::query()->VisaApproved()->count();  
+        $visaRejected = labourModel::query()->VisaRejected()->count();
+
         $countCancel = labourModel::query()->CountCancel()->count();
         $countAll = labourModel::query()->CountAll()->count();
         $countSuccess = labourModel::query()->CountSuccess()->count();
 
 
-        return view('dashboards.index', compact( 'countCancel', 'countAll','scopeExpiringCidMoney', 'countSuccess','scopeExpiringPassport','scopeExpiringDiseaseConstruct','scopeExpiringDiseaseFactory','scopeExpiringCIDConstruct','scopeExpiringCIDFactory','scopeExpiringAffidavit'));
+        return view('dashboards.index', compact( 'countCancel', 'countAll','scopeExpiringCidMoney', 'countSuccess','scopeExpiringPassport','scopeExpiringDiseaseConstruct','scopeExpiringDiseaseFactory','scopeExpiringCIDConstruct','scopeExpiringCIDFactory','scopeExpiringAffidavit', 'visaNotUpdate', 'visaApproved', 'visaRejected'));
     }
 }

@@ -50,11 +50,6 @@
                             <i class="bi bi-folder2-open me-1"></i> เอกสาร
                         </button>
                     </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="tab-visa" data-bs-toggle="tab" data-bs-target="#visa" type="button" role="tab">
-                            <i class="bi bi-passport me-1"></i> VISA
-                        </button>
-                    </li>
                 </ul>
 
                 <!-- Tab Content -->
@@ -315,46 +310,6 @@
                         </div>
                     </div>
 
-                    <!-- Tab VISA -->
-                    <div class="tab-pane fade" id="visa" role="tabpanel">
-                        <div class="row g-3 mt-2">
-                            <div class="col-md-3">
-                                <label class="form-label">วันที่ยืนวีซ่า</label>
-                                <input type="date" name="labour_visa_submit_date" class="form-control">
-                            </div>
-                            <div class="col-md-3">
-                                <label class="form-label">วันที่ Approved VISA</label>
-                                <input type="date" name="labour_visa_approved_date" class="form-control">
-                            </div>
-                            <div class="col-md-3">
-                                <label class="form-label">Status VISA</label>
-                                <select name="labour_visa_status" class="form-select" id="visa_status_create">
-                                    <option value="none" selected>None</option>
-                                    <option value="approved">Approved</option>
-                                    <option value="rejected">Rejected</option>
-                                </select>
-                            </div>
-                            <div class="col-md-3">
-                                <label class="form-label">วันที่ Reject VISA</label>
-                                <input type="date" name="labour_visa_reject_date" class="form-control" id="visa_reject_date_create" disabled>
-                            </div>
-                            <div class="col-md-3">
-                                <label class="form-label">วันที่ออก VISA หรือ วันที่เริ่มต้น VISA</label>
-                                <input type="date" name="labour_visa_start_date" class="form-control">
-                            </div>
-                            <div class="col-md-12">
-                                <label class="form-label">Visa Note (กรณี VISA มี Status rejected)</label>
-                                <textarea name="labour_visa_note" class="form-control" rows="3" id="visa_note_create" 
-                                    placeholder="กรอกหมายเหตุกรณี VISA ถูกปฏิเสธ" disabled></textarea>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">ไฟล์เอกสาร VISA</label>
-                                <input type="file" name="visa_file" class="form-control" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
-                                <small class="text-muted">รองรับไฟล์: PDF, JPG, PNG, DOC, DOCX</small>
-                            </div>
-                        </div>
-                    </div>
-
                        <hr>
                         <div class="row">
                             <div class="col-md-6">
@@ -371,29 +326,6 @@
 
 
     <script>
-        // VISA Status Management for Create Form
-        $(document).ready(function() {
-            function toggleVisaFieldsCreate() {
-                const status = $('#visa_status_create').val();
-                const rejectDate = $('#visa_reject_date_create');
-                const visaNote = $('#visa_note_create');
-                
-                if (status === 'rejected') {
-                    rejectDate.prop('disabled', false).prop('required', true);
-                    visaNote.prop('disabled', false).prop('required', true);
-                } else {
-                    rejectDate.prop('disabled', true).prop('required', false).val('');
-                    visaNote.prop('disabled', true).prop('required', false).val('');
-                }
-            }
-
-            // Initialize on page load
-            toggleVisaFieldsCreate();
-            
-            // Handle status change
-            $('#visa_status_create').on('change', toggleVisaFieldsCreate);
-        });
-
         $(document).ready(function() {
 $('#labour_birthday').on('change', function() {
 const birthDate = new Date($(this).val());

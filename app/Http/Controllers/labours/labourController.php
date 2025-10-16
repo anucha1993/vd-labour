@@ -208,6 +208,31 @@ class labourController extends Controller
                 ]);
             }
         }
+
+        //VISA File Upload 
+        if ($request->hasFile('visa_file')) {
+            $file = $request->file('visa_file');
+        
+            // สร้างชื่อไฟล์ใหม่ เช่น visa_ชื่อ_นามสกุล.jpg
+            $extension = $file->getClientOriginalExtension();
+            $uniqueName = 'visa_' . $labourModel->labour_firstname . '_' . $labourModel->labour_lastname . '.' . $extension;
+        
+            // ตรวจสอบและสร้างโฟลเดอร์ หากยังไม่มี
+            $fullPath = 'LABOURS/' . $labourModel->labour_path;
+            if (!Storage::disk('public')->exists($fullPath)) {
+                Storage::disk('public')->makeDirectory($fullPath);
+            }
+        
+            // อัปโหลดไฟล์ไปยังโฟลเดอร์ที่กำหนดใน disk 'public'
+            $path = $file->storeAs($fullPath, $uniqueName, 'public');
+        
+            // ถ้าอัปโหลดสำเร็จ อัปเดตฟิลด์ labour_visa_file
+            if ($path) {
+                labourModel::where('labour_id', $labourModel->labour_id)->update([
+                    'labour_visa_file' => $uniqueName,
+                ]);
+            }
+        }
       
 
 
@@ -241,6 +266,24 @@ class labourController extends Controller
     }
 
     return redirect()->back()->with('success', 'ลบไฟล์เรียบร้อยแล้ว');
+}
+
+public function deleteVisaFile($labourId)
+{
+    $labour = labourModel::findOrFail($labourId);
+
+    if ($labour->labour_visa_file) {
+        $filePath = 'LABOURS/' . $labour->labour_path . '/' . $labour->labour_visa_file;
+
+        if (Storage::disk('public')->exists($filePath)) {
+            Storage::disk('public')->delete($filePath);
+        }
+
+        // เคลียร์ชื่อไฟล์ออกจากฐานข้อมูล
+        $labour->update(['labour_visa_file' => null]);
+    }
+
+    return redirect()->back()->with('success', 'ลบไฟล์ VISA เรียบร้อยแล้ว');
 }
 
 
@@ -285,6 +328,44 @@ class labourController extends Controller
                         'labour_id' => $labourModel->labour_id,
                         'labour_passport_number' => $labourModel->labour_passport_number,
                     ]);
+                }
+
+                //CID Upload for new labour
+                if ($request->hasFile('cid_file')) {
+                    $file = $request->file('cid_file');
+                
+                    // สร้างชื่อไฟล์ใหม่ เช่น cid_ชื่อ_นามสกุล.jpg
+                    $extension = $file->getClientOriginalExtension();
+                    $uniqueName = 'cid_' . $labourModel->labour_firstname . '_' . $labourModel->labour_lastname . '.' . $extension;
+                
+                    // อัปโหลดไฟล์ไปยังโฟลเดอร์ที่กำหนดใน disk 'public'
+                    $path = $file->storeAs($folderPath, $uniqueName, 'public');
+                
+                    // ถ้าอัปโหลดสำเร็จ อัปเดตฟิลด์ labour_cid_results_file
+                    if ($path) {
+                        $labourModel->update([
+                            'labour_cid_results_file' => $uniqueName,
+                        ]);
+                    }
+                }
+
+                //VISA File Upload for new labour
+                if ($request->hasFile('visa_file')) {
+                    $file = $request->file('visa_file');
+                
+                    // สร้างชื่อไฟล์ใหม่ เช่น visa_ชื่อ_นามสกุล.jpg
+                    $extension = $file->getClientOriginalExtension();
+                    $uniqueName = 'visa_' . $labourModel->labour_firstname . '_' . $labourModel->labour_lastname . '.' . $extension;
+                
+                    // อัปโหลดไฟล์ไปยังโฟลเดอร์ที่กำหนดใน disk 'public'
+                    $path = $file->storeAs($folderPath, $uniqueName, 'public');
+                
+                    // ถ้าอัปโหลดสำเร็จ อัปเดตฟิลด์ labour_visa_file
+                    if ($path) {
+                        $labourModel->update([
+                            'labour_visa_file' => $uniqueName,
+                        ]);
+                    }
                 }
             }
         } else {

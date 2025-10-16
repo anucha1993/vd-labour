@@ -77,6 +77,12 @@
                                 <i class="bi bi-folder2-open me-1"></i> เอกสาร
                             </button>
                         </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="tab-visa" data-bs-toggle="tab" data-bs-target="#visa"
+                                type="button" role="tab">
+                                <i class="bi bi-passport me-1"></i> VISA
+                            </button>
+                        </li>
                     </ul>
 
                 </div>
@@ -641,6 +647,72 @@
 
                 </div>
 
+                <!-- Tab VISA -->
+                <div class="tab-pane fade" id="visa" role="tabpanel">
+                    <div class="row g-3 mt-2">
+                        <div class="col-md-3">
+                            <label class="form-label">วันที่ยืนวีซ่า</label>
+                            <input type="date" name="labour_visa_submit_date" class="form-control" 
+                                value="{{ $labourModel->labour_visa_submit_date }}"
+                                @cannot('update labour') disabled @endcannot>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">วันที่ Approved VISA</label>
+                            <input type="date" name="labour_visa_approved_date" class="form-control" 
+                                value="{{ $labourModel->labour_visa_approved_date }}"
+                                @cannot('update labour') disabled @endcannot>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Status VISA</label>
+                            <select name="labour_visa_status" class="form-select" id="visa_status" @cannot('update labour') disabled @endcannot>
+                                <option value="none" @if($labourModel->labour_visa_status === 'none' || $labourModel->labour_visa_status === null) selected @endif>None</option>
+                                <option value="approved" @if($labourModel->labour_visa_status === 'approved') selected @endif>Approved</option>
+                                <option value="rejected" @if($labourModel->labour_visa_status === 'rejected') selected @endif>Rejected</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">วันที่ Reject VISA</label>
+                            <input type="date" name="labour_visa_reject_date" class="form-control" 
+                                value="{{ $labourModel->labour_visa_reject_date }}" id="visa_reject_date"
+                                @cannot('update labour') disabled @endcannot>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">วันที่ออก VISA หรือ วันที่เริ่มต้น VISA</label>
+                            <input type="date" name="labour_visa_start_date" class="form-control" 
+                                value="{{ $labourModel->labour_visa_start_date }}"
+                                @cannot('update labour') disabled @endcannot>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label">Visa Note (กรณี VISA มี Status rejected)</label>
+                            <textarea name="labour_visa_note" class="form-control" rows="3" id="visa_note" 
+                                placeholder="กรอกหมายเหตุกรณี VISA ถูกปฏิเสธ" @cannot('update labour') disabled @endcannot>{{ $labourModel->labour_visa_note }}</textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">ไฟล์เอกสาร VISA</label><br>
+                            @if ($labourModel->labour_visa_file)
+                                <div class="border p-2 rounded mb-2">
+                                    <p>📄 <strong>{{ $labourModel->labour_visa_file }}</strong></p>
+                                    <a href="{{ asset('storage/LABOURS/' . $labourModel->labour_path . '/' . $labourModel->labour_visa_file) }}"
+                                        target="_blank" class="btn btn-sm btn-primary">
+                                        <i class="fas fa-eye"></i> ดูไฟล์
+                                    </a>
+                                    @can('delete labour')
+                                        <a href="{{ route('labour.visafile.delete', $labourModel->labour_id) }}"
+                                            onclick="return confirm('คุณแน่ใจว่าต้องการลบไฟล์นี้?')"
+                                            class="btn btn-sm btn-danger">
+                                            <i class="fas fa-trash"></i> ลบไฟล์
+                                        </a>
+                                    @endcan
+                                </div>
+                            @else
+                                <input type="file" name="visa_file" class="form-control" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+                                    @cannot('update labour') disabled @endcannot>
+                                <small class="text-muted">รองรับไฟล์: PDF, JPG, PNG, DOC, DOCX</small>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
                 <div class="col-md-6">
                     <hr class="text-success">
                     <label for="">บันทึกเพิ่มเติม</label>
@@ -878,6 +950,29 @@
         });
 
         let CombinePDFModal;
+
+        // VISA Status Management
+        $(document).ready(function() {
+            function toggleVisaFields() {
+                const status = $('#visa_status').val();
+                const rejectDate = $('#visa_reject_date');
+                const visaNote = $('#visa_note');
+                
+                if (status === 'rejected') {
+                    rejectDate.prop('disabled', false).prop('required', true);
+                    visaNote.prop('disabled', false).prop('required', true);
+                } else {
+                    rejectDate.prop('disabled', true).prop('required', false).val('');
+                    visaNote.prop('disabled', true).prop('required', false).val('');
+                }
+            }
+
+            // Initialize on page load
+            toggleVisaFields();
+            
+            // Handle status change
+            $('#visa_status').on('change', toggleVisaFields);
+        });
 
         $(document).ready(function() {
             $('.create-CombinePDF').on('click', function(e) {

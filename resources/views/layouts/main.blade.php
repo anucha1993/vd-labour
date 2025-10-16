@@ -168,7 +168,10 @@
             ($scopeExpiringCIDConstruct ?? 0) > 0 ||
             ($scopeExpiringCIDFactory ?? 0) > 0 ||
             ($scopeExpiringCidMoney ?? 0) > 0 ||
-            ($scopeExpiringAffidavit ?? 0) > 0;
+            ($scopeExpiringAffidavit ?? 0) > 0 ||
+            ($visaNotUpdate ?? 0) > 0 ||
+            ($visaApproved ?? 0) > 0 ||
+            ($visaRejected ?? 0) > 0;
         @endphp
         <button class="btn position-relative p-0 border-0 bg-transparent{{ $hasAlert ? '' : ' disabled' }}" id="notifyDropdown" data-bs-toggle="dropdown" aria-expanded="false" {{ $hasAlert ? '' : 'tabindex="-1" aria-disabled="true"' }}>
           <i class="bi bi-bell fs-3"></i>
@@ -238,6 +241,33 @@
                 <i class="bi bi-file-earmark-text text-primary"></i>
                 <span>Affidavit หมดอายุ</span>
                 <span class="badge bg-danger ms-auto">{{ $scopeExpiringAffidavit }}</span>
+              </a>
+            </li>
+            @endif
+            @if(($visaNotUpdate ?? 0) > 0)
+            <li>
+              <a class="dropdown-item d-flex align-items-center gap-2" href="{{ route('labours.alert.list', ['type' => 'visa-not-update']) }}">
+                <i class="bi bi-passport text-danger"></i>
+                <span>VISA ไม่ Update</span>
+                <span class="badge bg-danger ms-auto">{{ $visaNotUpdate }}</span>
+              </a>
+            </li>
+            @endif
+            @if(($visaApproved ?? 0) > 0)
+            <li>
+              <a class="dropdown-item d-flex align-items-center gap-2" href="{{ route('labours.alert.list', ['type' => 'visa-approved']) }}">
+                <i class="bi bi-check-circle text-success"></i>
+                <span>VISA อนุมัติแล้ว</span>
+                <span class="badge bg-success ms-auto">{{ $visaApproved }}</span>
+              </a>
+            </li>
+            @endif
+            @if(($visaRejected ?? 0) > 0)
+            <li>
+              <a class="dropdown-item d-flex align-items-center gap-2" href="{{ route('labours.alert.list', ['type' => 'visa-rejected']) }}">
+                <i class="bi bi-x-circle text-warning"></i>
+                <span>VISA ไม่อนุมัติ</span>
+                <span class="badge bg-warning ms-auto">{{ $visaRejected }}</span>
               </a>
             </li>
             @endif
