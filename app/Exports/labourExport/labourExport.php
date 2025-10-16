@@ -66,6 +66,7 @@ class labourExport implements FromCollection, WithHeadings, WithMapping, WithCol
                 'First-Name',
                 'Last-Name',
                 'NAME',
+                'Birthday',
                 'Company Name',
                 'Position',
                 'รหัส',
@@ -112,9 +113,9 @@ class labourExport implements FromCollection, WithHeadings, WithMapping, WithCol
             }
         }
 
-        // Return ข้อมูลโดยรวม arrays ที่เราทำ loop
+        // Return ข้อมูลโดยรวม arrays ที่เราทำ loop $labour->labour_birthday
         return array_merge(
-            [++$this->num, $labour->labour_firstname, $labour->labour_lastname, $labour->labour_prefix . '.' . $labour->labour_firstname . ' ' . $labour->labour_lastname, $labour->customer_name ? $labour->customer_name : 'ยังไม่ระบุ', $labour->position_name, $labour->labour_register_number, $labour->labour_passport_number, date('d-m-Y', strtotime($labour->labour_examination)), $labour->labour_passport_issue, $labour->labour_passport_expiry, $labour->labour_phone, $labour->staff_name],
+            [++$this->num, $labour->labour_firstname, $labour->labour_lastname, $labour->labour_prefix . '.' . $labour->labour_firstname . ' ' . $labour->labour_lastname,date('d-m-Y', strtotime($labour->labour_birthday)), $labour->customer_name ? $labour->customer_name : 'ยังไม่ระบุ', $labour->position_name, $labour->labour_register_number, $labour->labour_passport_number, date('d-m-Y', strtotime($labour->labour_examination)), $labour->labour_passport_issue, $labour->labour_passport_expiry, $labour->labour_phone, $labour->staff_name],
             [$status, $labour->labour_note],
             $filePathSuccess, // รวมเครื่องหมาย / หรือ X สำหรับ success// รวมเครื่องหมาย / หรือ X สำหรับ wait
         );
@@ -137,8 +138,8 @@ class labourExport implements FromCollection, WithHeadings, WithMapping, WithCol
             'L' => 30,
             'M' => 15,
             'N' => 15,
-            'O' => 45,
-            'P' => 5,
+            'O' => 15,
+            'P' => 45,
             'Q' => 5,
             'R' => 5,
             'S' => 5,
@@ -156,6 +157,7 @@ class labourExport implements FromCollection, WithHeadings, WithMapping, WithCol
             'AD' => 5,
             'AE' => 5,
             'AG' => 5,
+            'AD' => 5,
         ];
     }
 }

@@ -119,10 +119,11 @@ class labourModel extends Model
 
 
     public function scopeExpiringCidMoney($query)
-    {
+   {
         $expiryDate = Carbon::now()->copy()->addDays(15)->toDateString();
         return $query->where('labour_status', 'wait')
                      ->whereNotNull('labour_cid_stand_date')
+                     ->whereNull('labour_cid_deposit_date')
                      ->where(DB::raw('COALESCE(labour_cid_deposit_total, 0)'), '<=', 30000)
                      ->where('labour_cid_stand_date', '<=', $expiryDate);
     }
