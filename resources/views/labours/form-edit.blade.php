@@ -537,6 +537,22 @@
                             <hr>
 
                             <!-- Document Checklist Section -->
+                            @php
+                                $labourfilesArray = $labourfiles ?? collect([]);
+                                $totalCount = $labourfilesArray->count();
+                                $uploadedCount = $labourfilesArray->filter(function($item) {
+                                    return !empty($item->labour_file_path);
+                                })->count();
+                                $percentage = $totalCount > 0 ? round(($uploadedCount / $totalCount) * 100) : 0;
+                                
+                                if ($percentage == 100) {
+                                    $progressBarClass = 'bg-success';
+                                } elseif ($percentage >= 50) {
+                                    $progressBarClass = 'bg-warning';
+                                } else {
+                                    $progressBarClass = 'bg-danger';
+                                }
+                            @endphp
                             <div class="col-12 mb-4">
                                 <div class="card border-primary">
                                     <div class="card-header bg-primary text-white">
@@ -544,14 +560,9 @@
                                     </div>
                                     <div class="card-body">
                                         <div class="row">
-                                            @php
-                                                $uploadedCount = 0;
-                                                $totalCount = count($labourfiles);
-                                            @endphp
-                                            @foreach ($labourfiles as $checkItem)
+                                            @foreach ($labourfilesArray as $checkItem)
                                                 @php
                                                     $isUploaded = !empty($checkItem->labour_file_path);
-                                                    if ($isUploaded) $uploadedCount++;
                                                 @endphp
                                                 <div class="col-md-4 col-sm-6 mb-2">
                                                     <div class="d-flex align-items-center p-2 rounded {{ $isUploaded ? 'bg-success bg-opacity-10 border border-success' : 'bg-danger bg-opacity-10 border border-danger' }}">
@@ -578,11 +589,8 @@
                                                 </span>
                                             </div>
                                             <div>
-                                                @php
-                                                    $percentage = $totalCount > 0 ? round(($uploadedCount / $totalCount) * 100) : 0;
-                                                @endphp
                                                 <div class="progress" style="width: 200px; height: 20px;">
-                                                    <div class="progress-bar {{ $percentage == 100 ? 'bg-success' : ($percentage >= 50 ? 'bg-warning' : 'bg-danger') }}" 
+                                                    <div class="progress-bar {{ $progressBarClass }}" 
                                                          role="progressbar" 
                                                          style="width: {{ $percentage }}%;" 
                                                          aria-valuenow="{{ $percentage }}" 
