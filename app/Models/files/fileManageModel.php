@@ -14,4 +14,9 @@ class fileManageModel extends Model
         'file_manage_name',
         'file_manage_status',
     ];
+
+    public function listFiles()
+    {
+        return $this->hasMany(listFileModel::class, 'file_manage_id', 'file_manage_id');
+    }
 }

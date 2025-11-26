@@ -219,31 +219,23 @@
                                 </td>
                                 <td>{{ $item->staff_nickname }}</td>
                                 <td class="text-center">
-                                    <div class="btn-group dropdown">
-                                        <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle"
-                                            data-bs-toggle="dropdown" aria-expanded="false" tabindex="0">
-                                            <i class="bi bi-three-dots-vertical"></i>
-                                        </button>
-                                        <ul class="dropdown-menu">
-                                            <li>
-                                                <a class="dropdown-item"
-                                                    href="{{ route('labour.edit', $item->labour_id) }}">
-                                                    <i class="bi bi-pencil-square me-1"></i> แก้ไขข้อมูล
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a class="dropdown-item view-doc"
-                                                    href="{{ route('labour.viewDocs', $item->labour_id) }}">
-                                                    <i class="bi bi-folder2-open me-1"></i> ดูเอกสาร
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a class="dropdown-item text-danger" target="_blank"
-                                                    href="{{ route('labour.print', $item->labour_id) }}">
-                                                    <i class="bi bi-printer me-1"></i> พิมพ์ข้อมูล
-                                                </a>
-                                            </li>
-                                        </ul>
+                                    <div class="btn-group" role="group">
+                                        <a href="{{ route('labour.edit', $item->labour_id) }}" 
+                                           class="btn btn-sm btn-outline-primary" 
+                                           title="แก้ไขข้อมูล">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
+                                        <a href="{{ route('labour.viewDocs', $item->labour_id) }}" 
+                                           class="btn btn-sm btn-outline-secondary view-doc" 
+                                           title="ดูเอกสาร">
+                                            <i class="bi bi-folder2-open"></i>
+                                        </a>
+                                        <a href="{{ route('labour.print', $item->labour_id) }}" 
+                                           class="btn btn-sm btn-outline-danger" 
+                                           target="_blank" 
+                                           title="พิมพ์ข้อมูล">
+                                            <i class="bi bi-printer"></i>
+                                        </a>
                                     </div>
                                 </td>
                             </tr>

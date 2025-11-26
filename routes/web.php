@@ -17,6 +17,8 @@ use App\Http\Controllers\labours\labourPrintController;
 use App\Http\Controllers\dashboards\dashboardController;
 use App\Http\Controllers\categorys\ExaminationRounController;
 use App\Http\Controllers\formExport\labourFormExportController;
+use App\Http\Controllers\files\FileManageController;
+use App\Http\Controllers\PermissionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -82,12 +84,19 @@ Route::PUT('customer/update/{customerModel}',[customerController::class,'update'
 
 
 Route::middleware(['auth'])->group(function () {
+    // Roles Management
     Route::get('/roles', [RolePermissionController::class, 'index'])->name('roles.index');
-    Route::get('/roles/create', [RolePermissionController::class, 'create'])->name('roles.create'); // เพิ่ม Route นี้
+    Route::get('/roles/create', [RolePermissionController::class, 'create'])->name('roles.create');
     Route::post('/roles', [RolePermissionController::class, 'store'])->name('roles.store');
     Route::get('/roles/{role}/edit', [RolePermissionController::class, 'edit'])->name('roles.edit');
     Route::put('/roles/{role}', [RolePermissionController::class, 'update'])->name('roles.update');
     Route::delete('/roles/{role}', [RolePermissionController::class, 'destroy'])->name('roles.destroy');
+
+    // Permissions Management
+    Route::get('/permissions', [PermissionController::class, 'index'])->name('permissions.index');
+    Route::get('/permissions/create', [PermissionController::class, 'create'])->name('permissions.create');
+    Route::post('/permissions', [PermissionController::class, 'store'])->name('permissions.store');
+    Route::delete('/permissions/{permission}', [PermissionController::class, 'destroy'])->name('permissions.destroy');
 });
     
     // Routes สำหรับจัดการ Users และการเพิ่ม Users เข้า Roles
@@ -110,3 +119,20 @@ Route::middleware(['auth'])->group(function () {
     Route::get('labour/{labour}/cidfile-delete', [LabourController::class, 'deleteCidFile'])->name('labour.cidfile.delete');
     Route::get('labour/{labour}/visafile-delete', [LabourController::class, 'deleteVisaFile'])->name('labour.visafile.delete');
     Route::get('/labour/{id}/print', [labourPrintController::class, 'print'])->name('labour.print');
+
+    // File Management Routes
+    Route::resource('file-manage', FileManageController::class);
+    Route::post('/file-manage/{id}/list-file', [FileManageController::class, 'addListFile'])->name('file-manage.add-list-file');
+    Route::put('/file-manage/{id}/list-file/{listFileId}', [FileManageController::class, 'updateListFile'])->name('file-manage.update-list-file');
+    Route::delete('/file-manage/{id}/list-file/{listFileId}', [FileManageController::class, 'destroyListFile'])->name('file-manage.destroy-list-file');
+
+    // Position Management Routes
+    Route::resource('positions', \App\Http\Controllers\positions\PositionController::class);
+
+    // Job Group Management Routes
+    Route::resource('jobgroups', \App\Http\Controllers\jobgroup\JobGroupController::class);
+
+    // Lead Management Routes
+    Route::resource('leads', \App\Http\Controllers\leads\LeadController::class);
+    Route::get('/leads/{lead}/convert', [\App\Http\Controllers\leads\LeadController::class, 'convertForm'])->name('leads.convertForm');
+    Route::post('/leads/{lead}/convert', [\App\Http\Controllers\leads\LeadController::class, 'convert'])->name('leads.convert');

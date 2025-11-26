@@ -45,6 +45,39 @@
       background: #003566;
       color: #fff;
     }
+    /* Dropdown Sidebar */
+    .sidebar-dropdown {
+      position: relative;
+    }
+    .sidebar-dropdown > a {
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .sidebar-dropdown-menu {
+      display: none;
+      padding-left: 15px;
+      margin-top: 5px;
+    }
+    .sidebar-dropdown-menu.show {
+      display: block;
+    }
+    .sidebar-dropdown-menu a {
+      padding: 8px 20px;
+      font-size: 0.9em;
+      border-left: 2px solid #4a5568;
+      margin-left: 10px;
+    }
+    .sidebar-dropdown-menu a:hover {
+      border-left-color: #fff;
+    }
+    .dropdown-icon {
+      transition: transform 0.3s;
+    }
+    .dropdown-icon.rotate {
+      transform: rotate(90deg);
+    }
   .content {
   margin-left: 250px;
   padding: 30px;
@@ -126,6 +159,10 @@
      class="{{ Request::routeIs('labour.index') ? 'active' : '' }}">
      <i class="bi bi-person-badge-fill me-2"></i> ข้อมูลคนงาน</a>
 
+  <a href="{{ route('leads.index') }}"
+     class="{{ Request::routeIs('leads.*') ? 'active' : '' }}">
+     <i class="bi bi-person-plus-fill me-2"></i> ข้อมูลผู้สนใจ (Leads)</a>
+
   <a href="{{ route('export.form.labour') }}"
      class="{{ Request::routeIs('export.form.labour') ? 'active' : '' }}">
      <i class="bi bi-clipboard-data-fill me-2"></i> รายงาน</a>
@@ -138,9 +175,38 @@
      class="{{ Request::routeIs('category.examination') ? 'active' : '' }}">
      <i class="bi bi-calendar2-week-fill me-2"></i> รอบสอบ</a>
 
-  <a href="{{ route('users.index') }}"
-     class="{{ Request::routeIs('users.index') ? 'active' : '' }}">
-     <i class="bi bi-people-fill me-2"></i> Users</a>
+  <!-- Settings Dropdown -->
+  <div class="sidebar-dropdown">
+    <a class="{{ Request::routeIs('file-manage.*', 'roles.*', 'permissions.*', 'users.*', 'positions.*', 'jobgroups.*') ? 'active' : '' }}">
+      <span><i class="bi bi-gear-fill me-2"></i> ตั้งค่าระบบ</span>
+      <i class="bi bi-chevron-right dropdown-icon"></i>
+    </a>
+    <div class="sidebar-dropdown-menu {{ Request::routeIs('file-manage.*', 'roles.*', 'permissions.*', 'users.*', 'positions.*', 'jobgroups.*') ? 'show' : '' }}">
+      <a href="{{ route('file-manage.index') }}"
+         class="{{ Request::routeIs('file-manage.*') ? 'active' : '' }}">
+         <i class="bi bi-folder-fill me-2"></i> จัดการเอกสาร</a>
+      
+      <a href="{{ route('jobgroups.index') }}"
+         class="{{ Request::routeIs('jobgroups.*') ? 'active' : '' }}">
+         <i class="bi bi-diagram-3 me-2"></i> กลุ่มงาน</a>
+      
+      <a href="{{ route('positions.index') }}"
+         class="{{ Request::routeIs('positions.*') ? 'active' : '' }}">
+         <i class="bi bi-briefcase me-2"></i> ตำแหน่งงาน</a>
+      
+      <a href="{{ route('roles.index') }}"
+         class="{{ Request::routeIs('roles.*') ? 'active' : '' }}">
+         <i class="bi bi-shield-lock-fill me-2"></i> Roles</a>
+      
+      <a href="{{ route('permissions.index') }}"
+         class="{{ Request::routeIs('permissions.*') ? 'active' : '' }}">
+         <i class="bi bi-key-fill me-2"></i> Permissions</a>
+      
+      <a href="{{ route('users.index') }}"
+         class="{{ Request::routeIs('users.index') ? 'active' : '' }}">
+         <i class="bi bi-people-fill me-2"></i> Users</a>
+    </div>
+  </div>
 
 
 
@@ -276,6 +342,21 @@
           @endif
         </ul>
       </div>
+
+      <!-- User Info & Logout -->
+      @auth
+      <div class="d-flex align-items-center gap-2">
+        <i class="bi bi-person-circle fs-4"></i>
+        <span class="d-none d-md-inline text-dark fw-semibold">{{ Auth::user()->name }}</span>
+      </div>
+      <form action="{{ route('logout') }}" method="POST" class="m-0">
+        @csrf
+        <button type="submit" class="btn btn-danger btn-sm d-flex align-items-center gap-2">
+          <i class="bi bi-box-arrow-right"></i>
+          <span>ออกจากระบบ</span>
+        </button>
+      </form>
+      @endauth
     </div>
   </div>
   
@@ -299,6 +380,19 @@
     if ($('.datatable').length) {
       $('.datatable').DataTable();
     }
+  });
+
+  // Sidebar Dropdown Toggle
+  $(document).ready(function() {
+    $('.sidebar-dropdown > a').click(function(e) {
+      e.preventDefault();
+      const $dropdown = $(this).siblings('.sidebar-dropdown-menu');
+      const $icon = $(this).find('.dropdown-icon');
+      
+      // Toggle dropdown
+      $dropdown.toggleClass('show');
+      $icon.toggleClass('rotate');
+    });
   });
 </script>
 
