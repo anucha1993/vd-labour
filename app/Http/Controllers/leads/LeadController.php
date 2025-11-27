@@ -88,7 +88,11 @@ class LeadController extends Controller
             'lead_firstname' => 'required|string|max:255',
             'lead_lastname' => 'required|string|max:255',
             'lead_phone' => 'nullable|string|max:20',
-            'lead_photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'lead_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ], [
+            'lead_photo.image' => 'ไฟล์ที่อัปโหลดต้องเป็นรูปภาพเท่านั้น',
+            'lead_photo.mimes' => 'รูปภาพต้องเป็นไฟล์ประเภท: jpeg, png, jpg, gif',
+            'lead_photo.max' => 'ขนาดรูปภาพต้องไม่เกิน 2MB',
         ]);
         
         $data = $request->except('lead_photo', 'job_history');
@@ -101,7 +105,13 @@ class LeadController extends Controller
         
         // Handle photo upload
         if ($request->hasFile('lead_photo')) {
-            $data['lead_photo'] = $request->file('lead_photo')->store('leads', 'public');
+            try {
+                $photo = $request->file('lead_photo');
+                $filename = time() . '_' . $photo->getClientOriginalName();
+                $data['lead_photo'] = $photo->storeAs('leads', $filename, 'public');
+            } catch (\Exception $e) {
+                return back()->with('error', 'เกิดข้อผิดพลาดในการอัปโหลดรูปภาพ: ' . $e->getMessage())->withInput();
+            }
         }
         
         DB::beginTransaction();
@@ -170,7 +180,11 @@ class LeadController extends Controller
             'lead_firstname' => 'required|string|max:255',
             'lead_lastname' => 'required|string|max:255',
             'lead_phone' => 'nullable|string|max:20',
-            'lead_photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'lead_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ], [
+            'lead_photo.image' => 'ไฟล์ที่อัปโหลดต้องเป็นรูปภาพเท่านั้น',
+            'lead_photo.mimes' => 'รูปภาพต้องเป็นไฟล์ประเภท: jpeg, png, jpg, gif',
+            'lead_photo.max' => 'ขนาดรูปภาพต้องไม่เกิน 2MB',
         ]);
         
         $data = $request->except('lead_photo', 'job_history');
@@ -183,10 +197,18 @@ class LeadController extends Controller
         
         // Handle photo upload
         if ($request->hasFile('lead_photo')) {
-            if ($lead->lead_photo) {
-                Storage::disk('public')->delete($lead->lead_photo);
+            try {
+                // Delete old photo if exists
+                if ($lead->lead_photo) {
+                    Storage::disk('public')->delete($lead->lead_photo);
+                }
+                
+                $photo = $request->file('lead_photo');
+                $filename = time() . '_' . $photo->getClientOriginalName();
+                $data['lead_photo'] = $photo->storeAs('leads', $filename, 'public');
+            } catch (\Exception $e) {
+                return back()->with('error', 'เกิดข้อผิดพลาดในการอัปโหลดรูปภาพ: ' . $e->getMessage())->withInput();
             }
-            $data['lead_photo'] = $request->file('lead_photo')->store('leads', 'public');
         }
         
         DB::beginTransaction();

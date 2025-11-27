@@ -34,7 +34,7 @@
                                 <label class="form-label">รูปถ่าย</label>
                                 <div class="text-center">
                                     <img id="photo_preview" src="https://via.placeholder.com/200x250" class="img-thumbnail mb-2" style="width: 100%; max-height: 280px; object-fit: cover;">
-                                    <input type="file" class="form-control" name="lead_photo" accept="image/*" onchange="previewPhoto(event)">
+                                    <input type="file" class="form-control" name="lead_photo" accept="image/*" onchange="previewPhoto(event)" id="lead_photo_input">
                                     <small class="text-muted">รูปถ่ายหน้าตรง สวมเสื้อเป็นทางการ</small>
                                 </div>
                             </div>
@@ -815,12 +815,34 @@
         let jobHistoryCount = 0;
 
         function previewPhoto(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            // ตรวจสอบประเภทไฟล์
+            const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+            if (!allowedTypes.includes(file.type)) {
+                alert('กรุณาเลือกไฟล์รูปภาพ (JPEG, PNG, JPG) เท่านั้น');
+                event.target.value = '';
+                return;
+            }
+            
+            // ตรวจสอบขนาดไฟล์ (2MB = 2048KB)
+            if (file.size > 2048 * 1024) {
+                alert('ขนาดไฟล์ต้องไม่เกิน 2MB');
+                event.target.value = '';
+                return;
+            }
+            
             const reader = new FileReader();
             reader.onload = function(){
                 const output = document.getElementById('photo_preview');
                 output.src = reader.result;
             };
-            reader.readAsDataURL(event.target.files[0]);
+            reader.onerror = function() {
+                alert('เกิดข้อผิดพลาดในการอ่านไฟล์');
+                event.target.value = '';
+            };
+            reader.readAsDataURL(file);
         }
 
         // Calculate BMI
@@ -920,6 +942,16 @@
                 passportField.focus();
                 alert('กรุณากรอก Passport/ID Card No. ให้ครบ 6 หลัก');
                 return false;
+            }
+            
+            // Debug: ตรวจสอบไฟล์รูปภาพ
+            const photoInput = document.getElementById('lead_photo_input');
+            if (photoInput.files.length > 0) {
+                console.log('ไฟล์รูปภาพที่เลือก:', photoInput.files[0]);
+                console.log('ขนาดไฟล์:', photoInput.files[0].size, 'bytes');
+                console.log('ประเภทไฟล์:', photoInput.files[0].type);
+            } else {
+                console.log('ไม่มีไฟล์รูปภาพที่เลือก');
             }
         });
 

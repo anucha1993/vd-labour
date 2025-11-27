@@ -163,6 +163,12 @@
      class="{{ Request::routeIs('leads.*') ? 'active' : '' }}">
      <i class="bi bi-person-plus-fill me-2"></i> ข้อมูลผู้สนใจ (Leads)</a>
 
+  @can('view demand')
+  <a href="{{ route('demands.index') }}"
+     class="{{ Request::routeIs('demands.*') ? 'active' : '' }}">
+     <i class="bi bi-file-earmark-text-fill me-2"></i> ความต้องการ (Demands)</a>
+  @endcan
+
   <a href="{{ route('export.form.labour') }}"
      class="{{ Request::routeIs('export.form.labour') ? 'active' : '' }}">
      <i class="bi bi-clipboard-data-fill me-2"></i> รายงาน</a>
@@ -177,11 +183,11 @@
 
   <!-- Settings Dropdown -->
   <div class="sidebar-dropdown">
-    <a class="{{ Request::routeIs('file-manage.*', 'roles.*', 'permissions.*', 'users.*', 'positions.*', 'jobgroups.*') ? 'active' : '' }}">
+    <a class="{{ Request::routeIs('file-manage.*', 'roles.*', 'permissions.*', 'users.*', 'positions.*', 'jobgroups.*', 'staff-sub.*', 'staff.*') ? 'active' : '' }}">
       <span><i class="bi bi-gear-fill me-2"></i> ตั้งค่าระบบ</span>
       <i class="bi bi-chevron-right dropdown-icon"></i>
     </a>
-    <div class="sidebar-dropdown-menu {{ Request::routeIs('file-manage.*', 'roles.*', 'permissions.*', 'users.*', 'positions.*', 'jobgroups.*') ? 'show' : '' }}">
+    <div class="sidebar-dropdown-menu {{ Request::routeIs('file-manage.*', 'roles.*', 'permissions.*', 'users.*', 'positions.*', 'jobgroups.*', 'staff-sub.*', 'staff.*') ? 'show' : '' }}">
       <a href="{{ route('file-manage.index') }}"
          class="{{ Request::routeIs('file-manage.*') ? 'active' : '' }}">
          <i class="bi bi-folder-fill me-2"></i> จัดการเอกสาร</a>
@@ -193,6 +199,14 @@
       <a href="{{ route('positions.index') }}"
          class="{{ Request::routeIs('positions.*') ? 'active' : '' }}">
          <i class="bi bi-briefcase me-2"></i> ตำแหน่งงาน</a>
+      
+      <a href="{{ route('staff-sub.index') }}"
+         class="{{ Request::routeIs('staff-sub.*') ? 'active' : '' }}">
+         <i class="bi bi-people-fill me-2"></i> สายหางาน</a>
+      
+      <a href="{{ route('staff.index') }}"
+         class="{{ Request::routeIs('staff.*') ? 'active' : '' }}">
+         <i class="bi bi-person-badge me-2"></i> รายชื่อสรรหา</a>
       
       <a href="{{ route('roles.index') }}"
          class="{{ Request::routeIs('roles.*') ? 'active' : '' }}">

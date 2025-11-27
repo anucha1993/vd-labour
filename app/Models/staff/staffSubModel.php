@@ -13,7 +13,7 @@ class staffSubModel extends Model
     protected $fillable = [
         'staff_sub_name',
         'staff_sub_phone',
-        'staff_status',
+        'staff_sub_status',
         'staff_sub_staff',
     ];
 }

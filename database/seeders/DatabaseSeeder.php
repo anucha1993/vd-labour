@@ -23,6 +23,9 @@ class DatabaseSeeder extends Seeder
         $this->call([
             StaffSubSeeder::class,
             LeadSeeder::class,
+            JobGroupPermissionSeeder::class,
+            DemandPermissionSeeder::class,
+            DemandSeeder::class,
         ]);
     }
 }

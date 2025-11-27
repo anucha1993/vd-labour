@@ -11,7 +11,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Register MpdfService
+        $this->app->singleton('mpdf', function () {
+            return new \App\Services\MpdfService();
+        });
     }
 
     /**

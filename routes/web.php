@@ -99,9 +99,11 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/permissions/{permission}', [PermissionController::class, 'destroy'])->name('permissions.destroy');
 });
     
-    // Routes สำหรับจัดการ Users และการเพิ่ม Users เข้า Roles
-    Route::get('/users', [UserRoleController::class, 'index'])->name('users.index');
-    Route::post('/users/assign-role', [UserRoleController::class, 'assignRole'])->name('users.assignRole');
+    // Routes สำหรับจัดการ Users
+    Route::resource('users', \App\Http\Controllers\UserController::class);
+    Route::post('/users/assign-role', [\App\Http\Controllers\UserController::class, 'assignRole'])->name('users.assignRole');
+    Route::put('/users/{user}/reset-password', [\App\Http\Controllers\UserController::class, 'resetPassword'])->name('users.resetPassword');
+    Route::put('/users/{user}/update-status', [\App\Http\Controllers\UserController::class, 'updateStatus'])->name('users.updateStatus');
 
 
     Route::resource('dashboards', dashboardController::class);
@@ -136,3 +138,27 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('leads', \App\Http\Controllers\leads\LeadController::class);
     Route::get('/leads/{lead}/convert', [\App\Http\Controllers\leads\LeadController::class, 'convertForm'])->name('leads.convertForm');
     Route::post('/leads/{lead}/convert', [\App\Http\Controllers\leads\LeadController::class, 'convert'])->name('leads.convert');
+
+    // Demand Management Routes
+    Route::resource('demands', \App\Http\Controllers\demands\DemandController::class);
+    Route::get('/demands/{demand}/pdf', [\App\Http\Controllers\demands\DemandController::class, 'generatePdf'])->name('demands.pdf');
+    Route::get('/demands/{demand}/print', [\App\Http\Controllers\demands\DemandController::class, 'print'])->name('demands.print');
+
+    // Staff Sub Management Routes
+    Route::resource('staff-sub', \App\Http\Controllers\staff\StaffSubController::class);
+
+    // Staff Management Routes
+    Route::resource('staff', \App\Http\Controllers\staff\StaffController::class);
+
+    // PDF Export Routes
+    Route::prefix('pdf')->name('pdf.')->group(function () {
+        Route::get('/lead/{lead}', [\App\Http\Controllers\PdfController::class, 'generateLeadPdf'])->name('lead');
+        Route::get('/leads-list', [\App\Http\Controllers\PdfController::class, 'generateLeadsListPdf'])->name('leads.list');
+        Route::get('/cv-form/{lead?}', [\App\Http\Controllers\PdfController::class, 'generateCvForm'])->name('cv.form');
+        Route::get('/test', [\App\Http\Controllers\PdfController::class, 'testPdf'])->name('test');
+        
+        // PDF Download Routes
+        Route::get('/download/lead/{lead}', [\App\Http\Controllers\PdfDownloadController::class, 'downloadLeadPdf'])->name('download.lead');
+        Route::get('/download/leads-list', [\App\Http\Controllers\PdfDownloadController::class, 'downloadLeadsListPdf'])->name('download.leads.list');
+        Route::get('/download/cv-form/{lead?}', [\App\Http\Controllers\PdfDownloadController::class, 'downloadCvForm'])->name('download.cv.form');
+    });
