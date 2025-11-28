@@ -20,6 +20,7 @@ class DemandSeeder extends Seeder
         // Get some industry types and positions for foreign keys
         $industryTypes = inducstryTypeModel::take(3)->get();
         $positions = positionModel::take(10)->get();
+        $countries = \App\Models\country\countryModel::where('country_status', 1)->take(3)->get();
 
         if ($industryTypes->isEmpty() || $positions->isEmpty()) {
             $this->command->warn('Please seed industry types and positions first');
@@ -29,6 +30,11 @@ class DemandSeeder extends Seeder
         // Get first user as creator
         $firstUser = \App\Models\User::first();
         $userId = $firstUser ? $firstUser->id : 1;
+        
+        // Get country IDs or use default
+        $countryId1 = $countries->count() > 0 ? $countries[0]->country_id : 1;
+        $countryId2 = $countries->count() > 1 ? $countries[1]->country_id : 1;
+        $countryId3 = $countries->count() > 2 ? $countries[2]->country_id : 1;
 
         // Sample demand data
         $demands = [
@@ -39,6 +45,7 @@ class DemandSeeder extends Seeder
                 'dm_com_addr' => '123 ถนนสุขุมวิท แขวงคลองเตย เขตคลองเตย กรุงเทพมหานคร 10110',
                 'dm_reg_no' => 'REG-001-2025',
                 'dm_indust_type' => $industryTypes[0]->inducstry_type_id,
+                'country_id' => $countryId1,
                 'dm_bmi' => '18.5-25',
                 'dm_time_work' => '8:00-17:00 น.',
                 'dm_sa' => 'เงินเดือน 25,000-35,000 บาท, โบนัสประจำปี, ประกันสังคม, ประกันสุขภาพกลุ่ม',
@@ -56,6 +63,7 @@ class DemandSeeder extends Seeder
                 'dm_com_addr' => '456 ถนนรัชดาภิเษก แขวงลาดยาว เขตจตุจักร กรุงเทพมหานคร 10900',
                 'dm_reg_no' => 'REG-002-2025',
                 'dm_indust_type' => $industryTypes[1]->inducstry_type_id,
+                'country_id' => $countryId2,
                 'dm_bmi' => '18-28',
                 'dm_time_work' => '6:00-14:00 น. (กะเช้า)',
                 'dm_sa' => 'เงินเดือน 20,000-30,000 บาท, ค่าล่วงเวลา, ค่าอาหาร, ที่พักพนักงาน',
@@ -73,6 +81,7 @@ class DemandSeeder extends Seeder
                 'dm_com_addr' => '789 ถนนพระราม 4 แขวงสุริยวงศ์ เขตบางรัก กรุงเทพมหานคร 10500',
                 'dm_reg_no' => 'REG-003-2025',
                 'dm_indust_type' => $industryTypes[2]->inducstry_type_id,
+                'country_id' => $countryId3,
                 'dm_bmi' => '18-26',
                 'dm_time_work' => '9:00-18:00 น.',
                 'dm_sa' => 'เงินเดือน 18,000-25,000 บาท, คอมมิชชั่น, ประกันสุขภาพ',

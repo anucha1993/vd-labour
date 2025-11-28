@@ -21,6 +21,7 @@ class DemandModel extends Model
         'dm_com_addr',
         'dm_reg_no',
         'dm_indust_type',
+        'country_id',
         'dm_bmi',
         'dm_time_work',
         'dm_sa',
@@ -59,5 +60,11 @@ class DemandModel extends Model
     public function updatedBy()
     {
         return $this->belongsTo(\App\Models\User::class, 'updated_by');
+    }
+    
+    // Relationship to Country
+    public function country()
+    {
+        return $this->belongsTo(\App\Models\country\countryModel::class, 'country_id', 'country_id');
     }
 }

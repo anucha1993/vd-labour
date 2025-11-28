@@ -213,6 +213,11 @@
                                 <label>Position</label>
                                 <select name="labour_position" class="form-select" id="position" required>
                                     <option value="">Select a Position</option>
+                                    @forelse ($positions as $pos)
+                                        <option value="{{ $pos->position_id }}">{{ $pos->position_name }}</option>
+                                    @empty
+                                        <!-- ไม่มี position จะโหลดจาก AJAX เมื่อเลือก job group -->
+                                    @endforelse
                                 </select>
                             </div>
                             <div class="col-md-3">

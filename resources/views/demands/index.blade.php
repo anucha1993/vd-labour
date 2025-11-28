@@ -13,6 +13,7 @@
                     </a>
                     @endcan
                 </div>
+
                 <div class="card-body">
                     @if(session('success'))
                         <div class="alert alert-success">{{ session('success') }}</div>
@@ -70,6 +71,7 @@
                                     <th>หมายเลขหนังสือ</th>
                                     <th>ชื่อบริษัท</th>
                                     <th>ประเภทอุตสาหกรรม</th>
+                                    <th>ประเทศ</th>
                                     <th>จำนวนตำแหน่ง</th>
                                     <th>ผู้สร้าง</th>
                                     <th>สถานะ</th>
@@ -84,7 +86,13 @@
                                     <td>{{ $demand->dm_let_no }}</td>
                                     <td>{{ $demand->dm_com_name }}</td>
                                     <td>{{ $demand->industryType->industry_type_name_th ?? $demand->industryType->inducstry_type_name ?? 'N/A' }}</td>
-                                  
+                                    <td>
+                                        @if($demand->country)
+                                            {{ $demand->country->country_name_th ?? $demand->country->country_name_en ?? 'N/A' }}
+                                        @else
+                                            <span class="text-muted">ไม่ระบุ</span>
+                                        @endif
+                                    </td>
                                     <td>{{ $demand->positions->sum('position_dm_amount') }} คน</td>
                                     <td>{{ $demand->createdBy->name ?? '-' }}</td>
                                     <td>

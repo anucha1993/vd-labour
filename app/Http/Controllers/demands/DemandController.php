@@ -26,7 +26,7 @@ class DemandController extends Controller
      */
     public function index(Request $request)
     {
-        $query = DemandModel::with(['industryType', 'positions.position', 'createdBy']);
+        $query = DemandModel::with(['industryType', 'positions.position', 'createdBy', 'country']);
         
         // Search functionality
         if ($request->filled('search')) {
@@ -68,7 +68,8 @@ class DemandController extends Controller
     {
         $industryTypes = inducstryTypeModel::all();
         $positions = positionModel::all();
-        return view('demands.create', compact('industryTypes', 'positions'));
+        $countries = \App\Models\country\countryModel::where('country_status', 1)->get();
+        return view('demands.create', compact('industryTypes', 'positions', 'countries'));
     }
 
     /**
@@ -83,6 +84,7 @@ class DemandController extends Controller
             'dm_com_addr' => 'required|string',
             'dm_reg_no' => 'required|string|max:255',
             'dm_indust_type' => 'required|exists:inducstry_type,inducstry_type_id',
+            'country_id' => 'required|exists:country,country_id',
             'dm_bmi' => 'nullable|string|max:255',
             'dm_time_work' => 'nullable|string|max:255',
             'dm_sa' => 'nullable|string',
@@ -92,7 +94,7 @@ class DemandController extends Controller
             'location' => 'nullable|string|max:255',
             'date' => 'nullable|string|max:255',
             'positions' => 'required|array|min:1',
-            'positions.*.position_id' => 'required|exists:positions,id',
+            'positions.*.position_id' => 'required|exists:position,position_id',
             'positions.*.amount' => 'required|numeric|min:0',
             'positions.*.period' => 'required|string|max:255',
             'positions.*.age' => 'required|string|max:255',
@@ -143,7 +145,8 @@ class DemandController extends Controller
         $demand = DemandModel::with('positions')->findOrFail($id);
         $industryTypes = inducstryTypeModel::all();
         $positions = positionModel::all();
-        return view('demands.edit', compact('demand', 'industryTypes', 'positions'));
+        $countries = \App\Models\country\countryModel::where('country_status', 1)->get();
+        return view('demands.edit', compact('demand', 'industryTypes', 'positions', 'countries'));
     }
 
     /**
@@ -158,6 +161,7 @@ class DemandController extends Controller
             'dm_com_addr' => 'required|string',
             'dm_reg_no' => 'required|string|max:255',
             'dm_indust_type' => 'required|exists:inducstry_type,inducstry_type_id',
+            'country_id' => 'required|exists:country,country_id',
             'dm_bmi' => 'nullable|string|max:255',
             'dm_time_work' => 'nullable|string|max:255',
             'dm_sa' => 'nullable|string',
@@ -167,7 +171,7 @@ class DemandController extends Controller
             'location' => 'nullable|string|max:255',
             'date' => 'nullable|string|max:255',
             'positions' => 'required|array|min:1',
-            'positions.*.position_id' => 'required|exists:positions,id',
+            'positions.*.position_id' => 'required|exists:position,position_id',
             'positions.*.amount' => 'required|numeric|min:0',
             'positions.*.period' => 'required|string|max:255',
             'positions.*.age' => 'required|string|max:255',

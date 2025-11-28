@@ -125,6 +125,7 @@ class labourController extends Controller
         $fileManage = fileManageModel::where('file_manage_status', 'active')->get();
         $examinationRound = examinationRoundModel::where('examination_round_status', 'active')->latest()->get();
         $position = positionModel::where('position_id', $labourModel->labour_position)->first();
+        $positions = positionModel::where('position_status', 'active')->get(); // เพิ่มบรรทัดนี้
         $labourfiles = labourFileModel::where('labour_id', $labourModel->labour_id)->get();
         $customers = customerModel::where('customer_status', 'active')->get();
         $CidResults = CIDresultsModel::get();
@@ -135,7 +136,7 @@ class labourController extends Controller
         $listFiles = listFileModel::where('file_manage_id',$labourModel->labour_location_doc)->whereNotIn('list_file_id',$fileID)->get();
         
         $staffSub = staffSubModel::where('staff_sub_status', 'active')->get();
-        return view('labours.form-edit', compact('listFiles', 'customers', 'labourModel','CidResults','staffSub', 'country', 'jobGroup', 'locationtest', 'staffs', 'fileManage', 'examinationRound', 'position', 'labourfiles'));
+        return view('labours.form-edit', compact('listFiles', 'customers', 'labourModel','CidResults','staffSub', 'country', 'jobGroup', 'locationtest', 'staffs', 'fileManage', 'examinationRound', 'position', 'positions', 'labourfiles'));
     }
 
     public function create()
@@ -148,9 +149,10 @@ class labourController extends Controller
         $fileManage = fileManageModel::where('file_manage_status', 'active')->get();
         $customers = customerModel::where('customer_status', 'active')->get();
         $staffSub = staffSubModel::where('staff_sub_status', 'active')->get();
+        $positions = positionModel::where('position_status', 'active')->get(); // เพิ่มบรรทัดนี้
 
         $examinationRound = examinationRoundModel::where('examination_round_status', 'active')->latest()->get();
-        return view('labours.form-create', compact('country','CidResults', 'jobGroup', 'locationtest', 'staffs', 'fileManage', 'examinationRound', 'customers','staffSub'));
+        return view('labours.form-create', compact('country','CidResults', 'jobGroup', 'locationtest', 'staffs', 'fileManage', 'examinationRound', 'customers','staffSub', 'positions'));
     }
 
     public function update(labourModel $labourModel, Request $request)

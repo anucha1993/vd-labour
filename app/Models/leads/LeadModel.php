@@ -98,6 +98,11 @@ class LeadModel extends Model
         return $this->belongsTo(\App\Models\staff\staffSubModel::class, 'lead_recommender_staff_sub_id', 'staff_sub_id');
     }
     
+    public function jobLeads()
+    {
+        return $this->hasMany(\App\Models\jobs\JobLeadModel::class, 'lead_id', 'lead_id');
+    }
+    
     // Helper methods
     public function getFullNameAttribute()
     {

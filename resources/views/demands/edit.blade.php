@@ -83,7 +83,7 @@
                                         @foreach($industryTypes as $industryType)
                                             <option value="{{ $industryType->inducstry_type_id }}" 
                                                 {{ old('dm_indust_type', $demand->dm_indust_type) == $industryType->inducstry_type_id ? 'selected' : '' }}>
-                                                {{ $industryType->industry_type_name_th ?? $industryType->industry_type_name }}
+                                                {{ $industryType->inducstry_type_name }}
                                             </option>
                                         @endforeach
                                     </select>
@@ -93,8 +93,28 @@
                                 </div>
                             </div>
 
+                            <!-- Country -->
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group">
+                                    <label for="country_id">ประเทศ (Country) <span class="text-danger">*</span></label>
+                                    <select class="form-control @error('country_id') is-invalid @enderror" 
+                                            name="country_id" required>
+                                        <option value="">เลือกประเทศ</option>
+                                        @foreach($countries as $country)
+                                            <option value="{{ $country->country_id }}" 
+                                                {{ old('country_id', $demand->country_id) == $country->country_id ? 'selected' : '' }}>
+                                                {{ $country->country_name_th }} ({{ $country->country_name_en }})
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('country_id')
+                                        <span class="invalid-feedback">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
+
                              <!-- Additional Information -->
-                            <div class="col-md-3 mb-3">
+                            <div class="col-md-6 mb-3">
                                 <div class="form-group">
                                     <label for="dm_bmi">BMI</label>
                                     <input type="text" class="form-control @error('dm_bmi') is-invalid @enderror" 
@@ -105,7 +125,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-3 mb-3">
+                            <div class="col-md-6 mb-3">
                                 <div class="form-group">
                                     <label for="dm_time_work">INDUSTRY TYPE (ประเภทงาน) </label>
                                     <input type="text" class="form-control @error('dm_time_work') is-invalid @enderror" 
@@ -217,8 +237,8 @@
                                                 <select class="form-control" name="positions[{{ $index }}][position_id]" required>
                                                     <option value="">เลือกตำแหน่ง</option>
                                                     @foreach($positions as $pos)
-                                                        <option value="{{ $pos->id }}" 
-                                                            {{ $position->position_id == $pos->id ? 'selected' : '' }}>
+                                                        <option value="{{ $pos->position_id }}" 
+                                                            {{ $position->position_id == $pos->position_id ? 'selected' : '' }}>
                                                             {{ $pos->position_name }}
                                                         </option>
                                                     @endforeach
@@ -230,7 +250,7 @@
                                                        min="1" step="0.01" value="{{ $position->position_dm_amount }}" required>
                                             </div>
                                             <div class="col-md-2">
-                                                <label>Employment Period (สัญญาจ้าง) <span class="text-danger">*</span></label>
+                                                <label>Period (สัญญาจ้าง) <span class="text-danger">*</span></label>
                                                 <input type="text" class="form-control" name="positions[{{ $index }}][period]" 
                                                        placeholder="เช่น 2 ปี" value="{{ $position->position_dm_period }}" required>
                                             </div>

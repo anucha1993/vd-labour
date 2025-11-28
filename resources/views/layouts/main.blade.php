@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>VD-LABOURS</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Prompt&display=swap" rel="stylesheet">
@@ -168,6 +169,35 @@
      class="{{ Request::routeIs('demands.*') ? 'active' : '' }}">
      <i class="bi bi-file-earmark-text-fill me-2"></i> ความต้องการ (Demands)</a>
   @endcan
+
+  <!-- Job Application Management Dropdown -->
+  @canany(['job-list', 'job-lead-list', 'job-dashboard'])
+  <div class="sidebar-dropdown">
+    <a class="{{ Request::routeIs('jobs.*', 'job-leads.*') || request()->routeIs('job-dashboard.index') ? 'active' : '' }}">
+      <span><i class="bi bi-briefcase-fill me-2"></i> ระบบใบสมัครงาน</span>
+      <i class="bi bi-chevron-right dropdown-icon"></i>
+    </a>
+    <div class="sidebar-dropdown-menu {{ Request::routeIs('jobs.*', 'job-leads.*') || request()->routeIs('job-dashboard.index') ? 'show' : '' }}">
+      @can('job-dashboard')
+      <a href="{{ route('jobs.dashboard') }}"
+         class="{{ request()->routeIs('job-dashboard.index') ? 'active' : '' }}">
+         <i class="bi bi-graph-up me-2"></i> Dashboard ใบสมัคร</a>
+      @endcan
+      
+      @can('job-list')
+      <a href="{{ route('jobs.index') }}"
+         class="{{ Request::routeIs('jobs.index', 'jobs.show', 'jobs.create', 'jobs.edit') ? 'active' : '' }}">
+         <i class="bi bi-briefcase me-2"></i> จัดการงาน</a>
+      @endcan
+      
+      @can('job-lead-list')
+      <a href="{{ route('job-leads.index') }}"
+         class="{{ Request::routeIs('job-leads.*') ? 'active' : '' }}">
+         <i class="bi bi-person-lines-fill me-2"></i> จัดการใบสมัคร</a>
+      @endcan
+    </div>
+  </div>
+  @endcanany
 
   <a href="{{ route('export.form.labour') }}"
      class="{{ Request::routeIs('export.form.labour') ? 'active' : '' }}">

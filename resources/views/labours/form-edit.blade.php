@@ -349,9 +349,17 @@
                                 <label>Position</label>
                                 <select name="labour_position" class="form-select" id="position" required
                                     @cannot('update labour') disabled @endcannot>
-                                    <option selected value="{{ $labourModel->labour_position }}">
-                                        {{ $position->position_name }}</option>
-
+                                    <option value="">Select a Position</option>
+                                    @forelse ($positions as $pos)
+                                        <option @if ($pos->position_id === $labourModel->labour_position) selected @endif
+                                            value="{{ $pos->position_id }}">
+                                            {{ $pos->position_name }}
+                                        </option>
+                                    @empty
+                                        <option value="{{ $labourModel->labour_position }}" selected>
+                                            {{ $position->position_name ?? 'ไม่พบข้อมูล' }}
+                                        </option>
+                                    @endforelse
                                 </select>
                             </div>
 

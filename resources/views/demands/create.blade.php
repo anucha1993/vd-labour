@@ -83,7 +83,7 @@
                                         @foreach($industryTypes as $industryType)
                                             <option value="{{ $industryType->inducstry_type_id }}" 
                                                 {{ old('dm_indust_type') == $industryType->inducstry_type_id ? 'selected' : '' }}>
-                                                {{ $industryType->industry_type_name_th ?? $industryType->industry_type_name }}
+                                                {{ $industryType->inducstry_type_name }}
                                             </option>
                                         @endforeach
                                     </select>
@@ -93,8 +93,28 @@
                                 </div>
                             </div>
 
+                            <!-- Country -->
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group">
+                                    <label for="country_id">ประเทศ (Country) <span class="text-danger">*</span></label>
+                                    <select class="form-control @error('country_id') is-invalid @enderror" 
+                                            name="country_id" required>
+                                        <option value="">เลือกประเทศ</option>
+                                        @foreach($countries as $country)
+                                            <option value="{{ $country->country_id }}" 
+                                                {{ old('country_id') == $country->country_id ? 'selected' : '' }}>
+                                                {{ $country->country_name_th }} ({{ $country->country_name_en }})
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('country_id')
+                                        <span class="invalid-feedback">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
+
                               <!-- Additional Information -->
-                            <div class="col-md-3 mb-3">
+                            <div class="col-md-6 mb-3">
                                 <div class="form-group">
                                     <label for="dm_bmi">BMI</label>
                                     <input type="text" class="form-control @error('dm_bmi') is-invalid @enderror" value="**ค่า BMI ต้องไม่ต่ำกว่า 18 และไม่เกิน 30**"
@@ -105,7 +125,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-3 mb-3">
+                            <div class="col-md-6 mb-3">
                                 <div class="form-group">
                                     <label for="dm_time_work">TIME TO WORK (เวลาทำงาน) </label>
                                     <input type="text" class="form-control @error('dm_time_work') is-invalid @enderror" value="ทำงาน 6 วัน/สัปดาห์ 10 ชั่วโมง/วัน"
@@ -213,7 +233,7 @@
                                                 <select class="form-control" name="positions[0][position_id]" required>
                                                     <option value="">เลือกตำแหน่ง</option>
                                                     @foreach($positions as $position)
-                                                        <option value="{{ $position->id }}">{{ $position->position_name }}</option>
+                                                        <option value="{{ $position->position_id }}">{{ $position->position_name }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -273,7 +293,7 @@ let positionIndex = 1;
 // Store positions data for JavaScript use
 const positionsData = {!! json_encode($positions->map(function($position) {
     return [
-        'id' => $position->id,
+        'id' => $position->position_id,
         'name' => $position->position_name
     ];
 })) !!};

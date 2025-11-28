@@ -150,6 +150,31 @@ Route::middleware(['auth'])->group(function () {
     // Staff Management Routes
     Route::resource('staff', \App\Http\Controllers\staff\StaffController::class);
 
+    // Job Application Additional Routes (must come BEFORE resource routes)
+    Route::prefix('jobs')->name('jobs.')->group(function () {
+        Route::patch('{job}/toggle-status', [\App\Http\Controllers\JobController::class, 'toggleStatus'])->name('toggle-status');
+        Route::get('statistics', [\App\Http\Controllers\JobController::class, 'statistics'])->name('statistics');
+        Route::get('dashboard', [\App\Http\Controllers\JobDashboardController::class, 'index'])->name('dashboard');
+        Route::get('dashboard/data', [\App\Http\Controllers\JobDashboardController::class, 'getData'])->name('dashboard.data');
+        Route::post('dashboard/export', [\App\Http\Controllers\JobDashboardController::class, 'export'])->name('dashboard.export');
+    });
+    
+    Route::prefix('job-leads')->name('job-leads.')->group(function () {
+        Route::get('{job}/applicants', [\App\Http\Controllers\JobLeadController::class, 'jobApplicants'])->name('job-applicants');
+        Route::get('search-available', [\App\Http\Controllers\JobLeadController::class, 'searchAvailableLeads'])->name('search-available');
+        Route::delete('{jobLead}/cancel', [\App\Http\Controllers\JobLeadController::class, 'cancel'])->name('cancel');
+        Route::patch('{jobLead}/force-unlock', [\App\Http\Controllers\JobLeadController::class, 'forceUnlock'])->name('force-unlock');
+        Route::patch('bulk-update', [\App\Http\Controllers\JobLeadController::class, 'bulkUpdate'])->name('bulk-update');
+    });
+
+    // Job Application Management Routes
+    Route::resource('jobs', \App\Http\Controllers\JobController::class);
+    Route::resource('job-leads', \App\Http\Controllers\JobLeadController::class);
+    
+    // Job Dashboard
+    Route::get('job-dashboard', [\App\Http\Controllers\JobDashboardController::class, 'index'])->name('job-dashboard');
+    Route::get('job-dashboard/data', [\App\Http\Controllers\JobDashboardController::class, 'getData'])->name('job-dashboard.data');
+
     // PDF Export Routes
     Route::prefix('pdf')->name('pdf.')->group(function () {
         Route::get('/lead/{lead}', [\App\Http\Controllers\PdfController::class, 'generateLeadPdf'])->name('lead');
