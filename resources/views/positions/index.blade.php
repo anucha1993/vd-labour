@@ -9,8 +9,8 @@
 
     <div class="card card-custom mb-4">
         <div class="card-body">
-            <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
-                <h4 class="mb-0"><i class="bi bi-briefcase-fill me-2 text-primary"></i>จัดการตำแหน่งงาน</h4>
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+                <h4 class="mb-0"><i class="bi bi-briefcase-fill me-2 text-primary"></i>จัดการตำแหน่งงาน - จัดกลุ่มตามประเภทงาน</h4>
                 @can('create position')
                 <a href="{{ route('positions.create') }}" class="btn btn-primary">
                     <i class="bi bi-plus-circle-fill"></i> เพิ่มตำแหน่งงาน
@@ -18,82 +18,69 @@
                 @endcan
             </div>
 
-            <div class="table-responsive card card-custom p-0">
-                <table class="table table-hover table-striped align-middle mb-0">
-                    <thead>
-                        <tr>
-                            <th class="text-center" width="80">#</th>
-                            <th><i class="bi bi-translate me-1"></i> ชื่อตำแหน่ง (EN)</th>
-                            <th><i class="bi bi-chat-text me-1"></i> ชื่อตำแหน่ง (TH)</th>
-                            <th><i class="bi bi-diagram-3 me-1"></i> กลุ่มงาน</th>
-                            <th class="text-center"><i class="bi bi-toggle-on me-1"></i> สถานะ</th>
-                            <th class="text-center" width="250"><i class="bi bi-gear me-1"></i> จัดการ</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse ($positions as $key => $item)
-                            <tr>
-                                <td class="text-center">{{ $key + 1 }}</td>
-                                <td><strong>{{ $item->position_name }}</strong></td>
-                                <td>{{ $item->position_name_th ?? '-' }}</td>
-                                <td>
-                                    @if($item->jobGroup)
-                                        <span class="badge bg-info">{{ $item->jobGroup->job_group_name }}</span>
-                                    @else
-                                        <span class="badge bg-secondary">-</span>
-                                    @endif
-                                </td>
-                                <td class="text-center">
-                                    @if ($item->position_status == 'active')
-                                        <span class="badge bg-success"><i class="bi bi-check-circle"></i> ใช้งาน</span>
-                                    @else
-                                        <span class="badge bg-secondary"><i class="bi bi-x-circle"></i> ไม่ใช้งาน</span>
-                                    @endif
-                                </td>
-                                <td class="text-center">
-                                    <div class="btn-group" role="group">
-                                        @can('view position')
-                                        <a href="{{ route('positions.show', $item->position_id) }}" 
-                                           class="btn btn-sm btn-outline-info" 
-                                           title="ดูรายละเอียด">
-                                            <i class="bi bi-eye-fill"></i>
-                                        </a>
-                                        @endcan
-
-                                        @can('update position')
-                                        <a href="{{ route('positions.edit', $item->position_id) }}" 
-                                           class="btn btn-sm btn-outline-warning" 
-                                           title="แก้ไข">
-                                            <i class="bi bi-pencil-fill"></i>
-                                        </a>
-                                        @endcan
-
-                                        @can('delete position')
-                                        <form action="{{ route('positions.destroy', $item->position_id) }}" 
-                                              method="POST" 
-                                              class="d-inline" 
-                                              onsubmit="return confirm('คุณแน่ใจหรือไม่ว่าต้องการลบตำแหน่งนี้?');">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="ลบ">
-                                                <i class="bi bi-trash-fill"></i>
-                                            </button>
-                                        </form>
-                                        @endcan
-                                    </div>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="6" class="text-center text-muted py-4">
-                                    <i class="bi bi-inbox fs-1 d-block mb-2"></i>
-                                    ไม่มีข้อมูลตำแหน่งงาน
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+            <!-- Job Groups Grid -->
+            <div class="row">
+                @forelse ($jobGroups as $jobGroup)
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100 border-primary job-group-card">
+                        <div class="card-header bg-light">
+                            <h6 class="mb-1 text-primary">
+                                <i class="bi bi-diagram-3 me-2"></i>{{ $jobGroup->job_group_name }}
+                            </h6>
+                            <small class="text-muted">{{ $jobGroup->job_group_name_th ?? 'ไม่มีชื่อภาษาไทย' }}</small>
+                        </div>
+                        <div class="card-body">
+                            <div class="text-center mb-3">
+                                <div class="bg-primary bg-opacity-10 rounded p-3">
+                                    <h4 class="mb-0 text-primary">{{ $jobGroup->positions_count }}</h4>
+                                    <small class="text-muted">ตำแหน่งงาน</small>
+                                </div>
+                            </div>
+                            
+                            @if($jobGroup->job_group_detail)
+                            <p class="card-text small text-muted">
+                                {{ Str::limit($jobGroup->job_group_detail, 80) }}
+                            </p>
+                            @endif
+                        </div>
+                        <div class="card-footer bg-transparent">
+                            <div class="d-grid">
+                                <a href="{{ route('positions.by-job-group', $jobGroup->job_group_id) }}" 
+                                   class="btn btn-primary">
+                                    <i class="bi bi-list-ul"></i> ดูตำแหน่งงาน ({{ $jobGroup->positions_count }})
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @empty
+                <div class="col-12">
+                    <div class="text-center py-5">
+                        <i class="bi bi-inbox fs-1 text-muted"></i>
+                        <h4 class="text-muted mt-3">ไม่พบกลุ่มงานที่มีตำแหน่ง</h4>
+                        <p class="text-muted">ยังไม่มีกลุ่มงานที่มีตำแหน่งงานในระบบ</p>
+                        @can('create position')
+                        <a href="{{ route('positions.create') }}" class="btn btn-primary">
+                            <i class="bi bi-plus-circle"></i> เพิ่มตำแหน่งงานใหม่
+                        </a>
+                        @endcan
+                    </div>
+                </div>
+                @endforelse
             </div>
         </div>
     </div>
+
+<style>
+.job-group-card:hover {
+    transform: translateY(-2px);
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    cursor: pointer;
+}
+
+.job-group-card .card-body {
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+}
+</style>
 @endsection

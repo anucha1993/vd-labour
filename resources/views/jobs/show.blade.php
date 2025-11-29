@@ -30,131 +30,111 @@
                         <div class="alert alert-warning">{{ session('warning') }}</div>
                     @endif
 
-                    <div class="row">
-                        <!-- Job Information -->
+                    <!-- Job Overview -->
+                    <div class="row mb-4">
                         <div class="col-md-8">
-                            <h5 class="border-bottom pb-2 mb-3">ข้อมูลงาน</h5>
-                            
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <strong>หมายเลขงาน:</strong><br>
-                                    <span class="fs-5 text-primary">{{ $job->job_number }}</span>
-                                </div>
-                                <div class="col-md-6">
-                                    <strong>สถานะ:</strong><br>
-                                    <span class="badge fs-6 {{ $job->job_status == 'เปิดรับสมัคร' ? 'bg-success' : 'bg-secondary' }}">
-                                        {{ $job->job_status }}
-                                    </span>
-                                    @if($job->is_expired)
-                                        <span class="badge bg-warning">หมดอายุแล้ว</span>
-                                    @endif
-                                </div>
-                            </div>
-
-                            <div class="row mb-3">
-                                <div class="col-md-12">
-                                    <strong>ชื่องาน:</strong><br>
-                                    <span class="fs-5">{{ $job->job_name }}</span>
-                                </div>
-                            </div>
-
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <strong>ประเทศ:</strong><br>
-                                    <i class="flag-icon flag-icon-{{ strtolower($job->country->country_code ?? 'xx') }}"></i>
-                                    {{ $job->country->country_name_th ?? 'N/A' }}
-                                    <br><small class="text-muted">{{ $job->country->country_name_en ?? '' }}</small>
-                                </div>
-                                <div class="col-md-6">
-                                    <strong>บริษัทที่ขอ:</strong><br>
-                                    {{ $job->demand->dm_com_name ?? 'N/A' }}
-                                    <br><small class="text-muted">{{ $job->demand->dm_let_no ?? '' }}</small>
-                                </div>
-                            </div>
-
-                            <div class="row mb-3">
-                                <div class="col-md-4">
-                                    <strong>จำนวนเปิดรับ:</strong><br>
-                                    <span class="fs-5 text-info">{{ number_format($job->job_total) }} คน</span>
-                                </div>
-                                <div class="col-md-4">
-                                    <strong>วันเริ่มรับสมัคร:</strong><br>
-                                    {{ $job->job_start_date->format('d/m/Y') }}
-                                </div>
-                                <div class="col-md-4">
-                                    <strong>วันปิดรับสมัคร:</strong><br>
-                                    @if($job->job_end_date)
-                                        {{ $job->job_end_date->format('d/m/Y') }}
-                                    @else
-                                        <span class="text-info">รับสมัครต่อเนื่อง</span>
-                                    @endif
-                                </div>
-                            </div>
-
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <strong>ผู้สร้าง:</strong><br>
-                                    {{ $job->createdBy->name ?? 'N/A' }}
-                                    <br><small class="text-muted">{{ $job->created_at->format('d/m/Y H:i') }}</small>
-                                </div>
-                                <div class="col-md-6">
-                                    <strong>อัปเดตล่าสุด:</strong><br>
-                                    {{ $job->updatedBy->name ?? 'N/A' }}
-                                    <br><small class="text-muted">{{ $job->updated_at->format('d/m/Y H:i') }}</small>
-                                </div>
+                            <div class="table-responsive">
+                                <table class="table table-borderless">
+                                    <tr>
+                                        <td width="120"><strong>งาน:</strong></td>
+                                        <td>{{ $job->job_name }} 
+                                            <span class="badge {{ $job->job_status == 'เปิดรับสมัคร' ? 'bg-success' : 'bg-secondary' }}">{{ $job->job_status }}</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>บริษัท:</strong></td>
+                                        <td>{{ $job->demand->dm_com_name ?? 'N/A' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>ประเทศ:</strong></td>
+                                        <td>{{ $job->country->country_name_th ?? 'N/A' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>จำนวนรับ:</strong></td>
+                                        <td><span class="text-info fw-bold">{{ number_format($job->job_total) }} คน</span></td>
+                                    </tr>
+                                </table>
                             </div>
                         </div>
-
-                        <!-- Statistics -->
+                        
                         <div class="col-md-4">
-                            <h5 class="border-bottom pb-2 mb-3">สถิติ</h5>
-                            
-                            <div class="card bg-light mb-3">
-                                <div class="card-body text-center">
-                                    <h2 class="text-primary mb-1">{{ number_format($stats['total_applications']) }}</h2>
-                                    <p class="mb-0">ใบสมัครทั้งหมด</p>
-                                </div>
-                            </div>
-
-                            <div class="row mb-3">
+                            <div class="row text-center">
                                 <div class="col-6">
-                                    <div class="card bg-success text-white">
-                                        <div class="card-body text-center p-2">
-                                            <h4 class="mb-1">{{ number_format($stats['by_status']['ตอบรับ'] ?? 0) }}</h4>
-                                            <small>ได้งานแล้ว</small>
-                                        </div>
+                                    <div class="border rounded p-2">
+                                        <h4 class="text-success mb-0">{{ number_format($stats['by_status']['ตอบรับ'] ?? 0) }}</h4>
+                                        <small class="text-muted">ได้งาน</small>
                                     </div>
                                 </div>
                                 <div class="col-6">
-                                    <div class="card bg-info text-white">
-                                        <div class="card-body text-center p-2">
-                                            <h4 class="mb-1">{{ number_format($stats['remaining_positions']) }}</h4>
-                                            <small>เหลือ</small>
-                                        </div>
+                                    <div class="border rounded p-2">
+                                        <h4 class="text-primary mb-0">{{ number_format($stats['remaining_positions']) }}</h4>
+                                        <small class="text-muted">เหลือ</small>
                                     </div>
-                                </div>
-                            </div>
-
-                            <h6 class="text-muted mb-2">สถานะใบสมัคร:</h6>
-                            <div class="mb-3">
-                                @foreach(['ร่าง', 'ส่งแล้ว', 'กำลังพิจารณา', 'นัดสัมภาษณ์', 'เสนองาน', 'ตอบรับ', 'ปฏิเสธ', 'ถอน'] as $status)
-                                    @if(isset($stats['by_status'][$status]) && $stats['by_status'][$status] > 0)
-                                    <div class="d-flex justify-content-between mb-1">
-                                        <span class="small">{{ $status }}:</span>
-                                        <span class="badge bg-secondary">{{ $stats['by_status'][$status] }}</span>
-                                    </div>
-                                    @endif
-                                @endforeach
-                            </div>
-
-                            <div class="card bg-warning text-dark">
-                                <div class="card-body text-center p-2">
-                                    <h5 class="mb-1">{{ number_format($stats['locked_leads']) }}</h5>
-                                    <small>คนงานที่ล็อค</small>
                                 </div>
                             </div>
                         </div>
                     </div>
+
+                    <!-- Demand Details -->
+                    @if($job->demand)
+                    <div class="accordion mb-4" id="demandAccordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" 
+                                        data-bs-target="#demandDetails" aria-expanded="true">
+                                    <i class="bi bi-info-circle me-2"></i>รายละเอียด Demand
+                                </button>
+                            </h2>
+                            <div id="demandDetails" class="accordion-collapse collapse show" data-bs-parent="#demandAccordion">
+                                <div class="accordion-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            @if($job->demand->dm_job)
+                                            <div class="mb-3">
+                                                <strong>รายละเอียดงาน:</strong>
+                                                <div class="small text-muted mt-1">{!! nl2br(e($job->demand->dm_job)) !!}</div>
+                                            </div>
+                                            @endif
+                                            
+                                            @if($job->demand->dm_sa)
+                                            <div class="mb-3">
+                                                <strong>เงินเดือน/สวัสดิการ:</strong>
+                                                <div class="small text-success mt-1">{!! nl2br(e($job->demand->dm_sa)) !!}</div>
+                                            </div>
+                                            @endif
+                                        </div>
+                                        
+                                        <div class="col-md-6">
+                                            @if($job->demand->dm_time_work)
+                                            <div class="mb-3">
+                                                <strong>เวลาทำงาน:</strong>
+                                                <div class="small text-muted mt-1">{{ $job->demand->dm_time_work }}</div>
+                                            </div>
+                                            @endif
+                                            
+                                            @if($job->demand->dm_exp && is_array($job->demand->dm_exp) && count($job->demand->dm_exp) > 0)
+                                            <div class="mb-3">
+                                                <strong>สวัสดิการ:</strong>
+                                                <div class="mt-1">
+                                                    @foreach($job->demand->dm_exp as $benefit)
+                                                        @php
+                                                            $benefitMap = ['accomm' => 'ที่พัก', 'food' => 'อาหาร', 'med' => 'รักษาพยาบาล', 'shuttle' => 'รถรับส่ง'];
+                                                        @endphp
+                                                        <div class="d-flex align-items-center mb-1">
+                                                            <i class="bi bi-check-circle text-success me-2"></i>
+                                                            <span>{{ $benefitMap[$benefit] ?? $benefit }}</span>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
 
                     <!-- Add Applicants Section -->
                     @if($job->remaining_positions > 0 && $job->job_status == 'เปิดรับสมัคร')
@@ -244,114 +224,51 @@
                         </div>
                     </div>
 
-                    <!-- Current Applicants Management -->
+                    <!-- Job Applicants -->
                     @if($job->jobLeads->count() > 0)
                     <div class="row mt-4">
                         <div class="col-md-12">
-                            <div class="card">
-                                <div class="card-header d-flex justify-content-between align-items-center">
-                                    <h5 class="mb-0"><i class="bi bi-people"></i> ผู้สมัครในงานนี้ ({{ $job->jobLeads->count() }} คน)</h5>
-                                    @can('job-lead-delete')
-                                    <small class="text-muted">สามารถยกเลิกได้เฉพาะสถานะ "ร่าง" และ "ส่งแล้ว"</small>
-                                    @endcan
-                                </div>
-                                <div class="card-body">
-                                    <!-- Statistics -->
-                                    <div class="row mb-3">
-                                        <div class="col-md-3">
-                                            <div class="text-center">
-                                                <h4 class="text-primary mb-0">{{ $job->jobLeads->count() }}</h4>
-                                                <small class="text-muted">ผู้สมัครทั้งหมด</small>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="text-center">
-                                                <h4 class="text-success mb-0">{{ $job->jobLeads->where('job_lead_status', 'ตอบรับ')->count() }}</h4>
-                                                <small class="text-muted">ได้งานแล้ว</small>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="text-center">
-                                                <h4 class="text-warning mb-0">{{ $job->jobLeads->where('is_locked', true)->count() }}</h4>
-                                                <small class="text-muted">ล็อคอยู่</small>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="text-center">
-                                                <h4 class="text-info mb-0">{{ $job->remaining_positions }}</h4>
-                                                <small class="text-muted">ตำแหน่งที่เหลือ</small>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="mb-0"><i class="bi bi-people me-2"></i>ผู้สมัครในงาน ({{ $job->jobLeads->count() }} คน)</h5>
+                                <a href="{{ route('job-leads.job-applicants', $job->job_id) }}" class="btn btn-primary btn-sm">
+                                    <i class="bi bi-list-ul me-1"></i>จัดการทั้งหมด
+                                </a>
                             </div>
-                        </div>
-                    </div>
-
-                    <!-- Recent Job Leads -->
-                    <div class="row mt-4">
-                        <div class="col-md-12">
-                            <h5 class="border-bottom pb-2 mb-3">รายการใบสมัคร</h5>
                             
                             <div class="table-responsive">
-                                <table class="table table-sm">
-                                    <thead>
+                                <table class="table table-sm table-hover">
+                                    <thead class="table-light">
                                         <tr>
-                                            <th>หมายเลขใบสมัคร</th>
-                                            <th>ชื่อผู้สมัคร</th>
-                                            <th>Passport</th>
+                                            <th>ใบสมัคร</th>
+                                            <th>ชื่อ-สกุล</th>
                                             <th>สถานะ</th>
-                                            <th>Lock</th>
-                                            <th>วันที่สร้าง</th>
-                                            <th>ผู้สร้าง</th>
-                                            <th width="100">การดำเนินการ</th>
+                                            <th>วันที่สมัคร</th>
+                                            <th width="80">จัดการ</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach($job->jobLeads->take(10) as $jobLead)
+                                        @foreach($job->jobLeads->take(8) as $jobLead)
                                         <tr>
                                             <td>
-                                                <a href="{{ route('job-leads.show', $jobLead->job_lead_id) }}" 
-                                                   class="text-decoration-none">
+                                                <a href="{{ route('job-leads.show', $jobLead->job_lead_id) }}" class="text-decoration-none fw-bold">
                                                     {{ $jobLead->job_lead_number }}
                                                 </a>
-                                            </td>
-                                            <td>
-                                                <strong>{{ $jobLead->lead ? $jobLead->lead->getFullNameAttribute() : 'ไม่พบข้อมูล' }}</strong>
-                                                @if($jobLead->lead && $jobLead->lead->lead_phone)
-                                                    <br><small class="text-muted">{{ $jobLead->lead->lead_phone }}</small>
-                                                @endif
-                                            </td>
-                                            <td>
-                                                <code>{{ $jobLead->lead ? ($jobLead->lead->lead_passport_number ?: 'ไม่มี') : 'ไม่พบข้อมูล' }}</code>
-                                            </td>
-                                            <td>
-                                                <span class="badge bg-{{ $jobLead->status_badge_color }}">
-                                                    {{ $jobLead->job_lead_status }}
-                                                </span>
-                                            </td>
-                                            <td>
                                                 @if($jobLead->is_locked)
-                                                    <i class="bi bi-lock-fill text-danger" title="ล็อค"></i>
-                                                @else
-                                                    <i class="bi bi-unlock text-success" title="ไม่ล็อค"></i>
+                                                    <i class="bi bi-lock-fill text-warning ms-1" title="ล็อค"></i>
                                                 @endif
                                             </td>
+                                            <td>{{ $jobLead->lead ? $jobLead->lead->getFullNameAttribute() : 'ไม่พบข้อมูล' }}</td>
+                                            <td><span class="badge bg-{{ $jobLead->status_badge_color }}">{{ $jobLead->job_lead_status }}</span></td>
                                             <td>{{ $jobLead->created_at->format('d/m/Y') }}</td>
-                                            <td>{{ $jobLead->createdBy->name ?? 'N/A' }}</td>
                                             <td>
                                                 @can('job-lead-delete')
-                                                    @if($jobLead->job_lead_status == 'ร่าง' || $jobLead->job_lead_status == 'ส่งแล้ว')
-                                                    <button type="button" class="btn btn-danger btn-sm" 
+                                                    @if(in_array($jobLead->job_lead_status, ['ร่าง', 'ส่งแล้ว']))
+                                                    <button type="button" class="btn btn-outline-danger btn-sm" 
                                                             onclick="cancelApplication({{ $jobLead->job_lead_id }}, '{{ $jobLead->job_lead_number }}')"
-                                                            title="ยกเลิกใบสมัคร">
-                                                        <i class="bi bi-x-circle"></i>
+                                                            title="ยกเลิก">
+                                                        <i class="bi bi-x"></i>
                                                     </button>
-                                                    @else
-                                                    <span class="text-muted small">ไม่สามารถยกเลิกได้</span>
                                                     @endif
-                                                @else
-                                                    <span class="text-muted small">ไม่มีสิทธิ์</span>
                                                 @endcan
                                             </td>
                                         </tr>
@@ -359,15 +276,6 @@
                                     </tbody>
                                 </table>
                             </div>
-
-                            @if($job->jobLeads->count() > 10)
-                            <div class="text-center mt-2">
-                                <a href="{{ route('job-leads.index', ['job_id' => $job->job_id]) }}" 
-                                   class="btn btn-outline-primary btn-sm">
-                                    ดูทั้งหมด ({{ $job->jobLeads->count() }} รายการ)
-                                </a>
-                            </div>
-                            @endif
                         </div>
                     </div>
                     @endif

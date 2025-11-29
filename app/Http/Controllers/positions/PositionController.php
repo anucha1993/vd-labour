@@ -23,8 +23,30 @@ class PositionController extends Controller
      */
     public function index()
     {
-        $positions = positionModel::with('jobGroup')->get();
-        return view('positions.index', compact('positions'));
+        // ดึงข้อมูล Job Groups พร้อมกับจำนวน positions
+        $jobGroups = jobGroupModel::where('job_group_status', 1)
+            ->withCount(['positions' => function($query) {
+                $query->where('position_status', 'active');
+            }])
+            ->having('positions_count', '>', 0)
+            ->orderBy('job_group_name')
+            ->get();
+            
+        return view('positions.index', compact('jobGroups'));
+    }
+    
+    /**
+     * Display positions for specific job group
+     */
+    public function showByJobGroup($jobGroupId)
+    {
+        $jobGroup = jobGroupModel::findOrFail($jobGroupId);
+        $positions = positionModel::with('jobGroup')
+            ->where('job_group_id', $jobGroupId)
+            ->orderBy('position_name')
+            ->get();
+            
+        return view('positions.by-job-group', compact('jobGroup', 'positions'));
     }
 
     /**

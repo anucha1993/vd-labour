@@ -14,6 +14,15 @@ class jobGroupModel extends Model
     protected $fillable = [
         'job_group_name',
         'job_group_name_th',
+        'job_group_detail',
         'job_group_status',
     ];
+
+    /**
+     * Get positions for this job group
+     */
+    public function positions()
+    {
+        return $this->hasMany(\App\Models\positions\positionModel::class, 'job_group_id', 'job_group_id');
+    }
 }

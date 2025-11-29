@@ -122,7 +122,7 @@ class JobController extends Controller
     {
         $job = JobModel::with([
                           'country', 
-                          'demand', 
+                          'demand.industryType', 
                           'createdBy', 
                           'updatedBy', 
                           'jobLeads.createdBy',

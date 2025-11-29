@@ -129,6 +129,7 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/file-manage/{id}/list-file/{listFileId}', [FileManageController::class, 'destroyListFile'])->name('file-manage.destroy-list-file');
 
     // Position Management Routes
+    Route::get('positions/job-group/{jobGroup}', [\App\Http\Controllers\positions\PositionController::class, 'showByJobGroup'])->name('positions.by-job-group');
     Route::resource('positions', \App\Http\Controllers\positions\PositionController::class);
 
     // Job Group Management Routes
