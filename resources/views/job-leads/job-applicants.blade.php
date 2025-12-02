@@ -110,6 +110,15 @@
                             </form>
                         </div>
                         <div class="col-md-3 text-end">
+                            @php
+                                $exportQuery = http_build_query(request()->only(['search','job_lead_status','is_locked']));
+                                $exportUrl = route('job-leads.job-applicants.export', $job->job_id) . ($exportQuery ? '?' . $exportQuery : '');
+                            @endphp
+
+                            <a href="{{ $exportUrl }}" class="btn btn-success me-2">
+                                <i class="bi bi-file-earmark-excel"></i> Export Excel
+                            </a>
+
                             @if(request()->hasAny(['search', 'job_lead_status', 'is_locked']))
                             <a href="{{ route('job-leads.job-applicants', $job->job_id) }}" class="btn btn-outline-secondary">
                                 <i class="bi bi-x-circle"></i> ล้างตัวกรอง

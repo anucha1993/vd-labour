@@ -8,6 +8,8 @@ use App\Models\jobs\JobLeadModel;
 use App\Models\leads\LeadModel;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\JobApplicantsExport;
 
 class JobLeadController extends Controller
 {
@@ -123,6 +125,24 @@ class JobLeadController extends Controller
     }
 
     /**
+     * Export applicants for a job to Excel using current filters
+     */
+    public function export(Request $request, $jobId)
+    {
+        try {
+            $job = JobModel::findOrFail($jobId);
+
+            $filters = $request->only(['search', 'job_lead_status', 'is_locked']);
+
+            $filename = 'ผู้สมัคร_' . ($job->job_number ?? $job->job_id) . '_' . now()->format('Ymd_His') . '.xlsx';
+
+            return Excel::download(new JobApplicantsExport($jobId, $filters), $filename);
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'ไม่สามารถสร้างไฟล์ Export ได้: ' . $e->getMessage());
+        }
+    }
+
+    /**
      * Show the form for creating a new job lead
      */
     public function create(Request $request)
@@ -187,21 +207,27 @@ class JobLeadController extends Controller
             $skippedLeads = [];
             
             foreach ($leads as $leadId) {
-                // ตรวจสอบว่าคนงานถูกล็อคหรือไม่
+                // ตรวจสอบว่าคนงานสามารถส่งใบสมัครได้หรือไม่
                 if (!JobLeadModel::isLeadAvailable($leadId)) {
+                    $lead = \App\Models\leads\LeadModel::find($leadId);
+                    $leadName = $lead ? $lead->getFullNameAttribute() : "Lead ID: $leadId";
+                    
                     $skippedCount++;
-                    $skippedLeads[] = $leadId;
+                    $skippedLeads[] = $leadName . ' (มีใบสมัครอื่นอยู่แล้ว)';
                     continue;
                 }
                 
-                // ตรวจสอบว่าเคยส่งใบสมัครงานนี้หรือไม่
+                // ตรวจสอบว่าเคยส่งใบสมัครงานนี้หรือไม่ (double check)
                 $existingLead = JobLeadModel::where('job_id', $request->job_id)
                                           ->where('lead_id', $leadId)
                                           ->first();
                 
                 if ($existingLead) {
+                    $lead = \App\Models\leads\LeadModel::find($leadId);
+                    $leadName = $lead ? $lead->getFullNameAttribute() : "Lead ID: $leadId";
+                    
                     $skippedCount++;
-                    $skippedLeads[] = $leadId . ' (เคยส่งแล้ว)';
+                    $skippedLeads[] = $leadName . ' (เคยส่งใบสมัครงานนี้แล้ว)';
                     continue;
                 }
                 
@@ -449,6 +475,9 @@ class JobLeadController extends Controller
         }
         
         $leads = $query->limit(50)->get()->map(function($lead) use ($jobId) {
+            $isAvailable = JobLeadModel::isLeadAvailable($lead->lead_id, $jobId);
+            $existingApp = !$isAvailable ? JobLeadModel::getExistingApplicationInfo($lead->lead_id, $jobId) : null;
+            
             return [
                 'id' => $lead->lead_id,
                 'name' => $lead->getFullNameAttribute(),
@@ -458,15 +487,29 @@ class JobLeadController extends Controller
                 'phone' => $lead->lead_phone,
                 'age' => $lead->lead_age,
                 'education' => $lead->lead_education,
-                'is_locked' => !JobLeadModel::isLeadAvailable($lead->lead_id),
-                'already_applied' => $jobId ? JobLeadModel::where('job_id', $jobId)
-                                                        ->where('lead_id', $lead->lead_id)
-                                                        ->exists() : false,
-                'status' => $lead->lead_status
+                'is_locked' => !$isAvailable,
+                'already_applied' => $jobId ? $this->checkAlreadyApplied($jobId, $lead->lead_id) : false,
+                'status' => $lead->lead_status,
+                'existing_application' => $existingApp
             ];
         });
         
         return response()->json($leads->toArray());
+    }
+
+    /**
+     * Check if lead already applied to specific job
+     */
+    private function checkAlreadyApplied($jobId, $leadId)
+    {
+        try {
+            return JobLeadModel::where('job_id', $jobId)
+                              ->where('lead_id', $leadId)
+                              ->exists();
+        } catch (\Exception $e) {
+            // ถ้า table ยังไม่มี return false
+            return false;
+        }
     }
 
     /**

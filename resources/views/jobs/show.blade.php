@@ -357,33 +357,88 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
+        console.log('Available Leads Data:', availableLeadsData); // Debug log
+        
         let html = '<div class="row">';
         availableLeadsData.forEach(lead => {
+            console.log('Processing lead:', lead); // Debug each lead
+            
             const isSelected = selectedLeads.find(s => s.id === lead.id);
             const isDisabled = lead.is_locked || lead.already_applied;
             
+            let cardClass = 'bg-white';
+            let statusBadge = '';
+            
+            if (lead.is_locked) {
+                cardClass = 'bg-danger bg-opacity-10 border-danger';
+                statusBadge = '<span class="badge bg-danger ms-1"><i class="bi bi-exclamation-triangle-fill"></i> มีใบสมัครแล้ว</span>';
+            } else if (lead.already_applied) {
+                cardClass = 'bg-warning bg-opacity-10 border-warning';  
+                statusBadge = '<span class="badge bg-warning text-dark ms-1"><i class="bi bi-check-circle-fill"></i> เคยส่งแล้ว</span>';
+            } else if (isSelected) {
+                cardClass = 'bg-success bg-opacity-10 border-success';
+                statusBadge = '<span class="badge bg-success ms-1"><i class="bi bi-check-circle-fill"></i> เลือกแล้ว</span>';
+            }
+            
             html += `
                 <div class="col-md-6 mb-2">
-                    <div class="card ${isDisabled ? 'bg-light' : 'bg-white'} ${isSelected ? 'border-success' : ''}">
-                        <div class="card-body p-2">
-                            <div class="d-flex justify-content-between align-items-center">
+                    <div class="card ${cardClass}">
+                        <div class="card-body p-3">
+                            <div class="d-flex justify-content-between align-items-start">
                                 <div class="flex-grow-1">
-                                    <strong class="small">${lead.name}</strong>
-                                    <br><span class="text-muted small">${lead.passport} | ${lead.position}</span>
-                                    ${lead.is_locked ? '<br><span class="text-warning small">🔒 ล็อค</span>' : ''}
-                                    ${lead.already_applied ? '<br><span class="text-success small">✅ เคยส่งแล้ว</span>' : ''}
+                                    <div class="d-flex align-items-center flex-wrap mb-1">
+                                        <strong class="small">${lead.name}</strong>
+                                        ${statusBadge}
+                                    </div>
+                                    <small class="text-muted d-block">
+                                        <i class="bi bi-card-text"></i> ${lead.passport} | 
+                                        <i class="bi bi-briefcase"></i> ${lead.position} |
+                                        <i class="bi bi-geo-alt"></i> ${lead.country}
+                                        ${lead.phone ? ` | <i class="bi bi-telephone"></i> ${lead.phone}` : ''}
+                                        ${lead.age ? ` | อายุ ${lead.age} ปี` : ''}
+                                    </small>
+                                    ${(() => {
+                                        if (lead.is_locked) {
+                                            console.log('Lead is locked:', lead.name, 'Existing app:', lead.existing_application);
+                                            if (lead.existing_application) {
+                                                return `
+                                                    <div class="mt-2 p-2 border rounded bg-danger bg-opacity-5">
+                                                        <small class="text-white">
+                                                            <i class="bi bi-exclamation-triangle-fill"></i> 
+                                                            <strong>ไม่สามารถเลือกได้:</strong> คนงานนี้มีใบสมัครอยู่แล้ว<br>
+                                                            <div class="mt-1">
+                                                                <i class="bi bi-file-earmark-text"></i> <strong>เลขที่ใบสมัคร:</strong> ${lead.existing_application.job_lead_number || 'ไม่ระบุ'}<br>
+                                                                <i class="bi bi-briefcase"></i> <strong>งาน:</strong> ${lead.existing_application.job_name || 'ไม่ระบุ'}<br>
+                                                                <i class="bi bi-tag"></i> <strong>สถานะ:</strong> ${lead.existing_application.job_lead_status || 'ไม่ระบุ'}
+                                                                ${lead.existing_application.is_locked ? ' <span class="badge bg-warning text-dark">ล็อค</span>' : ''}
+                                                            </div>
+                                                        </small>
+                                                    </div>
+                                                `;
+                                            } else {
+                                                return '<div class="mt-2"><small class="text-danger"><i class="bi bi-exclamation-triangle-fill"></i> <strong>ไม่สามารถเลือกได้:</strong> คนงานนี้มีใบสมัครงานอื่นอยู่แล้ว (ไม่พบรายละเอียด)</small></div>';
+                                            }
+                                        }
+                                        return '';
+                                    })()}
+                                    ${lead.already_applied ? '<div class="mt-2"><small class="text-warning"><i class="bi bi-info-circle-fill"></i> <strong>เตือน:</strong> เคยส่งใบสมัครงานนี้แล้ว</small></div>' : ''}
                                 </div>
-                                <div>
+                                <div class="ms-2">
                                     ${!isDisabled && !isSelected ? `
-                                        <button type="button" class="btn btn-sm btn-success" onclick="selectLead(${lead.id})">
-                                            <i class="bi bi-plus"></i>
+                                        <button type="button" class="btn btn-sm btn-outline-success" onclick="selectLead(${lead.id})" 
+                                                title="คลิกเพื่อเลือกคนงานนี้">
+                                            <i class="bi bi-plus-circle"></i>
                                         </button>
                                     ` : isSelected ? `
-                                        <button type="button" class="btn btn-sm btn-danger" onclick="unselectLead(${lead.id})">
-                                            <i class="bi bi-dash"></i>
+                                        <button type="button" class="btn btn-sm btn-outline-danger" onclick="unselectLead(${lead.id})"
+                                                title="คลิกเพื่อยกเลิกการเลือก">
+                                            <i class="bi bi-dash-circle"></i>
                                         </button>
                                     ` : `
-                                        <span class="text-muted small">ไม่สามารถเลือกได้</span>
+                                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="hideLead(${lead.id})" 
+                                                title="ยกเลิกการแสดงคนงานนี้">
+                                            <i class="bi bi-x"></i>
+                                        </button>
                                     `}
                                 </div>
                             </div>
@@ -398,12 +453,25 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     window.selectLead = function(leadId) {
-        if (selectedLeads.length >= maxSelections) {
-            alert(`สามารถเลือกได้สูงสุด ${maxSelections} คน`);
+        const lead = availableLeadsData.find(l => l.id === leadId);
+        
+        // ตรวจสอบว่า lead ถูก lock หรือไม่
+        if (lead && lead.is_locked) {
+            alert('❌ ไม่สามารถเลือกคนงานนี้ได้\n\nเหตุผล: คนงานนี้มีใบสมัครงานอื่นอยู่แล้ว\n(อาจถูกล็อคหรือมีสถานะการสมัครที่ยังดำเนินอยู่)\n\nกรุณาเลือกคนงานคนอื่น');
             return;
         }
         
-        const lead = availableLeadsData.find(l => l.id === leadId);
+        if (lead && lead.already_applied) {
+            if (!confirm('⚠️ คนงานนี้เคยส่งใบสมัครงานนี้แล้ว\n\nคุณต้องการเลือกต่อไปหรือไม่?')) {
+                return;
+            }
+        }
+        
+        if (selectedLeads.length >= maxSelections) {
+            alert(`❌ เลือกคนงานได้สูงสุด ${maxSelections} คน\n\nงานนี้เหลือตำแหน่งว่าง ${maxSelections} ตำแหน่ง`);
+            return;
+        }
+        
         if (lead && !selectedLeads.find(s => s.id === leadId)) {
             selectedLeads.push(lead);
             updateSelectedLeads();
@@ -412,6 +480,16 @@ document.addEventListener('DOMContentLoaded', function() {
     };
     
     window.unselectLead = function(leadId) {
+        selectedLeads = selectedLeads.filter(l => l.id !== leadId);
+        updateSelectedLeads();
+        displayLeads();
+    };
+
+    // Hide a lead from the current search results (dismiss the card)
+    window.hideLead = function(leadId) {
+        // remove from available list
+        availableLeadsData = availableLeadsData.filter(l => l.id !== leadId);
+        // also remove from selected if somehow present
         selectedLeads = selectedLeads.filter(l => l.id !== leadId);
         updateSelectedLeads();
         displayLeads();

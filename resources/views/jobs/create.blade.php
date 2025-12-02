@@ -63,7 +63,7 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-md-12">
+                            <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="dm_id" class="form-label">Demand (หนังสือขอคนงาน) <span class="text-danger">*</span></label>
                                     <select class="form-select @error('dm_id') is-invalid @enderror" 
@@ -86,22 +86,45 @@
                                     <div class="form-text">เลือกหนังสือขอคนงานที่ต้องการเปิดรับสมัคร</div>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-4">
+                      
+                            <div class="col-md-3">
                                 <div class="mb-3">
-                                    <label for="job_total" class="form-label">จำนวนเปิดรับ <span class="text-danger">*</span></label>
-                                    <input type="number" class="form-control @error('job_total') is-invalid @enderror" 
-                                           id="job_total" name="job_total" value="{{ old('job_total') }}" 
-                                           min="1" required>
-                                    @error('job_total')
+                                    <label for="job_group_id" class="form-label">ประเภทงาน (Job Group) <span class="text-danger">*</span></label>
+                                    <select class="form-select @error('job_group_id') is-invalid @enderror" id="job_group_id" name="job_group_id" required>
+                                        <option value="">-- เลือกประเภทงาน --</option>
+                                        @foreach($jobGroups as $jg)
+                                            <option value="{{ $jg->job_group_id }}" {{ old('job_group_id') == $jg->job_group_id ? 'selected' : '' }}>
+                                                {{ $jg->job_group_name }} ({{ $jg->job_group_name_th }})
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('job_group_id')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
                             </div>
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label for="position_id" class="form-label">ตำแหน่ง (Position) <span class="text-danger">*</span></label>
+                                    <select class="form-select @error('position_id') is-invalid @enderror" id="position_id" name="position_id" required> 
+                                        <option value="">-- เลือกตำแหน่ง --</option>
+                                        @foreach($positions as $pos)
+                                            <option value="{{ $pos->position_id }}" data-jobgroup="{{ $pos->job_group_id }}" {{ old('position_id') == $pos->position_id ? 'selected' : '' }}>
+                                                {{ $pos->position_name }} ({{ $pos->position_name_th }})
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('position_id')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                           
                             
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="mb-3">
                                     <label for="job_start_date" class="form-label">วันเริ่มรับสมัคร <span class="text-danger">*</span></label>
                                     <input type="date" class="form-control @error('job_start_date') is-invalid @enderror" 
@@ -113,7 +136,7 @@
                                 </div>
                             </div>
                             
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="mb-3">
                                     <label for="job_end_date" class="form-label">วันปิดรับสมัคร</label>
                                     <input type="date" class="form-control @error('job_end_date') is-invalid @enderror" 
@@ -125,10 +148,21 @@
                                     <div class="form-text">หากไม่ระบุ = รับสมัครต่อเนื่อง</div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="row">
-                            <div class="col-md-6">
+                             <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label for="job_total" class="form-label">จำนวนเปิดรับ <span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control @error('job_total') is-invalid @enderror" 
+                                           id="job_total" name="job_total" value="{{ old('job_total') }}" 
+                                           min="1" required>
+                                    @error('job_total')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+
+
+                            <div class="col-md-3">
                                 <div class="mb-3">
                                     <label for="job_status" class="form-label">สถานะงาน <span class="text-danger">*</span></label>
                                     <select class="form-select @error('job_status') is-invalid @enderror" 
@@ -221,6 +255,35 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     jobNameInput.addEventListener('blur', generateJobNumberPreview);
+
+    // Job Group -> Positions dynamic loading
+    const jobGroupSelect = document.getElementById('job_group_id');
+    const positionSelect = document.getElementById('position_id');
+
+    if (jobGroupSelect) {
+        jobGroupSelect.addEventListener('change', function() {
+            const jobGroupId = this.value;
+            // Clear current positions
+            positionSelect.innerHTML = '<option value="">-- เลือกตำแหน่ง --</option>';
+
+            if (!jobGroupId) return;
+
+            const url = '{{ route("jobgroup.ajaxSelectPosition") }}?jobgroup=' + encodeURIComponent(jobGroupId);
+            fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+                .then(res => res.json())
+                .then(data => {
+                    data.forEach(p => {
+                        const opt = document.createElement('option');
+                        opt.value = p.position_id;
+                        opt.textContent = p.position_name + ' (' + p.position_name_th + ')';
+                        positionSelect.appendChild(opt);
+                    });
+                })
+                .catch(err => {
+                    console.error('Could not load positions:', err);
+                });
+        });
+    }
 });
 </script>
 @endsection

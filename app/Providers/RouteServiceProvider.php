@@ -26,6 +26,9 @@ class RouteServiceProvider extends ServiceProvider
     {
         $this->configureRateLimiting();
 
+        // Configure route model bindings
+        Route::model('jobLead', \App\Models\jobs\JobLeadModel::class);
+
         $this->routes(function () {
             Route::middleware('api')
                 ->prefix('api')

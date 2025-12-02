@@ -7,6 +7,8 @@ use App\Models\jobs\JobModel;
 use App\Models\jobs\JobLeadModel;
 use App\Models\country\countryModel;
 use App\Models\demands\DemandModel;
+use App\Models\jobgroup\jobGroupModel;
+use App\Models\positions\positionModel;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -28,9 +30,15 @@ class JobController extends Controller
     public function index(Request $request)
     {
         $query = JobModel::with(['country', 'demand', 'createdBy', 'updatedBy'])
-                        ->withCount(['jobLeads', 'jobLeads as accepted_count' => function($q) {
-                            $q->where('job_lead_status', 'ตอบรับ');
-                        }]);
+                        ->withCount([
+                            'jobLeads', 
+                            'jobLeads as accepted_count' => function($q) {
+                                $q->where('job_lead_status', 'ตอบรับ');
+                            },
+                            'jobLeads as locked_leads_count' => function($q) {
+                                $q->where('is_locked', 1);
+                            }
+                        ]);
         
         // Search filters
         if ($request->filled('search')) {
@@ -68,8 +76,10 @@ class JobController extends Controller
         $demands = DemandModel::with(['country', 'industryType'])
                              ->orderBy('created_at', 'desc')
                              ->get();
+        $jobGroups = jobGroupModel::where('job_group_status', 'active')->get();
+        $positions = positionModel::where('position_status', 'active')->get();
         
-        return view('jobs.create', compact('countries', 'demands'));
+        return view('jobs.create', compact('countries', 'demands', 'jobGroups', 'positions'));
     }
 
     /**
@@ -81,6 +91,8 @@ class JobController extends Controller
             'job_name' => 'required|string|max:255',
             'country_id' => 'required|exists:country,country_id',
             'dm_id' => 'required|exists:demands,dm_id',
+            'job_group_id' => 'nullable|exists:job_group,job_group_id',
+            'position_id' => 'nullable|exists:position,position_id',
             'job_total' => 'required|integer|min:1',
             'job_start_date' => 'required|date|after_or_equal:today',
             'job_end_date' => 'nullable|date|after:job_start_date',
@@ -102,7 +114,11 @@ class JobController extends Controller
         try {
             DB::beginTransaction();
             
-            $job = JobModel::create($request->all());
+            $jobData = $request->only([
+                'job_name','country_id','dm_id','job_group_id','position_id',
+                'job_total','job_start_date','job_end_date','job_status'
+            ]);
+            $job = JobModel::create($jobData);
             
             DB::commit();
             
@@ -155,8 +171,10 @@ class JobController extends Controller
         $demands = DemandModel::with(['country', 'industryType'])
                              ->orderBy('created_at', 'desc')
                              ->get();
+        $jobGroups = jobGroupModel::where('job_group_status', 'active')->get();
+        $positions = positionModel::where('position_status', 'active')->get();
         
-        return view('jobs.edit', compact('job', 'countries', 'demands'));
+        return view('jobs.edit', compact('job', 'countries', 'demands', 'jobGroups', 'positions'));
     }
 
     /**
@@ -183,7 +201,12 @@ class JobController extends Controller
         try {
             DB::beginTransaction();
             
-            $job->update($request->all());
+            $jobData = $request->only([
+                'job_name','country_id','dm_id','job_group_id','position_id',
+                'job_total','job_start_date','job_end_date','job_status'
+            ]);
+
+            $job->update($jobData);
             
             DB::commit();
             
@@ -208,28 +231,36 @@ class JobController extends Controller
             
             // ตรวจสอบว่ามีใบสมัครที่ล็อคอยู่หรือไม่
             $lockedLeads = $job->jobLeads()->where('is_locked', true)->count();
+            $totalLeads = $job->jobLeads()->count();
             
+            $message = 'ลบงานสำเร็จ';
+            
+            // ถ้ามี locked leads ให้ปลดล็อคอัตโนมัติก่อนลบ
             if ($lockedLeads > 0) {
-                return redirect()->back()->with('error', 'ไม่สามารถลบงานได้ เนื่องจากมีใบสมัครที่ล็อคคนงานอยู่ ' . $lockedLeads . ' รายการ');
+                // ปลดล็อคคนงานทั้งหมดก่อนลบ
+                $job->jobLeads()->where('is_locked', true)->update([
+                    'is_locked' => false,
+                    'unlocked_at' => now(),
+                    'updated_by' => auth()->id(),
+                    'remarks' => DB::raw("CONCAT(COALESCE(remarks, ''), '\n[ปลดล็อคอัตโนมัติ: งานถูกลบโดย " . auth()->user()->name . " เมื่อ " . now()->format('d/m/Y H:i') . "]')")
+                ]);
+                
+                $message = "ลบงานสำเร็จ และปลดล็อคคนงาน {$lockedLeads} รายการอัตโนมัติ";
             }
             
-            // ปลดล็อคคนงานทั้งหมดก่อนลบ
-            $job->jobLeads()->update([
-                'is_locked' => false,
-                'unlocked_at' => now(),
-                'remarks' => DB::raw("CONCAT(COALESCE(remarks, ''), '\n[ปลดล็อคอัตโนมัติ: งานถูกลบ]')")
-            ]);
+            // ลบใบสมัครทั้งหมดก่อน
+            $job->jobLeads()->delete();
             
+            // ลบงาน
             $job->delete();
             
             DB::commit();
             
-            return redirect()->route('jobs.index')
-                           ->with('success', 'ลบงานสำเร็จ');
+            return redirect()->route('jobs.index')->with('success', $message);
                            
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'เกิดข้อผิดพลาด: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'เกิดข้อผิดพลาดในการลบงาน: ' . $e->getMessage());
         }
     }
 

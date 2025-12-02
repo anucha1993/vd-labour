@@ -161,6 +161,10 @@ Route::middleware(['auth'])->group(function () {
     });
     
     Route::prefix('job-leads')->name('job-leads.')->group(function () {
+        Route::get('conversion', [\App\Http\Controllers\JobLeadConversionController::class, 'index'])->name('conversion.index');
+        Route::get('conversion/{jobLead}', [\App\Http\Controllers\JobLeadConversionController::class, 'show'])->name('conversion.show');
+        Route::post('conversion/{jobLead}/store', [\App\Http\Controllers\JobLeadConversionController::class, 'convert'])->name('conversion.store');
+        Route::get('{job}/applicants/export', [\App\Http\Controllers\JobLeadController::class, 'export'])->name('job-applicants.export');
         Route::get('{job}/applicants', [\App\Http\Controllers\JobLeadController::class, 'jobApplicants'])->name('job-applicants');
         Route::get('search-available', [\App\Http\Controllers\JobLeadController::class, 'searchAvailableLeads'])->name('search-available');
         Route::delete('{jobLead}/cancel', [\App\Http\Controllers\JobLeadController::class, 'cancel'])->name('cancel');

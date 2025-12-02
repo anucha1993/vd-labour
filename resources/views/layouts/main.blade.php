@@ -195,6 +195,12 @@
          class="{{ Request::routeIs('job-leads.*') ? 'active' : '' }}">
          <i class="bi bi-person-lines-fill me-2"></i> จัดการใบสมัคร</a>
       @endcan
+
+      @can('job-lead-convert')
+      <a href="{{ route('job-leads.conversion.index') }}"
+         class="{{ Request::routeIs('job-leads.conversion.*') ? 'active' : '' }}">
+         <i class="bi bi-arrow-repeat me-2"></i> ได้แล้ว รอ Convert</a>
+      @endcan
     </div>
   </div>
   @endcanany

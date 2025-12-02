@@ -24,6 +24,9 @@ class JobLeadModel extends Model
         'is_locked',
         'locked_at',
         'unlocked_at',
+        'convert_status',
+        'converted_at',
+        'labour_id',
         'created_by',
         'updated_by'
     ];
@@ -32,6 +35,7 @@ class JobLeadModel extends Model
         'locked_at' => 'datetime',
         'unlocked_at' => 'datetime',
         'is_locked' => 'boolean',
+        'converted_at' => 'datetime',
     ];
     
     // สถานะที่ต้องล็อคคนงาน
@@ -69,6 +73,11 @@ class JobLeadModel extends Model
     public function lead()
     {
         return $this->belongsTo(\App\Models\leads\LeadModel::class, 'lead_id', 'lead_id');
+    }
+    
+    public function labour()
+    {
+        return $this->belongsTo(\App\Models\labours\labourModel::class, 'labour_id', 'labour_id');
     }
     
     // Scopes
@@ -174,11 +183,71 @@ class JobLeadModel extends Model
     }
     
     // Check if lead is available for new applications
-    public static function isLeadAvailable($leadId)
+    public static function isLeadAvailable($leadId, $excludeJobId = null)
     {
-        return !static::where('lead_id', $leadId)
-                     ->where('is_locked', true)
-                     ->exists();
+        try {
+            $query = static::where('lead_id', $leadId);
+            
+            // ถ้ามีการระบุ job_id ที่ต้องยกเว้น (กรณีแก้ไขใบสมัครเดิม)
+            if ($excludeJobId) {
+                $query->where('job_id', '!=', $excludeJobId);
+            }
+            
+            // ตรวจสอบว่า lead นี้มีใบสมัครอยู่หรือไม่ (ไม่ว่าจะเป็นสถานะอะไร)
+            // เพราะหลักการคือ 1 lead ต้องมีได้แค่ 1 ใบสมัครเท่านั้น
+            $hasAnyApplication = $query->exists();
+            
+            return !$hasAnyApplication;
+            
+        } catch (\Exception $e) {
+            // ถ้า table ยังไม่มี ให้ return true (อนุญาตให้เลือกได้)
+            if (str_contains($e->getMessage(), "doesn't exist") || str_contains($e->getMessage(), "Table") || str_contains($e->getMessage(), "job_leads")) {
+                return true;
+            }
+            
+            // ถ้าเป็น error อื่นๆ ให้ return false เพื่อความปลอดภัย
+            \Log::error('Error in isLeadAvailable: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    // Get existing application details for a lead
+    public static function getExistingApplicationInfo($leadId, $excludeJobId = null)
+    {
+        try {
+            $query = static::where('lead_id', $leadId);
+            
+            if ($excludeJobId) {
+                $query->where('job_id', '!=', $excludeJobId);
+            }
+            
+            $application = $query->with(['job'])->first();
+            
+            if ($application && $application->job) {
+                return [
+                    'job_lead_number' => $application->job_lead_number ?? 'ไม่ระบุ',
+                    'job_name' => $application->job->job_name ?? 'ไม่ระบุ',
+                    'job_lead_status' => $application->job_lead_status ?? 'ไม่ระบุ',
+                    'is_locked' => (bool)$application->is_locked
+                ];
+            }
+            
+            return [
+                'job_lead_number' => 'ไม่พบข้อมูล',
+                'job_name' => 'ไม่พบข้อมูล',
+                'job_lead_status' => 'ไม่ทราบ',
+                'is_locked' => false
+            ];
+            
+        } catch (\Exception $e) {
+            \Log::error('Error in getExistingApplicationInfo: ' . $e->getMessage());
+            return [
+                'job_lead_number' => 'เกิดข้อผิดพลาด',
+                'job_name' => 'เกิดข้อผิดพลาด',
+                'job_lead_status' => 'เกิดข้อผิดพลาด',
+                'is_locked' => false
+            ];
+        }
     }
     
     // Event handlers

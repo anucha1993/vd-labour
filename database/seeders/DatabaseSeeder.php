@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
             JobGroupPermissionSeeder::class,
             DemandPermissionSeeder::class,
             DemandSeeder::class,
+            JobLeadConversionPermissionSeeder::class,
         ]);
     }
 }

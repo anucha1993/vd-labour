@@ -131,7 +131,9 @@
                     <h5 class="mb-0">สถานะใบสมัคร</h5>
                 </div>
                 <div class="card-body">
-                    <canvas id="applicationStatusChart" height="200"></canvas>
+                    <div style="position: relative; height: 300px; width: 100%;">
+                        <canvas id="applicationStatusChart"></canvas>
+                    </div>
                     
                     <div class="row mt-3">
                         @foreach($applicationsByStatus as $status => $count)
@@ -192,7 +194,9 @@
                     <h5 class="mb-0">📈 แนวโน้มรายเดือน (6 เดือนล่าสุด)</h5>
                 </div>
                 <div class="card-body">
-                    <canvas id="monthlyTrendChart" height="100"></canvas>
+                    <div style="position: relative; height: 250px; width: 100%;">
+                        <canvas id="monthlyTrendChart"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
@@ -269,50 +273,103 @@
 <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+<style>
+.chart-container {
+    position: relative;
+    overflow: hidden;
+}
+
+.chart-container canvas {
+    max-height: 100% !important;
+    max-width: 100% !important;
+}
+
+/* ป้องกัน chart ขยายเกินขอบเขต */
+#applicationStatusChart, #monthlyTrendChart {
+    max-height: 100% !important;
+    height: auto !important;
+}
+</style>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     
     // Application Status Pie Chart
-    const statusCtx = document.getElementById('applicationStatusChart').getContext('2d');
-    const statusLabels = @json(array_keys($applicationsByStatus));
-    const statusData = @json(array_values($applicationsByStatus));
-    const statusColors = ['#6c757d', '#0d6efd', '#17a2b8', '#ffc107', '#fd7e14', '#28a745', '#dc3545', '#6f42c1'];
+    const statusCtx = document.getElementById('applicationStatusChart');
+    if (statusCtx) {
+        try {
+            const statusLabels = @json(array_keys($applicationsByStatus ?? []));
+            const statusData = @json(array_values($applicationsByStatus ?? []));
+            const statusColors = ['#6c757d', '#0d6efd', '#17a2b8', '#ffc107', '#fd7e14', '#28a745', '#dc3545', '#6f42c1'];
+            
+            // ถ้าไม่มีข้อมูล ให้แสดง "ไม่มีข้อมูล"
+            if (statusData.length === 0) {
+                statusLabels.push('ไม่มีข้อมูล');
+                statusData.push(1);
+                statusColors = ['#e9ecef'];
+            }
     
-    new Chart(statusCtx, {
-        type: 'doughnut',
-        data: {
-            labels: statusLabels,
-            datasets: [{
-                data: statusData,
-                backgroundColor: statusColors,
-                borderWidth: 2,
-                borderColor: '#fff'
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'bottom',
-                    labels: {
-                        usePointStyle: true,
-                        padding: 15,
-                        font: {
-                            size: 12
+            new Chart(statusCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: statusLabels,
+                    datasets: [{
+                        data: statusData,
+                        backgroundColor: statusColors,
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    aspectRatio: 1,
+                    devicePixelRatio: 1,
+                    layout: {
+                        padding: {
+                            top: 10,
+                            bottom: 20,
+                            left: 10,
+                            right: 10
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            maxHeight: 80,
+                            labels: {
+                                usePointStyle: true,
+                                padding: 10,
+                                font: {
+                                    size: 11
+                                },
+                                boxWidth: 12
+                            }
+                        }
+                    },
+                    elements: {
+                        arc: {
+                            borderWidth: 2
                         }
                     }
                 }
-            }
+            });
+        } catch (error) {
+            console.error('Error creating status chart:', error);
+            statusCtx.parentElement.innerHTML = '<div class="text-center text-muted py-5"><i class="bi bi-exclamation-triangle"></i><br>ไม่สามารถโหลดกราฟได้<br><small>กรุณารีเฟรชหน้าใหม่</small></div>';
         }
-    });
+    } else {
+        console.error('Status chart canvas not found');
+    }
 
     // Monthly Trend Chart
-    @if($monthlyStats->count() > 0)
-    const trendCtx = document.getElementById('monthlyTrendChart').getContext('2d');
-    const monthlyLabels = @json($monthlyStats->pluck('month')->toArray());
-    const monthlyTotal = @json($monthlyStats->pluck('total')->toArray());
-    const monthlyAccepted = @json($monthlyStats->pluck('accepted')->toArray());
+    const trendCtx = document.getElementById('monthlyTrendChart');
+    if (trendCtx) {
+        try {
+            @if(isset($monthlyStats) && $monthlyStats->count() > 0)
+            const monthlyLabels = @json($monthlyStats->pluck('month')->toArray());
+            const monthlyTotal = @json($monthlyStats->pluck('total')->toArray());
+            const monthlyAccepted = @json($monthlyStats->pluck('accepted')->toArray());
     
     new Chart(trendCtx, {
         type: 'line',
@@ -355,7 +412,17 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
-    @endif
+            @else
+            // ถ้าไม่มีข้อมูลรายเดือน
+            trendCtx.parentElement.innerHTML = '<div class="text-center text-muted py-5"><i class="bi bi-info-circle"></i><br>ยังไม่มีข้อมูลแนวโน้มรายเดือน<br><small>ข้อมูลจะแสดงเมื่อมีใบสมัครในระบบ</small></div>';
+            @endif
+        } catch (error) {
+            console.error('Error creating trend chart:', error);
+            trendCtx.parentElement.innerHTML = '<div class="text-center text-muted py-5"><i class="bi bi-exclamation-triangle"></i><br>ไม่สามารถโหลดกราฟได้<br><small>กรุณารีเฟรชหน้าใหม่</small></div>';
+        }
+    } else {
+        console.error('Trend chart canvas not found');
+    }
 
 });
 </script>

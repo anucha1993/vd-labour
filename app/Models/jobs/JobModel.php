@@ -21,6 +21,8 @@ class JobModel extends Model
         'job_name',
         'country_id',
         'dm_id',
+        'job_group_id',
+        'position_id',
         'job_total',
         'job_start_date',
         'job_end_date',

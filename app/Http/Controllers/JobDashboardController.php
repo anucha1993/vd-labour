@@ -30,14 +30,24 @@ class JobDashboardController extends Controller
                              ->where('job_end_date', '<', now())
                              ->count();
 
-        $totalApplications = JobLeadModel::count();
-        $lockedLeads = JobLeadModel::where('is_locked', true)->count();
+        try {
+            $totalApplications = JobLeadModel::count();
+            $lockedLeads = JobLeadModel::where('is_locked', true)->count();
+        } catch (\Exception $e) {
+            $totalApplications = 0;
+            $lockedLeads = 0;
+        }
         
         // Applications by Status
-        $applicationsByStatus = JobLeadModel::select('job_lead_status', DB::raw('COUNT(*) as count'))
-                                          ->groupBy('job_lead_status')
-                                          ->pluck('count', 'job_lead_status')
-                                          ->toArray();
+        try {
+            $applicationsByStatus = JobLeadModel::select('job_lead_status', DB::raw('COUNT(*) as count'))
+                                              ->groupBy('job_lead_status')
+                                              ->pluck('count', 'job_lead_status')
+                                              ->toArray();
+        } catch (\Exception $e) {
+            // ถ้า table job_leads ยังไม่มี
+            $applicationsByStatus = [];
+        }
 
         // Success Rate
         $acceptedApplications = $applicationsByStatus['ตอบรับ'] ?? 0;
@@ -76,53 +86,61 @@ class JobDashboardController extends Controller
         $alerts = [];
         
         // Jobs close to expiry
-        $soonToExpire = JobModel::whereNotNull('job_end_date')
-                               ->where('job_end_date', '>', now())
-                               ->where('job_end_date', '<=', now()->addDays(7))
-                               ->where('job_status', 'เปิดรับสมัคร')
-                               ->count();
-        
-        if ($soonToExpire > 0) {
-            $alerts[] = [
-                'type' => 'warning',
-                'message' => "มีงาน {$soonToExpire} รายการ ที่จะหมดอายุภายใน 7 วัน",
-                'count' => $soonToExpire
-            ];
-        }
+        try {
+            $soonToExpire = JobModel::whereNotNull('job_end_date')
+                                   ->where('job_end_date', '>', now())
+                                   ->where('job_end_date', '<=', now()->addDays(7))
+                                   ->where('job_status', 'เปิดรับสมัคร')
+                                   ->count();
+            
+            if ($soonToExpire > 0) {
+                $alerts[] = [
+                    'type' => 'warning',
+                    'message' => "มีงาน {$soonToExpire} รายการ ที่จะหมดอายุภายใน 7 วัน",
+                    'count' => $soonToExpire
+                ];
+            }
 
-        // Jobs with long pending applications
-        $longPendingCount = JobLeadModel::where('job_lead_status', 'ส่งแล้ว')
-                                       ->where('created_at', '<', now()->subDays(7))
-                                       ->count();
-        
-        if ($longPendingCount > 0) {
-            $alerts[] = [
-                'type' => 'info',
-                'message' => "มีใบสมัคร {$longPendingCount} รายการ รอนายจ้างตอบเกิน 7 วัน",
-                'count' => $longPendingCount
-            ];
+            // Jobs with long pending applications
+            $longPendingCount = JobLeadModel::where('job_lead_status', 'ส่งแล้ว')
+                                           ->where('created_at', '<', now()->subDays(7))
+                                           ->count();
+            
+            if ($longPendingCount > 0) {
+                $alerts[] = [
+                    'type' => 'info',
+                    'message' => "มีใบสมัคร {$longPendingCount} รายการ รอนายจ้างตอบเกิน 7 วัน",
+                    'count' => $longPendingCount
+                ];
+            }
+        } catch (\Exception $e) {
+            // ถ้าเกิด error ในการดึงข้อมูล alerts
         }
 
         // Monthly Statistics for Chart
-        $monthlyStats = JobLeadModel::select(
-                                      DB::raw('YEAR(created_at) as year'),
-                                      DB::raw('MONTH(created_at) as month'),
-                                      DB::raw('COUNT(*) as total'),
-                                      DB::raw('SUM(CASE WHEN job_lead_status = "ตอบรับ" THEN 1 ELSE 0 END) as accepted')
-                                  )
-                                  ->where('created_at', '>=', now()->subMonths(6))
-                                  ->groupBy('year', 'month')
-                                  ->orderBy('year', 'asc')
-                                  ->orderBy('month', 'asc')
-                                  ->get()
-                                  ->map(function ($item) {
-                                      return [
-                                          'month' => Carbon::create($item->year, $item->month, 1)->format('M Y'),
-                                          'total' => $item->total,
-                                          'accepted' => $item->accepted,
-                                          'rate' => $item->total > 0 ? round(($item->accepted / $item->total) * 100, 1) : 0
-                                      ];
-                                  });
+        try {
+            $monthlyStats = JobLeadModel::select(
+                                          DB::raw('YEAR(created_at) as year'),
+                                          DB::raw('MONTH(created_at) as month'),
+                                          DB::raw('COUNT(*) as total'),
+                                          DB::raw('SUM(CASE WHEN job_lead_status = "ตอบรับ" THEN 1 ELSE 0 END) as accepted')
+                                      )
+                                      ->where('created_at', '>=', now()->subMonths(6))
+                                      ->groupBy('year', 'month')
+                                      ->orderBy('year', 'asc')
+                                      ->orderBy('month', 'asc')
+                                      ->get()
+                                      ->map(function ($item) {
+                                          return [
+                                              'month' => Carbon::create($item->year, $item->month, 1)->format('M Y'),
+                                              'total' => $item->total,
+                                              'accepted' => $item->accepted,
+                                              'rate' => $item->total > 0 ? round(($item->accepted / $item->total) * 100, 1) : 0
+                                          ];
+                                      });
+        } catch (\Exception $e) {
+            $monthlyStats = collect();
+        }
 
         return view('jobs.dashboard', compact(
             'totalJobs', 'activeJobs', 'closedJobs', 'expiredJobs',

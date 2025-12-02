@@ -1,6 +1,17 @@
 @extends('layouts.main')
 
 @section('content')
+<script>
+function confirmJobDelete(lockedCount, jobNumber) {
+    let message = 'คุณแน่ใจหรือไม่ที่จะลบงาน "' + jobNumber + '" นี้?';
+    
+    if (lockedCount > 0) {
+        message += '\n\nงานนี้มีใบสมัครที่ล็อคคนงานอยู่ ' + lockedCount + ' รายการ\nระบบจะปลดล็อคคนงานทั้งหมดและลบงานให้อัตโนมัติ';
+    }
+    
+    return confirm(message);
+}
+</script>
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-12">
@@ -161,10 +172,10 @@
                                             @can('job-delete')
                                             <form action="{{ route('jobs.destroy', $job->job_id) }}" 
                                                   method="POST" style="display: inline;"
-                                                  onsubmit="return confirm('คุณแน่ใจหรือไม่ที่จะลบงานนี้?')">
+                                                  onsubmit="return confirmJobDelete({{ $job->locked_leads_count ?? 0 }}, '{{ $job->job_number }}')">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-danger" title="ลบ">
+                                                <button type="submit" class="btn btn-sm btn-danger" title="ลบงาน">
                                                     <i class="bi bi-trash"></i>
                                                 </button>
                                             </form>

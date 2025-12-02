@@ -75,6 +75,7 @@ class labourModel extends Model
        'labour_visa_reject_date',
        'labour_visa_start_date',
        'labour_visa_file',
+       'lead_id',
     ];
 
     

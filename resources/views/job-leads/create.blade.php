@@ -270,30 +270,86 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
+        console.log('Available Leads Data:', availableLeadsData); // Debug log
+        
         let html = '';
         availableLeadsData.forEach(lead => {
+            console.log('Processing lead:', lead); // Debug each lead
             const isSelected = selectedLeadIds.includes(lead.id);
             const isDisabled = lead.is_locked || lead.already_applied;
             
+            let cardClass = 'bg-white';
+            let statusBadge = '';
+            
+            if (lead.is_locked) {
+                cardClass = 'bg-danger bg-opacity-10 border-danger';
+                let appInfo = lead.existing_application;
+                if (appInfo) {
+                    statusBadge = `<span class="badge bg-danger ms-2"><i class="bi bi-exclamation-triangle-fill"></i> มีใบสมัครแล้ว</span>`;
+                } else {
+                    statusBadge = '<span class="badge bg-danger ms-2"><i class="bi bi-exclamation-triangle-fill"></i> มีใบสมัครอื่น</span>';
+                }
+            } else if (lead.already_applied) {
+                cardClass = 'bg-warning bg-opacity-10 border-warning';  
+                statusBadge = '<span class="badge bg-warning text-dark ms-2"><i class="bi bi-check-circle-fill"></i> เคยส่งแล้ว</span>';
+            } else if (isSelected) {
+                cardClass = 'bg-primary bg-opacity-10 border-primary';
+                statusBadge = '<span class="badge bg-primary ms-2"><i class="bi bi-check-circle-fill"></i> เลือกแล้ว</span>';
+            }
+            
             html += `
-                <div class="border rounded p-3 mb-2 ${isDisabled ? 'bg-light' : 'bg-white'} ${isSelected ? 'border-primary' : ''}">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <strong>${lead.name}</strong>
-                            <br><small class="text-muted">
-                                ${lead.passport} | ${lead.position}
-                                ${lead.is_locked ? ' | 🔒 ล็อค' : ''}
-                                ${lead.already_applied ? ' | ✅ เคยส่งแล้ว' : ''}
+                <div class="border rounded p-3 mb-2 ${cardClass}">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div class="flex-grow-1">
+                            <div class="d-flex align-items-center flex-wrap mb-1">
+                                <strong>${lead.name}</strong>
+                                ${statusBadge}
+                            </div>
+                            <small class="text-muted d-block">
+                                <i class="bi bi-card-text"></i> ${lead.passport} | 
+                                <i class="bi bi-briefcase"></i> ${lead.position} |
+                                <i class="bi bi-geo-alt"></i> ${lead.country}
+                                ${lead.phone ? ` | <i class="bi bi-telephone"></i> ${lead.phone}` : ''}
+                                ${lead.age ? ` | อายุ ${lead.age} ปี` : ''}
                             </small>
+                            ${(() => {
+                                if (lead.is_locked) {
+                                    console.log('Lead is locked:', lead.name, 'Existing app:', lead.existing_application);
+                                    if (lead.existing_application) {
+                                        return `
+                                            <div class="mt-2 p-2 border rounded bg-danger bg-opacity-5">
+                                                <small class="text-danger">
+                                                    <i class="bi bi-exclamation-triangle-fill"></i> 
+                                                    <strong>ไม่สามารถเลือกได้:</strong> คนงานนี้มีใบสมัครอยู่แล้ว<br>
+                                                    <div class="mt-1">
+                                                        <i class="bi bi-file-earmark-text"></i> <strong>เลขที่ใบสมัคร:</strong> ${lead.existing_application.job_lead_number || 'ไม่ระบุ'}<br>
+                                                        <i class="bi bi-briefcase"></i> <strong>งาน:</strong> ${lead.existing_application.job_name || 'ไม่ระบุ'}<br>
+                                                        <i class="bi bi-tag"></i> <strong>สถานะ:</strong> ${lead.existing_application.job_lead_status || 'ไม่ระบุ'}
+                                                        ${lead.existing_application.is_locked ? ' <span class="badge bg-warning text-dark">ล็อค</span>' : ''}
+                                                    </div>
+                                                </small>
+                                            </div>
+                                        `;
+                                    } else {
+                                        return '<div class="mt-2"><small class="text-danger"><i class="bi bi-exclamation-triangle-fill"></i> <strong>ไม่สามารถเลือกได้:</strong> คนงานนี้มีใบสมัครงานอื่นอยู่แล้ว (ไม่พบรายละเอียด)</small></div>';
+                                    }
+                                }
+                                return '';
+                            })()}
+                            ${lead.already_applied ? '<div class="mt-2"><small class="text-warning"><i class="bi bi-info-circle-fill"></i> <strong>เตือน:</strong> เคยส่งใบสมัครงานนี้แล้ว</small></div>' : ''}
                         </div>
-                        <div>
+                        <div class="ms-2">
                             ${!isDisabled ? `
-                                <button type="button" class="btn btn-sm ${isSelected ? 'btn-danger' : 'btn-primary'}" 
-                                        onclick="${isSelected ? 'removeLead' : 'addLead'}(${lead.id})">
-                                    ${isSelected ? '<i class="bi bi-dash"></i> ลบ' : '<i class="bi bi-plus"></i> เลือก'}
+                                <button type="button" class="btn btn-sm ${isSelected ? 'btn-outline-danger' : 'btn-outline-primary'}" 
+                                        onclick="${isSelected ? 'removeLead' : 'addLead'}(${lead.id})" 
+                                        title="${isSelected ? 'คลิกเพื่อยกเลิกการเลือก' : 'คลิกเพื่อเลือกคนงานนี้'}">
+                                    ${isSelected ? '<i class="bi bi-dash-circle"></i>' : '<i class="bi bi-plus-circle"></i>'}
                                 </button>
                             ` : `
-                                <span class="text-muted small">ไม่สามารถเลือกได้</span>
+                                <button type="button" class="btn btn-sm btn-outline-secondary" disabled 
+                                        title="ไม่สามารถเลือกได้">
+                                    <i class="bi bi-x-circle"></i>
+                                </button>
                             `}
                         </div>
                     </div>
@@ -306,11 +362,24 @@ document.addEventListener('DOMContentLoaded', function() {
     
     window.addLead = function(leadId) {
         if (!selectedLeadIds.includes(leadId)) {
+            // ตรวจสอบว่า lead ถูก lock หรือไม่
+            const lead = availableLeadsData.find(l => l.id === leadId);
+            if (lead && lead.is_locked) {
+                alert('❌ ไม่สามารถเลือกคนงานนี้ได้\n\nเหตุผล: คนงานนี้มีใบสมัครงานอื่นอยู่แล้ว\n(อาจถูกล็อคหรือมีสถานะการสมัครที่ยังดำเนินอยู่)\n\nกรุณาเลือกคนงานคนอื่น');
+                return;
+            }
+            
+            if (lead && lead.already_applied) {
+                if (!confirm('⚠️ คนงานนี้เคยส่งใบสมัครงานนี้แล้ว\n\nคุณต้องการเลือกต่อไปหรือไม่?')) {
+                    return;
+                }
+            }
+            
             const jobOption = jobSelect.options[jobSelect.selectedIndex];
             const remaining = parseInt(jobOption.dataset.remaining);
             
             if (selectedLeadIds.length >= remaining) {
-                alert(`สามารถเลือกได้สูงสุด ${remaining} คน`);
+                alert(`❌ เลือกคนงานได้สูงสุด ${remaining} คน\n\nงานนี้เหลือตำแหน่งว่าง ${remaining} ตำแหน่ง`);
                 return;
             }
             
