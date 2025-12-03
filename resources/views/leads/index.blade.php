@@ -83,7 +83,7 @@
                     <thead>
                         <tr>
                             <th class="text-center" width="80">#</th>
-                            <th class="text-center" width="80"><i class="bi bi-image me-1"></i> รูปถ่าย</th>
+                            <th class="text-center" width="80"><i class="bi bi-image me-1"></i></th>
                             <th><i class="bi bi-person me-1"></i> ชื่อ-นามสกุล</th>
                             <th><i class="bi bi-telephone me-1"></i> โทรศัพท์</th>
                             <th><i class="bi bi-briefcase me-1"></i> ตำแหน่ง</th>
@@ -150,6 +150,7 @@
                                                target="_blank">
                                                 <i class="bi bi-file-pdf-fill"></i>
                                             </a>
+                                         
                                             
                                             {{-- <button type="button" class="btn btn-sm btn-outline-success dropdown-toggle dropdown-toggle-split" 
                                                     data-bs-toggle="dropdown" title="ตัวเลือกเพิ่มเติม">

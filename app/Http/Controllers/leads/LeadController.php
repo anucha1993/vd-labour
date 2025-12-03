@@ -88,12 +88,23 @@ class LeadController extends Controller
             'lead_firstname' => 'required|string|max:255',
             'lead_lastname' => 'required|string|max:255',
             'lead_phone' => 'nullable|string|max:20',
+            'lead_passport_number' => 'nullable|string|max:50',
             'lead_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ], [
             'lead_photo.image' => 'ไฟล์ที่อัปโหลดต้องเป็นรูปภาพเท่านั้น',
             'lead_photo.mimes' => 'รูปภาพต้องเป็นไฟล์ประเภท: jpeg, png, jpg, gif',
             'lead_photo.max' => 'ขนาดรูปภาพต้องไม่เกิน 2MB',
         ]);
+
+        // ตรวจสอบ Passport ซ้ำใน Lead และ Labour
+        if ($request->filled('lead_passport_number')) {
+            $passportExists = LeadModel::where('lead_passport_number', $request->lead_passport_number)->exists();
+            $passportInLabour = labourModel::where('labour_passport_number', $request->lead_passport_number)->exists();
+            
+            if ($passportExists || $passportInLabour) {
+                return back()->with('error', 'เลขที่ Passport นี้มีในระบบแล้ว กรุณาตรวจสอบอีกครั้ง')->withInput();
+            }
+        }
         
         $data = $request->except('lead_photo', 'job_history');
         
@@ -180,12 +191,25 @@ class LeadController extends Controller
             'lead_firstname' => 'required|string|max:255',
             'lead_lastname' => 'required|string|max:255',
             'lead_phone' => 'nullable|string|max:20',
+            'lead_passport_number' => 'nullable|string|max:50',
             'lead_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ], [
             'lead_photo.image' => 'ไฟล์ที่อัปโหลดต้องเป็นรูปภาพเท่านั้น',
             'lead_photo.mimes' => 'รูปภาพต้องเป็นไฟล์ประเภท: jpeg, png, jpg, gif',
             'lead_photo.max' => 'ขนาดรูปภาพต้องไม่เกิน 2MB',
         ]);
+
+        // ตรวจสอบ Passport ซ้ำใน Lead และ Labour (ยกเว้นตัวเอง)
+        if ($request->filled('lead_passport_number')) {
+            $passportExists = LeadModel::where('lead_passport_number', $request->lead_passport_number)
+                                      ->where('lead_id', '!=', $id)
+                                      ->exists();
+            $passportInLabour = labourModel::where('labour_passport_number', $request->lead_passport_number)->exists();
+            
+            if ($passportExists || $passportInLabour) {
+                return back()->with('error', 'เลขที่ Passport นี้มีในระบบแล้ว กรุณาตรวจสอบอีกครั้ง')->withInput();
+            }
+        }
         
         $data = $request->except('lead_photo', 'job_history');
         
@@ -288,6 +312,14 @@ class LeadController extends Controller
         $request->validate([
             'customer_id' => 'required|exists:customers,customer_id',
         ]);
+
+        // ตรวจสอบ Passport ซ้ำใน Labour ก่อน Convert
+        if ($lead->lead_passport_number) {
+            $passportInLabour = labourModel::where('labour_passport_number', $lead->lead_passport_number)->exists();
+            if ($passportInLabour) {
+                return back()->with('error', 'เลขที่ Passport นี้มีในระบบ Labour แล้ว ไม่สามารถ Convert ได้');
+            }
+        }
         
         DB::beginTransaction();
         try {
@@ -327,5 +359,10 @@ class LeadController extends Controller
             DB::rollBack();
             return back()->with('error', 'เกิดข้อผิดพลาด: ' . $e->getMessage());
         }
+    }
+
+       public function cv(Request $request)
+    {
+        return view('leads.cv');
     }
 }

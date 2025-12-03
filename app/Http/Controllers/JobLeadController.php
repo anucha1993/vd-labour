@@ -81,9 +81,17 @@ class JobLeadController extends Controller
      */
     private function showJobApplicants($jobId, Request $request)
     {
-        $job = JobModel::with(['country', 'demand'])->findOrFail($jobId);
+        $job = JobModel::with([
+            'country', 
+            'demand.industryType',
+            'jobGroup',
+            'position',
+            'customer',
+            'createdBy',
+            'updatedBy'
+        ])->findOrFail($jobId);
         
-        $query = JobLeadModel::with(['lead', 'createdBy', 'updatedBy'])
+        $query = JobLeadModel::with(['lead.staff', 'lead.recommenderStaff', 'createdBy', 'updatedBy'])
                            ->where('job_id', $jobId);
         
         // Search within job applicants
@@ -261,7 +269,7 @@ class JobLeadController extends Controller
      */
     public function show($id)
     {
-        $jobLead = JobLeadModel::with(['job.country', 'job.demand', 'createdBy', 'updatedBy'])
+        $jobLead = JobLeadModel::with(['job.country', 'job.demand', 'createdBy', 'updatedBy', 'lead'])
                               ->findOrFail($id);
         
         return view('job-leads.show', compact('jobLead'));
@@ -486,6 +494,9 @@ class JobLeadController extends Controller
                 'country' => $lead->country->country_name_th ?? 'ไม่ระบุ',
                 'phone' => $lead->lead_phone,
                 'age' => $lead->lead_age,
+                'height' => $lead->lead_height,
+                'weight' => $lead->lead_weight,
+                'bmi' => $lead->lead_bmi,
                 'education' => $lead->lead_education,
                 'is_locked' => !$isAvailable,
                 'already_applied' => $jobId ? $this->checkAlreadyApplied($jobId, $lead->lead_id) : false,
@@ -549,4 +560,6 @@ class JobLeadController extends Controller
             return response()->json(['error' => 'เกิดข้อผิดพลาด: ' . $e->getMessage()], 500);
         }
     }
+
+ 
 }

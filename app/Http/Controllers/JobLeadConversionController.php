@@ -61,7 +61,7 @@ class JobLeadConversionController extends Controller
      */
     public function show(JobLeadModel $jobLead)
     {
-        $jobLead->load(['job.country', 'job.demand', 'lead', 'createdBy']);
+        $jobLead->load(['job.country', 'job.demand', 'lead', 'createdBy','job.jobgroup','job.position']);
 
         // ตรวจสอบเงื่อนไขการ Convert
         $validationErrors = $this->validateConversionRules($jobLead);
@@ -198,6 +198,10 @@ class JobLeadConversionController extends Controller
             'labour_passport_issue' => $lead->lead_passport_issue_date,
             'labour_passport_expiry' => $lead->lead_passport_expiry_date,
             'labour_country' => $lead->country_id,
+            'labour_staff_sub' => $lead->lead_recommender_staff_sub_id,
+            'labour_staff' => $lead->staff_id,
+            'labour_examination' => $lead->examination_round_id,
+            'labour_customer' => $job->customer_id,
             'labour_job_group' => $job->job_group_id, // Priority: job's group
             'labour_position' => $job->position_id, // Priority: job's position
             'labour_birthday' => $lead->lead_birthday,

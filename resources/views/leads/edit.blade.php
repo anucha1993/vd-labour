@@ -514,7 +514,7 @@
                                 </select>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Recommender (ผู้แนะนำ)</label>
+                                <label class="form-label">Recommender (ผู้แนะนำ/สาย) *ว่างไว้หากไม่มี </label>
                                 <select class="form-select" name="lead_recommender_staff_sub_id">
                                     <option value="">-- เลือกผู้แนะนำ --</option>
                                     @foreach($staffSubs as $staffSub)
@@ -541,7 +541,7 @@
                                 </select>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">เจ้าหน้าที่ผู้รับผิดชอบ</label>
+                                <label class="form-label">เจ้าหน้าที่ผู้รับผิดชอบ (พนักงาน วีดี)</label>
                                 <select class="form-select" name="staff_id">
                                     <option value="">-- เลือกเจ้าหน้าที่ --</option>
                                     @foreach($staffs as $staff)

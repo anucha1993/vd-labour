@@ -67,9 +67,12 @@ Route::get('export/form/labour',[labourFormExportController::class,'index'])->na
 Route::post('/export/export-labour', [labourFormExportController::class, 'export'])->name('labour.export');
 
 //รอบสอบ 
-Route::get('category/examination-roun',[ExaminationRounController::class, 'index'])->name('category.examination');
-Route::post('category/examination-roun/store',[ExaminationRounController::class, 'store'])->name('category.examination.store');
-Route::get('category/examination-roun/cancel/{examinationRoundModel}',[ExaminationRounController::class, 'index'])->name('category.examination.cancel');
+Route::get('category/examination-roun', [ExaminationRounController::class, 'index'])->name('category.examination');
+Route::post('category/examination-roun/store', [ExaminationRounController::class, 'store'])->name('category.examination.store');
+Route::get('category/examination-roun/{examinationRoundModel}/edit', [ExaminationRounController::class, 'edit'])->name('category.examination.edit');
+Route::put('category/examination-roun/{examinationRoundModel}', [ExaminationRounController::class, 'update'])->name('category.examination.update');
+Route::delete('category/examination-roun/{examinationRoundModel}', [ExaminationRounController::class, 'destroy'])->name('category.examination.destroy');
+Route::get('category/examination-roun/cancel/{examinationRoundModel}', [ExaminationRounController::class, 'cancel'])->name('category.examination.cancel');
 
 //customer
 Route::get('customers',[customerController::class,'index'])->name('customer.index');
@@ -139,6 +142,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('leads', \App\Http\Controllers\leads\LeadController::class);
     Route::get('/leads/{lead}/convert', [\App\Http\Controllers\leads\LeadController::class, 'convertForm'])->name('leads.convertForm');
     Route::post('/leads/{lead}/convert', [\App\Http\Controllers\leads\LeadController::class, 'convert'])->name('leads.convert');
+     
 
     // Demand Management Routes
     Route::resource('demands', \App\Http\Controllers\demands\DemandController::class);
@@ -186,6 +190,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/leads-list', [\App\Http\Controllers\PdfController::class, 'generateLeadsListPdf'])->name('leads.list');
         Route::get('/cv-form/{lead?}', [\App\Http\Controllers\PdfController::class, 'generateCvForm'])->name('cv.form');
         Route::get('/test', [\App\Http\Controllers\PdfController::class, 'testPdf'])->name('test');
+       
         
         // PDF Download Routes
         Route::get('/download/lead/{lead}', [\App\Http\Controllers\PdfDownloadController::class, 'downloadLeadPdf'])->name('download.lead');

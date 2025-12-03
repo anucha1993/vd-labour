@@ -41,8 +41,31 @@
                                     @enderror
                                 </div>
                             </div>
+
+                             <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="customer_id" class="form-label">บริษัทนายจ้าง <span class="text-danger">*</span></label>
+                                    <select class="form-select @error('customer_id') is-invalid @enderror" 
+                                            id="customer_id" name="customer_id" required>
+                                        <option value="">-- เลือกบริษัทนายจ้าง --</option>
+                                        @foreach($customer as $cust)
+                                            <option value="{{ $cust->customer_id }}" 
+                                                    {{ old('customer_id') == $cust->customer_id ? 'selected' : '' }}>
+                                                {{ $cust->customer_name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('country_id')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
                             
-                            <div class="col-md-6">
+                            
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-3">
                                 <div class="mb-3">
                                     <label for="country_id" class="form-label">ประเทศ <span class="text-danger">*</span></label>
                                     <select class="form-select @error('country_id') is-invalid @enderror" 
@@ -60,10 +83,8 @@
                                     @enderror
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-3">
                                 <div class="mb-3">
                                     <label for="dm_id" class="form-label">Demand (หนังสือขอคนงาน) <span class="text-danger">*</span></label>
                                     <select class="form-select @error('dm_id') is-invalid @enderror" 

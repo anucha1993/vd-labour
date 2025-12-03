@@ -2,12 +2,15 @@
 
 namespace App\Models\jobs;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use App\Models\country\countryModel;
-use App\Models\demands\DemandModel;
-use App\Models\User;
 use Carbon\Carbon;
+use App\Models\User;
+use App\Models\demands\DemandModel;
+use App\Models\country\countryModel;
+use App\Models\jobgroup\jobGroupModel;
+use App\Models\customers\customerModel;
+use App\Models\positions\positionModel;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class JobModel extends Model
 {
@@ -27,6 +30,7 @@ class JobModel extends Model
         'job_start_date',
         'job_end_date',
         'job_status',
+        'customer_id',
         'created_by',
         'updated_by'
     ];
@@ -40,6 +44,10 @@ class JobModel extends Model
     public function country()
     {
         return $this->belongsTo(countryModel::class, 'country_id', 'country_id');
+    }
+     public function customer()
+    {
+        return $this->belongsTo(customerModel::class, 'customer_id', 'customer_id');
     }
     
     public function demand()
@@ -60,6 +68,14 @@ class JobModel extends Model
     public function jobLeads()
     {
         return $this->hasMany(JobLeadModel::class, 'job_id', 'job_id');
+    }
+      public function jobgroup()
+    {
+        return $this->belongsTo(jobGroupModel::class, 'job_group_id', 'job_group_id');
+    }
+     public function position()
+    {
+        return $this->belongsTo(positionModel::class, 'position_id', 'position_id');
     }
     
     // Scopes

@@ -105,7 +105,8 @@ function confirmJobDelete(lockedCount, jobNumber) {
                                     </td>
                                     <td>
                                         <div>{{ $job->job_name }}</div>
-                                        <small class="text-muted">{{ $job->demand->dm_com_name ?? 'N/A' }}</small>
+                                        <small class="text-muted">{{ $job->demand->dm_com_name ?? 'N/A' }}</small> <br>
+                                        <small class=" text-primary">บริษัทนายจ้าง: {{ $job->customer->customer_name ?? 'N/A' }}</small>
                                     </td>
                                     <td>
                                         <i class="flag-icon flag-icon-{{ strtolower($job->country->country_code ?? 'xx') }}"></i>

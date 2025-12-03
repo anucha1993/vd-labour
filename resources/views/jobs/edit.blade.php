@@ -45,8 +45,30 @@
                                     <div class="form-text">หมายเลขงานไม่สามารถแก้ไขได้</div>
                                 </div>
                             </div>
+
+
+                             <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="customer_id" class="form-label">บริษัทนายจ้าง <span class="text-danger">*</span></label>
+                                    <select class="form-select @error('customer_id') is-invalid @enderror" 
+                                            id="customer_id" name="customer_id" required>
+                                        <option value="">-- เลือกบริษัทนายจ้าง --</option>
+                                        @foreach($customer as $cust)
+                                            <option value="{{ $cust->customer_id }}" 
+                                                    {{ old('customer_id', $job->customer_id) == $cust->customer_id ? 'selected' : '' }}>
+                                                {{ $cust->customer_name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('country_id')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
                             
-                            <div class="col-md-6">
+
+                            
+                            <div class="col-md-12">
                                 <div class="mb-3">
                                     <label for="job_name" class="form-label">ชื่องาน <span class="text-danger">*</span></label>
                                     <input type="text" class="form-control @error('job_name') is-invalid @enderror" 

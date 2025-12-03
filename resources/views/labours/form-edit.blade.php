@@ -305,10 +305,10 @@
                                 <select name="labour_examination" class="form-select"
                                     @cannot('update labour') disabled @endcannot>
                                     <option selected value="{{ $labourModel->labour_examination }}">
-                                        {{ date('d-m-Y', strtotime($labourModel->labour_examination)) }} </option>
+                                        {{ date('d-m-Y', strtotime($labourModel->labour_examination)) }}-{{ $item->examination_round_note }} </option>
                                     @forelse ($examinationRound as $item)
                                         <option value="{{ $item->examination_round_name }}">
-                                            {{ date('d-m-Y', strtotime($item->examination_round_name)) }}
+                                            {{ date('d-m-Y', strtotime($item->examination_round_name)) }}-{{ $item->examination_round_note }}
                                         </option>
                                     @empty
                                     @endforelse
@@ -363,7 +363,7 @@
                                 </select>
                             </div>
 
-                            <div class="col-md-4">
+                            {{-- <div class="col-md-4">
                                 <label>lacation Test</label>
                                 <select name="labour_location_test" class="form-select" required
                                     @cannot('update labour') disabled @endcannot>
@@ -375,7 +375,7 @@
                                     @empty
                                     @endforelse
                                 </select>
-                            </div>
+                            </div> --}}
 
 
                             <div class="col-md-4">

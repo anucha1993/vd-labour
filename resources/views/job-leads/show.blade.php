@@ -121,6 +121,82 @@
                                 </div>
                             </div>
 
+                            <!-- Lead Physical Information -->
+                            @if($jobLead->lead)
+                            <h5 class="border-bottom pb-2 mb-3 mt-4">ข้อมูลร่างกายผู้สมัคร</h5>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-12">
+                                    <strong>ชื่อ-สกุล:</strong><br>
+                                    <span class="fs-5">{{ $jobLead->lead->getFullNameAttribute() }}</span>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-3">
+                                    <strong>ส่วนสูง:</strong><br>
+                                    <span class="fs-5">{{ $jobLead->lead->lead_height ?? '-' }}</span> <small class="text-muted">cm</small>
+                                </div>
+                                <div class="col-md-3">
+                                    <strong>น้ำหนัก:</strong><br>
+                                    <span class="fs-5">{{ $jobLead->lead->lead_weight ?? '-' }}</span> <small class="text-muted">kg</small>
+                                </div>
+                                <div class="col-md-6">
+                                    <strong>BMI:</strong><br>
+                                    @if($jobLead->lead->lead_bmi)
+                                        @php
+                                            $bmi = $jobLead->lead->lead_bmi;
+                                            $category = '';
+                                            $badgeClass = 'secondary';
+                                            $description = '';
+                                            
+                                            if ($bmi < 18.50) {
+                                                $category = 'น้ำหนักน้อย / ผอม';
+                                                $badgeClass = 'primary';
+                                                $description = 'Underweight';
+                                            } elseif ($bmi >= 18.50 && $bmi <= 22.90) {
+                                                $category = 'ปกติ (สุขภาพดี)';
+                                                $badgeClass = 'success';
+                                                $description = 'Normal (Healthy)';
+                                            } elseif ($bmi >= 23 && $bmi <= 24.90) {
+                                                $category = 'ท้วม / โรคอ้วนระดับ 1';
+                                                $badgeClass = 'warning';
+                                                $description = 'Overweight / Obese I';
+                                            } elseif ($bmi >= 25 && $bmi <= 29.90) {
+                                                $category = 'โรคอ้วนระดับ 2';
+                                                $badgeClass = 'warning';
+                                                $description = 'Obese II';
+                                            } else {
+                                                $category = 'โรคอ้วนระดับ 3';
+                                                $badgeClass = 'danger';
+                                                $description = 'Obese III';
+                                            }
+                                        @endphp
+                                        <div>
+                                            <span class="fs-4 fw-bold">{{ number_format($bmi, 2) }}</span>
+                                            <span class="badge bg-{{ $badgeClass }} fs-6 ms-2">{{ $category }}</span>
+                                        </div>
+                                        <small class="text-muted">{{ $description }}</small>
+                                    @else
+                                        <span class="text-muted">-</span>
+                                    @endif
+                                </div>
+                            </div>
+
+                            @if($jobLead->lead->lead_height && $jobLead->lead->lead_weight && $jobLead->lead->lead_bmi)
+                            <div class="alert alert-info">
+                                <small>
+                                    <strong>เกณฑ์ BMI สำหรับคนเอเชีย:</strong><br>
+                                    • ผอม: &lt; 18.50 | 
+                                    • ปกติ: 18.50-22.90 | 
+                                    • ท้วม: 23-24.90 | 
+                                    • อ้วน 1: 25-29.90 | 
+                                    • อ้วน 2: ≥ 30
+                                </small>
+                            </div>
+                            @endif
+                            @endif
+
                             <!-- Remarks/History -->
                             @if($jobLead->remarks)
                             <h5 class="border-bottom pb-2 mb-3 mt-4">ประวัติและหมายเหตุ</h5>

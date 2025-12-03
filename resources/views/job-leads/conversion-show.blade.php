@@ -37,7 +37,20 @@
                                     <h5 class="mb-0">ข้อมูลผู้สมัคร</h5>
                                 </div>
                                 <div class="card-body">
+
                                     <div class="row">
+                                        <div class="col-md-6">
+                                         @if($jobLead->lead->lead_photo)
+                                        <img id="photo_preview"
+                                            src="{{ asset('storage/' . $jobLead->lead->lead_photo) }}"
+                                            class="img-thumbnail mb-2"
+                                            style="width: 100%; max-width: 350px; height: 280px; object-fit: cover; border-radius: 8px;">
+                                
+                                    @endif
+                                        </div>
+                                    </div>
+                                      <div class="row">
+
                                         <div class="col-md-6">
                                             <strong>ชื่อ-นามสกุล:</strong><br>
                                             {{ $jobLead->lead ? $jobLead->lead->getFullNameAttribute() : 'ไม่พบข้อมูล' }}
@@ -96,10 +109,11 @@
                                     {{ $jobLead->job ? $jobLead->job->job_name : '-' }}
                                     <hr>
                                     <strong>ประเภทงาน:</strong><br>
-                                    {{ $jobLead->job && $jobLead->job->jobGroup ? $jobLead->job->jobGroup->job_group_name : '-' }}
+
+                                    {{ $jobLead->job->jobgroup->job_group_name ?? '-' }}-{{ $jobLead->job->jobgroup->job_group_name_th ?? '-' }}
                                     <hr>
                                     <strong>ตำแหน่ง:</strong><br>
-                                    {{ $jobLead->job && $jobLead->job->position ? $jobLead->job->position->position_name : '-' }}
+                                     {{ $jobLead->job->position->position_name ?? '-' }}-{{ $jobLead->job->position->position_name_th ?? '-' }}
                                     <hr> 
                                     <strong>ประเทศ:</strong><br>
                                     {{ $jobLead->job && $jobLead->job->country ? $jobLead->job->country->country_name_th : '-' }}

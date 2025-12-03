@@ -183,7 +183,7 @@
                                 <select name="labour_examination" class="form-select" >
                                     <option value="">Select a Examination round</option>
                                     @forelse ($examinationRound as $item)
-                                        <option value="{{$item->examination_round_name}}">{{date('d-m-Y',strtotime($item->examination_round_name))}}</option>
+                                        <option value="{{$item->examination_round_name}}">{{date('d-m-Y',strtotime($item->examination_round_name))}}-{{$item->examination_round_note}}</option>
                                     @empty
                                     @endforelse
                                 </select>
@@ -220,7 +220,7 @@
                                     @endforelse
                                 </select>
                             </div>
-                            <div class="col-md-3">
+                            {{-- <div class="col-md-3">
                                 <label>lacation Test</label>
                                 <select name="labour_location_test" class="form-select" required>
                                     <option value="">Select a Localtion Test</option>
@@ -229,7 +229,7 @@
                                     @empty
                                     @endforelse
                                 </select>
-                            </div>
+                            </div> --}}
                             <div class="col-md-3">
                                 <label>Docs. Type. (Path จัดเก็บเอกสาร)</label>
                                 <select name="labour_location_doc" class="form-select" required>

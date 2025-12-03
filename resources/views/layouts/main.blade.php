@@ -162,12 +162,12 @@
 
   <a href="{{ route('leads.index') }}"
      class="{{ Request::routeIs('leads.*') ? 'active' : '' }}">
-     <i class="bi bi-person-plus-fill me-2"></i> ข้อมูลผู้สนใจ (Leads)</a>
+     <i class="bi bi-person-plus-fill me-2"></i> ข้อมูลผู้สมัคร</a>
 
   @can('view demand')
   <a href="{{ route('demands.index') }}"
      class="{{ Request::routeIs('demands.*') ? 'active' : '' }}">
-     <i class="bi bi-file-earmark-text-fill me-2"></i> ความต้องการ (Demands)</a>
+     <i class="bi bi-file-earmark-text-fill me-2"></i>Demands</a>
   @endcan
 
   <!-- Job Application Management Dropdown -->
@@ -181,7 +181,7 @@
       @can('job-dashboard')
       <a href="{{ route('jobs.dashboard') }}"
          class="{{ request()->routeIs('job-dashboard.index') ? 'active' : '' }}">
-         <i class="bi bi-graph-up me-2"></i> Dashboard ใบสมัคร</a>
+         <i class="bi bi-graph-up me-2"></i> สรุป</a>
       @endcan
       
       @can('job-list')
@@ -199,7 +199,7 @@
       @can('job-lead-convert')
       <a href="{{ route('job-leads.conversion.index') }}"
          class="{{ Request::routeIs('job-leads.conversion.*') ? 'active' : '' }}">
-         <i class="bi bi-arrow-repeat me-2"></i> ได้แล้ว รอ Convert</a>
+         <i class="bi bi-arrow-repeat me-2"></i>รอ Convert</a>
       @endcan
     </div>
   </div>

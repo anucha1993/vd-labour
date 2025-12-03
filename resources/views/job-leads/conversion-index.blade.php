@@ -67,6 +67,7 @@
                             <thead class="table-dark">
                                 <tr>
                                     <th>หมายเลขใบสมัคร</th>
+                                     <th class="text-center" width="80"><i class="bi bi-image me-1"></i></th>
                                     <th>ชื่อผู้สมัคร</th>
                                     <th>Passport</th>
                                     <th>เบอร์โทร</th>
@@ -79,12 +80,33 @@
                             <tbody>
                                 @foreach($jobLeads as $jobLead)
                                 <tr>
+                                     
+
                                     <td>
                                         <a href="{{ route('job-leads.conversion.show', $jobLead->job_lead_id) }}" 
                                            class="text-decoration-none fw-bold">
                                             {{ $jobLead->job_lead_number }}
                                         </a>
                                     </td>
+
+                                    <td class="text-center">
+                                    @if($jobLead->lead->lead_photo)
+                                        <img src="{{ asset('storage/' . $jobLead->lead->lead_photo) }}" 
+                                             class="rounded-circle border cursor-pointer" 
+                                             style="width: 50px; height: 50px; object-fit: cover; cursor: pointer;"
+                                             alt="รูปถ่าย {{ $jobLead->lead->getFullNameAttribute() }}"
+                                             data-bs-toggle="modal"
+                                             data-bs-target="#photoModal"
+                                             onclick="showPhoto('{{ asset('storage/' . $jobLead->lead->lead_photo) }}', '{{ $jobLead->lead->fullName }}')"
+                                             title="คลิกเพื่อดูรูปใหญ่">
+                                    @else
+                                        <div class="rounded-circle bg-light border d-flex align-items-center justify-content-center" 
+                                             style="width: 50px; height: 50px;">
+                                            <i class="bi bi-person text-muted"></i>
+                                        </div>
+                                    @endif
+                                </td>
+
                                     <td>
                                         <strong>{{ $jobLead->lead ? $jobLead->lead->getFullNameAttribute() : 'ไม่พบข้อมูล' }}</strong>
                                         @if($jobLead->lead && $jobLead->lead->lead_birthday)
@@ -96,7 +118,9 @@
                                     </td>
                                     <td>{{ $jobLead->lead ? ($jobLead->lead->lead_phone ?: '-') : '-' }}</td>
                                     <td>
-                                        <small>{{ $jobLead->job ? ($jobLead->job->job_number . ' - ' . $jobLead->job->job_name) : '-' }}</small>
+                                        <small>{{ $jobLead->job ? ($jobLead->job->job_number . ' - ' . $jobLead->job->job_name) : '-' }}</small><br>
+                                        <small>บริษัทนายจ้าง: {{ $jobLead->job ? ($jobLead->job->customer->customer_name . ' - ' . $jobLead->job->customer->customer_name_th) : '-' }}</small><br>
+                                        <small>ตำแหน่งงาน: {{ $jobLead->job ? ($jobLead->job->position->position_name . ' - ' . $jobLead->job->position->position_name_th) : '-' }}</small>
                                     </td>
                                     <td>
                                         {{ $jobLead->job && $jobLead->job->country ? $jobLead->job->country->country_name_th : '-' }}

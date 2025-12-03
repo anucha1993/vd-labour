@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\jobs\JobModel;
 use App\Models\jobs\JobLeadModel;
 use App\Models\country\countryModel;
+use App\Models\customers\customerModel;
 use App\Models\demands\DemandModel;
 use App\Models\jobgroup\jobGroupModel;
 use App\Models\positions\positionModel;
@@ -78,8 +79,9 @@ class JobController extends Controller
                              ->get();
         $jobGroups = jobGroupModel::where('job_group_status', 'active')->get();
         $positions = positionModel::where('position_status', 'active')->get();
+        $customer = customerModel::where('customer_status', 'active')->get();
         
-        return view('jobs.create', compact('countries', 'demands', 'jobGroups', 'positions'));
+        return view('jobs.create', compact('countries', 'demands', 'jobGroups', 'positions','customer'));
     }
 
     /**
@@ -90,6 +92,7 @@ class JobController extends Controller
         $validator = Validator::make($request->all(), [
             'job_name' => 'required|string|max:255',
             'country_id' => 'required|exists:country,country_id',
+            'customer_id' => 'required|exists:customer,customer_id',
             'dm_id' => 'required|exists:demands,dm_id',
             'job_group_id' => 'nullable|exists:job_group,job_group_id',
             'position_id' => 'nullable|exists:position,position_id',
@@ -138,11 +141,17 @@ class JobController extends Controller
     {
         $job = JobModel::with([
                           'country', 
-                          'demand.industryType', 
+                          'demand.industryType',
+                          'jobGroup',
+                          'position', 
+                          'customer',
                           'createdBy', 
                           'updatedBy', 
                           'jobLeads.createdBy',
-                          'jobLeads.lead'
+                          'jobLeads.lead.staff',
+                          'jobLeads.lead.recommenderStaff',
+                          'jobLeads.lead.position',
+                          'jobLeads.lead.country'
                       ])
                       ->findOrFail($id);
         
@@ -173,8 +182,8 @@ class JobController extends Controller
                              ->get();
         $jobGroups = jobGroupModel::where('job_group_status', 'active')->get();
         $positions = positionModel::where('position_status', 'active')->get();
-        
-        return view('jobs.edit', compact('job', 'countries', 'demands', 'jobGroups', 'positions'));
+        $customer = customerModel::where('customer_status', 'active')->get();
+        return view('jobs.edit', compact('job', 'countries', 'demands', 'jobGroups', 'positions', 'customer'));
     }
 
     /**
@@ -203,7 +212,7 @@ class JobController extends Controller
             
             $jobData = $request->only([
                 'job_name','country_id','dm_id','job_group_id','position_id',
-                'job_total','job_start_date','job_end_date','job_status'
+                'job_total','job_start_date','job_end_date','job_status','customer_id'
             ]);
 
             $job->update($jobData);

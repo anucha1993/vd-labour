@@ -33,42 +33,199 @@
                     <!-- Job Overview -->
                     <div class="row mb-4">
                         <div class="col-md-8">
-                            <div class="table-responsive">
-                                <table class="table table-borderless">
-                                    <tr>
-                                        <td width="120"><strong>งาน:</strong></td>
-                                        <td>{{ $job->job_name }} 
-                                            <span class="badge {{ $job->job_status == 'เปิดรับสมัคร' ? 'bg-success' : 'bg-secondary' }}">{{ $job->job_status }}</span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>บริษัท:</strong></td>
-                                        <td>{{ $job->demand->dm_com_name ?? 'N/A' }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>ประเทศ:</strong></td>
-                                        <td>{{ $job->country->country_name_th ?? 'N/A' }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>จำนวนรับ:</strong></td>
-                                        <td><span class="text-info fw-bold">{{ number_format($job->job_total) }} คน</span></td>
-                                    </tr>
-                                </table>
+                            <h5 class="border-bottom pb-2 mb-3"><i class="bi bi-briefcase me-2"></i>ข้อมูลงาน</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="text-muted small">หมายเลขงาน</label>
+                                        <div><span class="badge bg-primary fs-6">{{ $job->job_number }}</span></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="text-muted small">สถานะงาน</label>
+                                        <div>
+                                            <span class="badge {{ $job->job_status == 'เปิดรับสมัคร' ? 'bg-success' : 'bg-secondary' }} fs-6">
+                                                {{ $job->job_status }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="text-muted small">ชื่องาน</label>
+                                <div class="fs-5 fw-bold">{{ $job->job_name }}</div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="text-muted small">ประเทศ</label>
+                                        <div>
+                                            @if($job->country)
+                                                <i class="flag-icon flag-icon-{{ strtolower($job->country->country_code ?? 'xx') }}"></i>
+                                                {{ $job->country->country_name_th }}
+                                            @else
+                                                <span class="text-muted">-</span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="text-muted small">บริษัทนายจ้าง</label>
+                                        <div>{{ $job->customer->customer_name ?? 'N/A' }}</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="text-muted small">ประเภทงาน (Job Group)</label>
+                                        <div>
+                                            @if($job->jobGroup)
+                                                {{ $job->jobGroup->job_group_name }} ({{ $job->jobGroup->job_group_name_th }})
+                                            @else
+                                                <span class="text-muted">-</span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="text-muted small">ตำแหน่ง (Position)</label>
+                                        <div>
+                                            @if($job->position)
+                                                {{ $job->position->position_name }} ({{ $job->position->position_name_th }})
+                                            @else
+                                                <span class="text-muted">-</span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="text-muted small">วันเริ่มรับสมัคร</label>
+                                        <div>
+                                            @if($job->job_start_date)
+                                                <i class="bi bi-calendar-check text-success"></i>
+                                                {{ $job->job_start_date->format('d/m/Y') }}
+                                            @else
+                                                <span class="text-muted">-</span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="text-muted small">วันปิดรับสมัคร {{ number_format($job->job_total) }} <small class="text-muted fs-6">คน</small></label>
+                                        <div>
+                                            @if($job->job_end_date)
+                                                <i class="bi bi-calendar-x text-danger"></i>
+                                                {{ $job->job_end_date->format('d/m/Y') }}
+                                            @else
+                                                <span class="badge bg-info">รับสมัครต่อเนื่อง</span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                               
+                            </div>
+
+                            @if($job->job_description)
+                            <div class="mb-3">
+                                <label class="text-muted small">รายละเอียดงาน</label>
+                                <div class="border rounded p-3 bg-light">
+                                    {!! nl2br(e($job->job_description)) !!}
+                                </div>
+                            </div>
+                            @endif
+
+                            <div class="row mt-4">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="text-muted small">สร้างโดย</label>
+                                        <div>
+                                            <i class="bi bi-person-circle"></i> {{ $job->createdBy->name ?? 'N/A' }}
+                                            <br><small class="text-muted">{{ $job->created_at->format('d/m/Y H:i') }}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="text-muted small">อัปเดตล่าสุด</label>
+                                        <div>
+                                            <i class="bi bi-pencil-square"></i> {{ $job->updatedBy->name ?? 'N/A' }}
+                                            <br><small class="text-muted">{{ $job->updated_at->format('d/m/Y H:i') }}</small>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         
                         <div class="col-md-4">
-                            <div class="row text-center">
-                                <div class="col-6">
-                                    <div class="border rounded p-2">
-                                        <h4 class="text-success mb-0">{{ number_format($stats['by_status']['ตอบรับ'] ?? 0) }}</h4>
-                                        <small class="text-muted">ได้งาน</small>
-                                    </div>
+                            <div class="card border-primary">
+                                <div class="card-header bg-primary text-white">
+                                    <h6 class="mb-0"><i class="bi bi-graph-up"></i> สถิติผู้สมัคร</h6>
                                 </div>
-                                <div class="col-6">
-                                    <div class="border rounded p-2">
-                                        <h4 class="text-primary mb-0">{{ number_format($stats['remaining_positions']) }}</h4>
-                                        <small class="text-muted">เหลือ</small>
+                                <div class="card-body">
+                                    <div class="row text-center mb-3">
+                                        <div class="col-6">
+                                            <div class="border rounded p-2 bg-success bg-opacity-10">
+                                                <h3 class="text-success mb-0">{{ number_format($stats['by_status']['ตอบรับ'] ?? 0) }}</h3>
+                                                <small class="text-muted">ได้งาน</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="border rounded p-2 bg-primary bg-opacity-10">
+                                                <h3 class="text-primary mb-0">{{ number_format($stats['remaining_positions']) }}</h3>
+                                                <small class="text-muted">เหลือ</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div class="small">
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span><i class="bi bi-people"></i> ทั้งหมด:</span>
+                                            <strong>{{ $stats['total_applications'] ?? 0 }}</strong>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span><i class="bi bi-file-text"></i> ร่าง:</span>
+                                            <span class="badge bg-secondary">{{ $stats['by_status']['ร่าง'] ?? 0 }}</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span><i class="bi bi-send"></i> ส่งแล้ว:</span>
+                                            <span class="badge bg-info">{{ $stats['by_status']['ส่งแล้ว'] ?? 0 }}</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span><i class="bi bi-eye"></i> กำลังพิจารณา:</span>
+                                            <span class="badge bg-warning">{{ $stats['by_status']['กำลังพิจารณา'] ?? 0 }}</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span><i class="bi bi-calendar-check"></i> นัดสัมภาษณ์:</span>
+                                            <span class="badge bg-primary">{{ $stats['by_status']['นัดสัมภาษณ์'] ?? 0 }}</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span><i class="bi bi-briefcase"></i> เสนองาน:</span>
+                                            <span class="badge bg-info">{{ $stats['by_status']['เสนองาน'] ?? 0 }}</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span><i class="bi bi-x-circle"></i> ปฏิเสธ:</span>
+                                            <span class="badge bg-danger">{{ $stats['by_status']['ปฏิเสธ'] ?? 0 }}</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span><i class="bi bi-dash-circle"></i> ถอน:</span>
+                                            <span class="badge bg-secondary">{{ $stats['by_status']['ถอน'] ?? 0 }}</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <span><i class="bi bi-lock"></i> ล็อคอยู่:</span>
+                                            <span class="badge bg-warning">{{ $stats['locked_leads'] ?? 0 }}</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -82,7 +239,7 @@
                             <h2 class="accordion-header">
                                 <button class="accordion-button" type="button" data-bs-toggle="collapse" 
                                         data-bs-target="#demandDetails" aria-expanded="true">
-                                    <i class="bi bi-info-circle me-2"></i>รายละเอียด Demand
+                                    <i class="bi bi-info-circle me-2"></i>รายละเอียด Demand #{{ $job->demand->dm_let_no }}
                                 </button>
                             </h2>
                             <div id="demandDetails" class="accordion-collapse collapse show" data-bs-parent="#demandAccordion">
@@ -240,7 +397,11 @@
                                     <thead class="table-light">
                                         <tr>
                                             <th>ใบสมัคร</th>
+                                              <th class="text-center" width="80"><i class="bi bi-image me-1"></i></th>
                                             <th>ชื่อ-สกุล</th>
+                                          
+                                            <th class="text-center" width="120">BMI</th>
+                                              <th>ผู้แนะนำ</th>
                                             <th>สถานะ</th>
                                             <th>วันที่สมัคร</th>
                                             <th width="80">จัดการ</th>
@@ -257,7 +418,70 @@
                                                     <i class="bi bi-lock-fill text-warning ms-1" title="ล็อค"></i>
                                                 @endif
                                             </td>
+
+                                             <td class="text-center">
+                                    @if($jobLead->lead->lead_photo)
+                                        <img src="{{ asset('storage/' . $jobLead->lead->lead_photo) }}" 
+                                             class="rounded-circle border cursor-pointer" 
+                                             style="width: 50px; height: 50px; object-fit: cover; cursor: pointer;"
+                                             alt="รูปถ่าย {{ $jobLead->lead->getFullNameAttribute() }}"
+                                             data-bs-toggle="modal"
+                                             data-bs-target="#photoModal"
+                                             onclick="showPhoto('{{ asset('storage/' . $jobLead->lead->lead_photo) }}', '{{ $jobLead->lead->fullName }}')"
+                                             title="คลิกเพื่อดูรูปใหญ่">
+                                    @else
+                                        <div class="rounded-circle bg-light border d-flex align-items-center justify-content-center" 
+                                             style="width: 50px; height: 50px;">
+                                            <i class="bi bi-person text-muted"></i>
+                                        </div>
+                                    @endif
+                                </td>
+
+                                            
                                             <td>{{ $jobLead->lead ? $jobLead->lead->getFullNameAttribute() : 'ไม่พบข้อมูล' }}</td>
+                                            
+                                            
+                                            
+                                            <td class="text-center">
+                                                @if($jobLead->lead && $jobLead->lead->lead_bmi)
+                                                    @php
+                                                        $bmi = $jobLead->lead->lead_bmi;
+                                                        $category = '';
+                                                        $badgeClass = 'secondary';
+                                                        
+                                                        if ($bmi < 18.50) {
+                                                            $category = 'ผอม';
+                                                            $badgeClass = 'primary';
+                                                        } elseif ($bmi >= 18.50 && $bmi <= 22.90) {
+                                                            $category = 'ปกติ';
+                                                            $badgeClass = 'success';
+                                                        } elseif ($bmi >= 23 && $bmi <= 24.90) {
+                                                            $category = 'ท้วม';
+                                                            $badgeClass = 'warning';
+                                                        } elseif ($bmi >= 25 && $bmi <= 29.90) {
+                                                            $category = 'อ้วน 1';
+                                                            $badgeClass = 'warning';
+                                                        } else {
+                                                            $category = 'อ้วน 2';
+                                                            $badgeClass = 'danger';
+                                                        }
+                                                    @endphp
+                                                    <div>
+                                                        <strong>{{ number_format($bmi, 2) }}</strong>
+                                                    </div>
+                                                    <span class="badge bg-{{ $badgeClass }} mt-1" style="font-size: 0.7rem;">{{ $category }}</span>
+                                                @else
+                                                    <small class="text-muted">-</small>
+                                                @endif
+                                            </td>
+                                            <td>
+                                      
+                                            <small><b>ผู้ดูแล: </b>{{ $jobLead->lead->staff->staff_name?? '-' }}</small>
+                                            <br>
+                                             <small><b>สายแนะนำ: </b>{{ $jobLead->lead->recommenderStaff->staff_sub_name?? '-' }}</small>
+                                      
+                                    </td>
+                                            
                                             <td><span class="badge bg-{{ $jobLead->status_badge_color }}">{{ $jobLead->job_lead_status }}</span></td>
                                             <td>{{ $jobLead->created_at->format('d/m/Y') }}</td>
                                             <td>
@@ -267,6 +491,9 @@
                                                             onclick="cancelApplication({{ $jobLead->job_lead_id }}, '{{ $jobLead->job_lead_number }}')"
                                                             title="ยกเลิก">
                                                         <i class="bi bi-x"></i>
+                                                    </button>
+                                                      @else
+                                                       <small>-</small>
                                                     </button>
                                                     @endif
                                                 @endcan
@@ -397,6 +624,40 @@ document.addEventListener('DOMContentLoaded', function() {
                                         ${lead.phone ? ` | <i class="bi bi-telephone"></i> ${lead.phone}` : ''}
                                         ${lead.age ? ` | อายุ ${lead.age} ปี` : ''}
                                     </small>
+                                    ${(() => {
+                                        if (lead.height || lead.weight || lead.bmi) {
+                                            let bmiInfo = '';
+                                            if (lead.height || lead.weight) {
+                                                bmiInfo += `<i class="bi bi-person-bounding-box"></i> ${lead.height || '-'} cm / ${lead.weight || '-'} kg`;
+                                            }
+                                            if (lead.bmi) {
+                                                const bmi = parseFloat(lead.bmi);
+                                                let category = '';
+                                                let badgeClass = 'secondary';
+                                                
+                                                if (bmi < 18.50) {
+                                                    category = 'ผอม';
+                                                    badgeClass = 'primary';
+                                                } else if (bmi >= 18.50 && bmi <= 22.90) {
+                                                    category = 'ปกติ';
+                                                    badgeClass = 'success';
+                                                } else if (bmi >= 23 && bmi <= 24.90) {
+                                                    category = 'ท้วม';
+                                                    badgeClass = 'warning';
+                                                } else if (bmi >= 25 && bmi <= 29.90) {
+                                                    category = 'อ้วน 1';
+                                                    badgeClass = 'warning';
+                                                } else {
+                                                    category = 'อ้วน 2';
+                                                    badgeClass = 'danger';
+                                                }
+                                                
+                                                bmiInfo += ` | <strong>BMI:</strong> ${bmi.toFixed(2)} <span class="badge bg-${badgeClass}" style="font-size: 0.7rem;">${category}</span>`;
+                                            }
+                                            return `<small class="text-muted d-block mt-1">${bmiInfo}</small>`;
+                                        }
+                                        return '';
+                                    })()}
                                     ${(() => {
                                         if (lead.is_locked) {
                                             console.log('Lead is locked:', lead.name, 'Existing app:', lead.existing_application);
