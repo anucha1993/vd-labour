@@ -142,6 +142,17 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('leads', \App\Http\Controllers\leads\LeadController::class);
     Route::get('/leads/{lead}/convert', [\App\Http\Controllers\leads\LeadController::class, 'convertForm'])->name('leads.convertForm');
     Route::post('/leads/{lead}/convert', [\App\Http\Controllers\leads\LeadController::class, 'convert'])->name('leads.convert');
+    Route::get('/leads/{lead}/timeline', [\App\Http\Controllers\leads\LeadController::class, 'timeline'])->name('leads.timeline');
+    Route::get('/leads/{lead}/resume', [\App\Http\Controllers\leads\LeadController::class, 'resume'])->name('leads.resume');
+    
+    // Lead Job History Routes
+    Route::post('/leads/{id}/job-history', [\App\Http\Controllers\leads\LeadController::class, 'storeJobHistory'])->name('leads.job-history.store');
+    Route::put('/leads/{leadId}/job-history/{jobHistoryId}', [\App\Http\Controllers\leads\LeadController::class, 'updateJobHistory'])->name('leads.job-history.update');
+    Route::delete('/leads/{leadId}/job-history/{jobHistoryId}', [\App\Http\Controllers\leads\LeadController::class, 'deleteJobHistory'])->name('leads.job-history.delete');
+    
+    // My Leads Routes (User's own leads)
+    Route::get('/my-leads', [\App\Http\Controllers\leads\MyLeadsController::class, 'index'])->name('my-leads.index');
+    Route::get('/my-leads/{lead}/timeline', [\App\Http\Controllers\leads\MyLeadsController::class, 'timeline'])->name('my-leads.timeline');
      
 
     // Demand Management Routes
@@ -153,6 +164,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('staff-sub', \App\Http\Controllers\staff\StaffSubController::class);
 
     // Staff Management Routes
+    Route::get('staff/export', [\App\Http\Controllers\staff\StaffController::class, 'export'])->name('staff.export');
     Route::resource('staff', \App\Http\Controllers\staff\StaffController::class);
 
     // Job Application Additional Routes (must come BEFORE resource routes)
@@ -171,6 +183,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('{job}/applicants/export', [\App\Http\Controllers\JobLeadController::class, 'export'])->name('job-applicants.export');
         Route::get('{job}/applicants', [\App\Http\Controllers\JobLeadController::class, 'jobApplicants'])->name('job-applicants');
         Route::get('search-available', [\App\Http\Controllers\JobLeadController::class, 'searchAvailableLeads'])->name('search-available');
+        Route::get('{jobLead}/timeline', [\App\Http\Controllers\JobLeadController::class, 'timeline'])->name('timeline');
         Route::delete('{jobLead}/cancel', [\App\Http\Controllers\JobLeadController::class, 'cancel'])->name('cancel');
         Route::patch('{jobLead}/force-unlock', [\App\Http\Controllers\JobLeadController::class, 'forceUnlock'])->name('force-unlock');
         Route::patch('bulk-update', [\App\Http\Controllers\JobLeadController::class, 'bulkUpdate'])->name('bulk-update');
@@ -183,6 +196,15 @@ Route::middleware(['auth'])->group(function () {
     // Job Dashboard
     Route::get('job-dashboard', [\App\Http\Controllers\JobDashboardController::class, 'index'])->name('job-dashboard');
     Route::get('job-dashboard/data', [\App\Http\Controllers\JobDashboardController::class, 'getData'])->name('job-dashboard.data');
+
+    // Job Lead Notifications
+    Route::prefix('notifications')->name('notifications.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\JobLeadNotificationController::class, 'index'])->name('index');
+        Route::get('/unread', [\App\Http\Controllers\JobLeadNotificationController::class, 'unread'])->name('unread');
+        Route::post('/{id}/read', [\App\Http\Controllers\JobLeadNotificationController::class, 'markAsRead'])->name('read');
+        Route::post('/{id}/respond', [\App\Http\Controllers\JobLeadNotificationController::class, 'respond'])->name('respond');
+        Route::get('/{id}', [\App\Http\Controllers\JobLeadNotificationController::class, 'show'])->name('show');
+    });
 
     // PDF Export Routes
     Route::prefix('pdf')->name('pdf.')->group(function () {

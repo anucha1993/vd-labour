@@ -404,7 +404,7 @@
                                               <th>ผู้แนะนำ</th>
                                             <th>สถานะ</th>
                                             <th>วันที่สมัคร</th>
-                                            <th width="80">จัดการ</th>
+                                            <th width="150">จัดการ</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -485,18 +485,32 @@
                                             <td><span class="badge bg-{{ $jobLead->status_badge_color }}">{{ $jobLead->job_lead_status }}</span></td>
                                             <td>{{ $jobLead->created_at->format('d/m/Y') }}</td>
                                             <td>
-                                                @can('job-lead-delete')
-                                                    @if(in_array($jobLead->job_lead_status, ['ร่าง', 'ส่งแล้ว']))
-                                                    <button type="button" class="btn btn-outline-danger btn-sm" 
-                                                            onclick="cancelApplication({{ $jobLead->job_lead_id }}, '{{ $jobLead->job_lead_number }}')"
-                                                            title="ยกเลิก">
-                                                        <i class="bi bi-x"></i>
-                                                    </button>
-                                                      @else
-                                                       <small>-</small>
-                                                    </button>
+                                                <div class="btn-group" role="group">
+                                                    @if($jobLead->lead)
+                                                    <a href="{{ route('leads.resume', $jobLead->lead->lead_id) }}" 
+                                                       class="btn btn-success btn-sm" 
+                                                       title="ดู Resume"
+                                                       target="_blank">
+                                                        <i class="bi bi-file-earmark-person"></i>
+                                                    </a>
+                                                    <a href="{{ route('pdf.cv.form', $jobLead->lead->lead_id) }}" 
+                                                       class="btn btn-info btn-sm" 
+                                                       title="ดู CV"
+                                                       target="_blank">
+                                                        <i class="bi bi-file-earmark-text"></i>
+                                                    </a>
                                                     @endif
-                                                @endcan
+                                                    
+                                                    @can('job-lead-delete')
+                                                        @if(in_array($jobLead->job_lead_status, ['ร่าง', 'ส่งแล้ว']))
+                                                        <button type="button" class="btn btn-outline-danger btn-sm" 
+                                                                onclick="cancelApplication({{ $jobLead->job_lead_id }}, '{{ $jobLead->job_lead_number }}')"
+                                                                title="ยกเลิก">
+                                                            <i class="bi bi-x"></i>
+                                                        </button>
+                                                        @endif
+                                                    @endcan
+                                                </div>
                                             </td>
                                         </tr>
                                         @endforeach
@@ -684,7 +698,22 @@ document.addEventListener('DOMContentLoaded', function() {
                                     })()}
                                     ${lead.already_applied ? '<div class="mt-2"><small class="text-warning"><i class="bi bi-info-circle-fill"></i> <strong>เตือน:</strong> เคยส่งใบสมัครงานนี้แล้ว</small></div>' : ''}
                                 </div>
-                                <div class="ms-2">
+                                <div class="ms-2 d-flex flex-column gap-1">
+                                    <!-- Resume & CV Buttons -->
+                                    <a href="/leads/resume/${lead.id}" 
+                                       class="btn btn-sm btn-success" 
+                                       title="ดู Resume"
+                                       target="_blank">
+                                        <i class="bi bi-file-earmark-person"></i>
+                                    </a>
+                                    <a href="/cv-form/${lead.id}" 
+                                       class="btn btn-sm btn-info" 
+                                       title="ดู CV"
+                                       target="_blank">
+                                        <i class="bi bi-file-earmark-text"></i>
+                                    </a>
+                                    
+                                    <!-- Select/Unselect Button -->
                                     ${!isDisabled && !isSelected ? `
                                         <button type="button" class="btn btn-sm btn-outline-success" onclick="selectLead(${lead.id})" 
                                                 title="คลิกเพื่อเลือกคนงานนี้">

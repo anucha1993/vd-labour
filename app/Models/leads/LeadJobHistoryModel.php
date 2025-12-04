@@ -22,6 +22,7 @@ class LeadJobHistoryModel extends Model
         'start_date',
         'end_date',
         'description',
+        'company_about',
         'display_order'
     ];
     

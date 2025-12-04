@@ -14,5 +14,12 @@ class staffModel extends Model
         'staff_name',
         'staff_nickname',
         'staff_status',
+        'user_id',
     ];
+    
+    // Relationship
+    public function user()
+    {
+        return $this->belongsTo(\App\Models\User::class, 'user_id', 'id');
+    }
 }

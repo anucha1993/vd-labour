@@ -226,8 +226,10 @@ class JobLeadController extends Controller
                 }
                 
                 // ตรวจสอบว่าเคยส่งใบสมัครงานนี้หรือไม่ (double check)
+                // แต่ถ้าสถานะเป็น "ถอน" หรือ "ปฏิเสธ" ให้สามารถสมัครใหม่ได้
                 $existingLead = JobLeadModel::where('job_id', $request->job_id)
                                           ->where('lead_id', $leadId)
+                                          ->whereNotIn('job_lead_status', ['ถอน', 'ปฏิเสธ'])
                                           ->first();
                 
                 if ($existingLead) {
@@ -235,15 +237,18 @@ class JobLeadController extends Controller
                     $leadName = $lead ? $lead->getFullNameAttribute() : "Lead ID: $leadId";
                     
                     $skippedCount++;
-                    $skippedLeads[] = $leadName . ' (เคยส่งใบสมัครงานนี้แล้ว)';
+                    $skippedLeads[] = $leadName . ' (มีใบสมัครงานนี้อยู่แล้ว สถานะ: ' . $existingLead->job_lead_status . ')';
                     continue;
                 }
                 
-                JobLeadModel::create([
+                $jobLead = JobLeadModel::create([
                     'job_id' => $request->job_id,
                     'lead_id' => $leadId,
                     'job_lead_status' => 'ร่าง',
                 ]);
+                
+                // บันทึก Activity Log
+                $jobLead->logCreation('สร้างใบสมัครงานใหม่');
                 
                 $createdCount++;
             }
@@ -295,6 +300,16 @@ class JobLeadController extends Controller
         $validator = Validator::make($request->all(), [
             'job_lead_status' => 'required|in:ร่าง,ส่งแล้ว,กำลังพิจารณา,นัดสัมภาษณ์,เสนองาน,ตอบรับ,ปฏิเสธ,ถอน',
             'remarks' => 'nullable|string',
+            'reason' => [
+                'nullable',
+                'string',
+                function ($attribute, $value, $fail) use ($request) {
+                    // ต้องระบุเหตุผลสำหรับสถานะ ปฏิเสธ และ ถอน
+                    if (in_array($request->job_lead_status, ['ปฏิเสธ', 'ถอน']) && empty($value)) {
+                        $fail('กรุณาระบุเหตุผลสำหรับการเปลี่ยนสถานะเป็น ' . $request->job_lead_status);
+                    }
+                },
+            ],
         ]);
 
         if ($validator->fails()) {
@@ -306,23 +321,33 @@ class JobLeadController extends Controller
             
             $oldStatus = $jobLead->job_lead_status;
             $newStatus = $request->job_lead_status;
+            $oldRemarks = $jobLead->remarks; // เก็บ remarks เก่าไว้
+            
+            // บันทึก Activity Log เมื่อมีการเปลี่ยนสถานะ (บันทึกเฉพาะ reason ไม่เอา remarks เก่าที่สะสมมา)
+            if ($oldStatus !== $newStatus) {
+                $jobLead->logStatusChange(
+                    oldStatus: $oldStatus,
+                    newStatus: $newStatus,
+                    reason: $request->reason,
+                    remarks: null // ไม่เก็บ remarks เพราะมันเป็นประวัติเก่าสะสม
+                );
+            }
+            
+            // อัปเดต remarks ให้เพิ่มประวัติ
+            $newRemarksText = $request->remarks ?? $oldRemarks; // ใช้ remarks ที่ส่งมา หรือเก็บของเก่าไว้
+            if ($oldStatus !== $newStatus) {
+                $newRemarksText .= "\n[" . now()->format('d/m/Y H:i') . "] เปลี่ยนจาก '{$oldStatus}' เป็น '{$newStatus}' โดย " . auth()->user()->name;
+            }
             
             // อัปเดตข้อมูล
             $jobLead->update([
                 'job_lead_status' => $newStatus,
-                'remarks' => $request->remarks,
+                'remarks' => $newRemarksText,
             ]);
-            
-            // บันทึกประวัติการเปลี่ยนสถานะ
-            if ($oldStatus !== $newStatus) {
-                $jobLead->update([
-                    'remarks' => $jobLead->remarks . "\n[" . now()->format('d/m/Y H:i') . "] เปลี่ยนจาก '{$oldStatus}' เป็น '{$newStatus}' โดย " . auth()->user()->name
-                ]);
-            }
             
             DB::commit();
             
-            return redirect()->route('job-leads.index')
+            return redirect()->route('job-leads.job-applicants', ['job' => $jobLead->job_id])
                            ->with('success', 'อัปเดตสถานะใบสมัครสำเร็จ');
                            
         } catch (\Exception $e) {
@@ -340,6 +365,9 @@ class JobLeadController extends Controller
             DB::beginTransaction();
             
             $jobLead = JobLeadModel::findOrFail($id);
+            
+            // บันทึก Activity Log ก่อนลบ
+            $jobLead->logDeletion('ลบใบสมัครโดย ' . auth()->user()->name);
             
             // ปลดล็อคคนงานก่อนลบ
             if ($jobLead->is_locked) {
@@ -391,6 +419,16 @@ class JobLeadController extends Controller
             'job_lead_ids.*' => 'exists:job_leads,job_lead_id',
             'new_status' => 'required|in:ร่าง,ส่งแล้ว,กำลังพิจารณา,นัดสัมภาษณ์,เสนองาน,ตอบรับ,ปฏิเสธ,ถอน',
             'remarks' => 'nullable|string',
+            'reason' => [
+                'nullable',
+                'string',
+                function ($attribute, $value, $fail) use ($request) {
+                    // ต้องระบุเหตุผลสำหรับสถานะ ปฏิเสธ และ ถอน
+                    if (in_array($request->new_status, ['ปฏิเสธ', 'ถอน']) && empty($value)) {
+                        $fail('กรุณาระบุเหตุผลสำหรับการเปลี่ยนสถานะเป็น ' . $request->new_status);
+                    }
+                },
+            ],
         ]);
 
         if ($validator->fails()) {
@@ -403,16 +441,34 @@ class JobLeadController extends Controller
             $updatedCount = 0;
             $newStatus = $request->new_status;
             $remarks = $request->remarks;
+            $reason = $request->reason;
             
             foreach ($request->job_lead_ids as $jobLeadId) {
                 $jobLead = JobLeadModel::find($jobLeadId);
                 if ($jobLead) {
                     $oldStatus = $jobLead->job_lead_status;
                     
+                    // สร้างข้อความหมายเหตุ
+                    $remarkText = "\n[" . now()->format('d/m/Y H:i') . "] Bulk update จาก '{$oldStatus}' เป็น '{$newStatus}' โดย " . auth()->user()->name;
+                    if ($reason) {
+                        $remarkText .= " - เหตุผล: {$reason}";
+                    }
+                    if ($remarks) {
+                        $remarkText .= " - หมายเหตุ: {$remarks}";
+                    }
+                    
                     $jobLead->update([
                         'job_lead_status' => $newStatus,
-                        'remarks' => $jobLead->remarks . "\n[" . now()->format('d/m/Y H:i') . "] Bulk update จาก '{$oldStatus}' เป็น '{$newStatus}' โดย " . auth()->user()->name . ($remarks ? " - {$remarks}" : "")
+                        'remarks' => $jobLead->remarks . $remarkText
                     ]);
+                    
+                    // บันทึก Activity Log
+                    $jobLead->logBulkUpdate(
+                        oldStatus: $oldStatus,
+                        newStatus: $newStatus,
+                        reason: $reason,
+                        remarks: $remarks
+                    );
                     
                     $updatedCount++;
                 }
@@ -510,12 +566,14 @@ class JobLeadController extends Controller
 
     /**
      * Check if lead already applied to specific job
+     * ตรวจสอบเฉพาะสถานะที่ยังใช้งานอยู่ (ไม่รวม "ถอน" และ "ปฏิเสธ")
      */
     private function checkAlreadyApplied($jobId, $leadId)
     {
         try {
             return JobLeadModel::where('job_id', $jobId)
                               ->where('lead_id', $leadId)
+                              ->whereNotIn('job_lead_status', ['ถอน', 'ปฏิเสธ'])
                               ->exists();
         } catch (\Exception $e) {
             // ถ้า table ยังไม่มี return false
@@ -558,6 +616,45 @@ class JobLeadController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json(['error' => 'เกิดข้อผิดพลาด: ' . $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Get timeline of job lead activities
+     */
+    public function timeline($jobLead)
+    {
+        try {
+            // Support both ID and model binding
+            if (!$jobLead instanceof JobLeadModel) {
+                $jobLead = JobLeadModel::findOrFail($jobLead);
+            }
+            
+            // Load relationships
+            $jobLead->load(['activities.user', 'lead']);
+            
+            $activities = $jobLead->activities;
+            
+            // ใช้ view โดยตรงแทน component
+            $html = view('job-leads.partials.timeline', [
+                'activities' => $activities,
+                'jobLead' => $jobLead
+            ])->render();
+            
+            return response()->json([
+                'success' => true,
+                'html' => $html,
+                'count' => $activities->count()
+            ]);
+                           
+        } catch (\Exception $e) {
+            \Log::error('Timeline Error: ' . $e->getMessage());
+            \Log::error($e->getTraceAsString());
+            
+            return response()->json([
+                'success' => false,
+                'error' => 'เกิดข้อผิดพลาด: ' . $e->getMessage()
+            ], 500);
         }
     }
 

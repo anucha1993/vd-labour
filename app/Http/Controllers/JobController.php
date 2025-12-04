@@ -92,7 +92,7 @@ class JobController extends Controller
         $validator = Validator::make($request->all(), [
             'job_name' => 'required|string|max:255',
             'country_id' => 'required|exists:country,country_id',
-            'customer_id' => 'required|exists:customer,customer_id',
+            'customer_id' => 'required|exists:customers,customer_id',
             'dm_id' => 'required|exists:demands,dm_id',
             'job_group_id' => 'nullable|exists:job_group,job_group_id',
             'position_id' => 'nullable|exists:position,position_id',
@@ -118,7 +118,7 @@ class JobController extends Controller
             DB::beginTransaction();
             
             $jobData = $request->only([
-                'job_name','country_id','dm_id','job_group_id','position_id',
+                'job_name','country_id','customer_id','dm_id','job_group_id','position_id',
                 'job_total','job_start_date','job_end_date','job_status'
             ]);
             $job = JobModel::create($jobData);

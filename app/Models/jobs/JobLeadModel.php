@@ -6,11 +6,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use App\Models\country\countryModel;
+use App\Traits\LogsJobLeadActivity;
 use Carbon\Carbon;
 
 class JobLeadModel extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsJobLeadActivity;
     
     protected $table = 'job_leads';
     protected $primaryKey = 'job_lead_id';
@@ -80,6 +81,12 @@ class JobLeadModel extends Model
         return $this->belongsTo(\App\Models\labours\labourModel::class, 'labour_id', 'labour_id');
     }
     
+    public function activities()
+    {
+        return $this->hasMany(\App\Models\jobs\JobLeadActivityModel::class, 'job_lead_id', 'job_lead_id')
+                    ->orderBy('created_at', 'desc');
+    }
+    
     // Scopes
     public function scopeByStatus($query, $status)
     {
@@ -99,6 +106,15 @@ class JobLeadModel extends Model
     public function scopeByJob($query, $jobId)
     {
         return $query->where('job_id', $jobId);
+    }
+    
+    public function scopePendingConversion($query)
+    {
+        return $query->where('job_lead_status', 'ตอบรับ')
+                    ->where(function($q) {
+                        $q->whereNull('convert_status')
+                          ->orWhere('convert_status', '!=', 'converted');
+                    });
     }
     
     // Accessors & Mutators
@@ -193,11 +209,12 @@ class JobLeadModel extends Model
                 $query->where('job_id', '!=', $excludeJobId);
             }
             
-            // ตรวจสอบว่า lead นี้มีใบสมัครอยู่หรือไม่ (ไม่ว่าจะเป็นสถานะอะไร)
-            // เพราะหลักการคือ 1 lead ต้องมีได้แค่ 1 ใบสมัครเท่านั้น
-            $hasAnyApplication = $query->exists();
+            // ตรวจสอบว่า lead นี้มีใบสมัครที่ยัง "ใช้งานอยู่" หรือไม่
+            // สถานะ "ถอน" และ "ปฏิเสธ" ถือว่าปิดแล้ว สามารถสมัครใหม่ได้
+            $hasActiveApplication = $query->whereNotIn('job_lead_status', ['ถอน', 'ปฏิเสธ'])
+                                         ->exists();
             
-            return !$hasAnyApplication;
+            return !$hasActiveApplication;
             
         } catch (\Exception $e) {
             // ถ้า table ยังไม่มี ให้ return true (อนุญาตให้เลือกได้)

@@ -34,7 +34,7 @@ class LeadModel extends Model
         'lead_skills', 'country_id', 'job_group_id', 'lead_status', 'lead_note',
         'staff_id', 'lead_photo', 'labour_id', 'converted_at',
         'examination_round_id', 'lead_date_location', 'lead_recommender_staff_sub_id',
-        'documents', 'license_number'
+        'documents', 'license_number', 'created_by', 'updated_by'
     ];
     
     protected $casts = [
@@ -96,6 +96,16 @@ class LeadModel extends Model
     public function recommenderStaff()
     {
         return $this->belongsTo(\App\Models\staff\staffSubModel::class, 'lead_recommender_staff_sub_id', 'staff_sub_id');
+    }
+    
+    public function createdBy()
+    {
+        return $this->belongsTo(\App\Models\User::class, 'created_by', 'id');
+    }
+    
+    public function updatedBy()
+    {
+        return $this->belongsTo(\App\Models\User::class, 'updated_by', 'id');
     }
     
     public function jobLeads()

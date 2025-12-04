@@ -151,7 +151,9 @@
 <!-- Sidebar -->
 <div class="sidebar p-4" style="width:250px;">
   <h4 class="mb-4">📘 VD-LABOURS</h4>
-
+ <a href="{{ route('my-leads.index') }}"
+     class="{{ Request::routeIs('my-leads.*') ? 'active' : '' }}">
+     <i class="bi bi-people-fill me-2"></i> ผู้สมัครของเรา</a>
   <a href="{{ route('dashboards.index') }}"
      class="{{ Request::routeIs('dashboards.index') ? 'active' : '' }}">
      <i class="bi bi-house-fill me-2"></i> Dashboard</a>
@@ -161,8 +163,10 @@
      <i class="bi bi-person-badge-fill me-2"></i> ข้อมูลคนงาน</a>
 
   <a href="{{ route('leads.index') }}"
-     class="{{ Request::routeIs('leads.*') ? 'active' : '' }}">
+     class="{{ Request::routeIs('leads.*') && !Request::routeIs('my-leads.*') ? 'active' : '' }}">
      <i class="bi bi-person-plus-fill me-2"></i> ข้อมูลผู้สมัคร</a>
+
+ 
 
   @can('view demand')
   <a href="{{ route('demands.index') }}"
@@ -199,7 +203,11 @@
       @can('job-lead-convert')
       <a href="{{ route('job-leads.conversion.index') }}"
          class="{{ Request::routeIs('job-leads.conversion.*') ? 'active' : '' }}">
-         <i class="bi bi-arrow-repeat me-2"></i>รอ Convert</a>
+         <i class="bi bi-arrow-repeat me-2"></i>รอ Convert 
+         @if(isset($pendingConversionCount) && $pendingConversionCount > 0)
+         <span class="badge bg-danger rounded-pill">{{ number_format($pendingConversionCount) }}</span>
+         @endif
+      </a>
       @endcan
     </div>
   </div>

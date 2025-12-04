@@ -4,14 +4,17 @@ namespace App\Http\Controllers\dashboards;
 
 use App\Http\Controllers\Controller;
 use App\Models\labours\labourModel;
+use App\Services\JobLeadNotificationService;
 use Illuminate\Http\Request;
 
 class dashboardController extends Controller
 {
-    //
-    public function __construct()
+    protected $notificationService;
+
+    public function __construct(JobLeadNotificationService $notificationService)
     {
         $this->middleware('auth');
+        $this->notificationService = $notificationService;
     }
 
     public function index()
@@ -33,7 +36,9 @@ class dashboardController extends Controller
         $countAll = labourModel::query()->CountAll()->count();
         $countSuccess = labourModel::query()->CountSuccess()->count();
 
+        // Job Lead Notifications
+        $jobLeadNotifications = $this->notificationService->getUnreadCount();
 
-        return view('dashboards.index', compact( 'countCancel', 'countAll','scopeExpiringCidMoney', 'countSuccess','scopeExpiringPassport','scopeExpiringDiseaseConstruct','scopeExpiringDiseaseFactory','scopeExpiringCIDConstruct','scopeExpiringCIDFactory','scopeExpiringAffidavit', 'visaNotUpdate', 'visaApproved', 'visaRejected'));
+        return view('dashboards.index', compact( 'countCancel', 'countAll','scopeExpiringCidMoney', 'countSuccess','scopeExpiringPassport','scopeExpiringDiseaseConstruct','scopeExpiringDiseaseFactory','scopeExpiringCIDConstruct','scopeExpiringCIDFactory','scopeExpiringAffidavit', 'visaNotUpdate', 'visaApproved', 'visaRejected', 'jobLeadNotifications'));
     }
 }

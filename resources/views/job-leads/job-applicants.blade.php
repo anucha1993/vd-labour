@@ -148,22 +148,29 @@
                                 @csrf
                                 @method('PATCH')
                                 <div class="row align-items-end">
-                                    <div class="col-md-3">
+                                    <div class="col-md-2">
                                         <label class="form-label small">สถานะใหม่:</label>
-                                        <select name="new_status" class="form-select" required>
+                                        <select name="new_status" class="form-select" id="bulkStatusSelect" required>
                                             <option value="">-- เลือกสถานะ --</option>
                                             @foreach(['ร่าง', 'ส่งแล้ว', 'กำลังพิจารณา', 'นัดสัมภาษณ์', 'เสนองาน', 'ตอบรับ', 'ปฏิเสธ', 'ถอน'] as $status)
                                                 <option value="{{ $status }}">{{ $status }}</option>
                                             @endforeach
                                         </select>
                                     </div>
-                                    <div class="col-md-4">
-                                        <label class="form-label small">หมายเหตุ (ถ้ามี):</label>
-                                        <input type="text" name="remarks" class="form-control" placeholder="เหตุผลในการเปลี่ยนสถานะ">
+                                    <div class="col-md-3" id="bulkReasonField" style="display: none;">
+                                        <label class="form-label small text-danger">
+                                            เหตุผล <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="text" name="reason" id="bulkReason" class="form-control" 
+                                               placeholder="ระบุเหตุผลสำหรับ ปฏิเสธ/ถอน">
                                     </div>
                                     <div class="col-md-3">
+                                        <label class="form-label small">หมายเหตุเพิ่มเติม:</label>
+                                        <input type="text" name="remarks" class="form-control" placeholder="หมายเหตุ (ถ้ามี)">
+                                    </div>
+                                    <div class="col-md-2">
                                         <button type="submit" class="btn btn-warning" id="massUpdateBtn" disabled>
-                                            <i class="bi bi-lightning"></i> อัปเดตที่เลือก (<span id="selectedCount">0</span>)
+                                            <i class="bi bi-lightning"></i> อัปเดต (<span id="selectedCount">0</span>)
                                         </button>
                                     </div>
                                     <div class="col-md-2">
@@ -308,23 +315,54 @@
                                     </td>
 
                                     <td>
-                                        @can('job-lead-edit')
-                                        <a href="{{ route('job-leads.edit', $jobLead->job_lead_id) }}" 
-                                           class="btn btn-sm btn-outline-primary" title="แก้ไข">
-                                            <i class="bi bi-pencil"></i>
-                                        </a>
-                                        @endcan
-                                        
-                                        @can('job-lead-delete')
-                                            @if(in_array($jobLead->job_lead_status, ['ร่าง', 'ส่งแล้ว']))
-                                            <button type="button" class="btn btn-sm btn-outline-danger" 
-                                                    onclick="cancelApplication({{ $jobLead->job_lead_id }}, '{{ $jobLead->job_lead_number }}')"
-                                                    title="ยกเลิกใบสมัคร">
-                                                <i class="bi bi-x-circle"></i>
-                                            </button>
-                                           
-                                            @endif
-                                        @endcan
+                                        <div class="btn-group-vertical" role="group">
+                                            <!-- Resume & CV Buttons -->
+                                            <div class="btn-group mb-1" role="group">
+                                                @if($jobLead->lead)
+                                                <a href="{{ route('leads.resume', $jobLead->lead->lead_id) }}" 
+                                                   class="btn btn-sm btn-success me-1" 
+                                                   title="ดู Resume"
+                                                   target="_blank">
+                                                    <i class="bi bi-file-earmark-person"></i> Resume
+                                                </a>
+                                                <a href="{{ route('pdf.cv.form', $jobLead->lead->lead_id) }}" 
+                                                   class="btn btn-sm btn-info me-1" 
+                                                   title="ดู CV Form"
+                                                   target="_blank">
+                                                    <i class="bi bi-file-earmark-text"></i> CV
+                                                </a>
+                                                @endif
+                                            </div>
+
+                                            
+                                            <!-- Action Buttons -->
+                                            <div class="btn-group" role="group">
+                                                <button type="button" class="btn btn-sm btn-outline-info me-1" 
+                                                        onclick="showTimeline({{ $jobLead->job_lead_id }}, '{{ $jobLead->lead->getFullNameAttribute() }}')"
+                                                        title="ดูประวัติการดำเนินการ">
+                                                    <i class="bi bi-clock-history"></i>
+                                                </button>
+                                                
+                                                @can('job-lead-edit')
+                                                <a href="{{ route('job-leads.edit', $jobLead->job_lead_id) }}" 
+                                                   class="btn btn-sm btn-outline-primary me-1" title="แก้ไข">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                                @endcan
+
+                                                
+                                                @can('job-lead-delete')
+                                                    @if(in_array($jobLead->job_lead_status, ['ร่าง', 'ส่งแล้ว']))
+                                                    <button type="button" class="btn btn-sm btn-outline-danger" 
+                                                            onclick="cancelApplication({{ $jobLead->job_lead_id }}, '{{ $jobLead->job_lead_number }}')"
+                                                            title="ยกเลิกใบสมัคร">
+                                                        <i class="bi bi-x-circle"></i>
+                                                    </button>
+                                                   
+                                                    @endif
+                                                @endcan
+                                            </div>
+                                        </div>
                                     </td>
                                 </tr>
                                 @endforeach
@@ -524,7 +562,9 @@
                 </div>
                 @endif
 
+
                 @if($job->demand->dm_sa)
+
                 <div class="mb-3">
                     <label class="text-muted small">เงินเดือน/สวัสดิการ</label>
                     <div class="border rounded p-3 bg-success bg-opacity-10">
@@ -532,7 +572,8 @@
                             {!! nl2br(e($job->demand->dm_sa)) !!}
                         </div>
                     </div>
-                </div>
+                </div> 
+
                 @endif
 
                 @if($job->demand->dm_time_work)
@@ -622,6 +663,27 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
+    // Bulk status select - toggle reason field
+    const bulkStatusSelect = document.getElementById('bulkStatusSelect');
+    const bulkReasonField = document.getElementById('bulkReasonField');
+    const bulkReason = document.getElementById('bulkReason');
+    
+    if (bulkStatusSelect) {
+        bulkStatusSelect.addEventListener('change', function() {
+            const selectedStatus = this.value;
+            const requiresReason = ['ปฏิเสธ', 'ถอน'].includes(selectedStatus);
+            
+            if (requiresReason) {
+                bulkReasonField.style.display = 'block';
+                bulkReason.required = true;
+            } else {
+                bulkReasonField.style.display = 'none';
+                bulkReason.required = false;
+                bulkReason.value = '';
+            }
+        });
+    }
+    
     // Mass update form submission
     const massUpdateForm = document.getElementById('massUpdateForm');
     if (massUpdateForm) {
@@ -637,6 +699,15 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!newStatus) {
                 e.preventDefault();
                 alert('กรุณาเลือกสถานะใหม่');
+                return;
+            }
+            
+            // Check if reason is required and provided
+            const requiresReason = ['ปฏิเสธ', 'ถอน'].includes(newStatus);
+            const reason = bulkReason.value.trim();
+            if (requiresReason && !reason) {
+                e.preventDefault();
+                alert(`กรุณาระบุเหตุผลสำหรับการเปลี่ยนสถานะเป็น "${newStatus}"`);
                 return;
             }
             
@@ -669,9 +740,67 @@ function cancelApplication(jobLeadId, jobLeadNumber) {
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('เกิดข้อผิดพลาดในการยกเลิกใบสมัคร');
+            alert('เกิดข้อผิดพลาด: ' + error.message);
         });
     }
+} //
+
+// Show timeline function
+function showTimeline(jobLeadId, applicantName) {
+    const modal = new bootstrap.Modal(document.getElementById('timelineModal'));
+    const modalTitle = document.getElementById('timelineModalLabel');
+    const modalBody = document.getElementById('timelineModalBody');
+    
+    modalTitle.textContent = `ประวัติการดำเนินการ - ${applicantName}`;
+    modalBody.innerHTML = '<div class="text-center py-5"><div class="spinner-border" role="status"></div><p class="mt-2">กำลังโหลดข้อมูล...</p></div>';
+    
+    modal.show();
+    
+    // Fetch timeline data
+    fetch(`{{ url('job-leads') }}/${jobLeadId}/timeline`, {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            modalBody.innerHTML = data.html;
+        } else {
+            modalBody.innerHTML = '<div class="alert alert-danger">ไม่สามารถโหลดข้อมูลได้</div>';
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        modalBody.innerHTML = '<div class="alert alert-danger">เกิดข้อผิดพลาด: ' + error.message + '</div>';
+    });
 }
 </script>
+
+<!-- Timeline Modal -->
+<div class="modal fade" id="timelineModal" tabindex="-1" aria-labelledby="timelineModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title" id="timelineModalLabel">
+                    <i class="bi bi-clock-history"></i> ประวัติการดำเนินการ
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="timelineModalBody">
+                <div class="text-center py-5">
+                    <div class="spinner-border" role="status"></div>
+                    <p class="mt-2">กำลังโหลดข้อมูล...</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection

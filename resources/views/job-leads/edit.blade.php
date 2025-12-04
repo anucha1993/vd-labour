@@ -141,12 +141,28 @@
                         </div>
 
                         <div class="row">
+                            <!-- Reason field - shown when status is ปฏิเสธ or ถอน -->
+                            <div class="col-md-12" id="reasonField" style="display: none;">
+                                <div class="mb-3">
+                                    <label for="reason" class="form-label">
+                                        เหตุผล <span class="text-danger">*</span>
+                                        <small class="text-muted">(จำเป็นสำหรับสถานะ ปฏิเสธ และ ถอน)</small>
+                                    </label>
+                                    <textarea class="form-control @error('reason') is-invalid @enderror" 
+                                              id="reason" name="reason" rows="3"
+                                              placeholder="กรุณาระบุเหตุผลในการเปลี่ยนเป็นสถานะ ปฏิเสธ หรือ ถอน...">{{ old('reason') }}</textarea>
+                                    @error('reason')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                            
                             <div class="col-md-12">
                                 <div class="mb-3">
-                                    <label for="remarks" class="form-label">หมายเหตุ/เหตุผล</label>
+                                    <label for="remarks" class="form-label">หมายเหตุเพิ่มเติม</label>
                                     <textarea class="form-control @error('remarks') is-invalid @enderror" 
-                                              id="remarks" name="remarks" rows="4"
-                                              placeholder="บันทึกหมายเหตุเพิ่มเติม หรือเหตุผลการเปลี่ยนสถานะ...">{{ old('remarks', $jobLead->remarks) }}</textarea>
+                                              id="remarks" name="remarks" rows="3"
+                                              placeholder="บันทึกหมายเหตุเพิ่มเติม (ถ้ามี)...">{{ old('remarks', $jobLead->remarks) }}</textarea>
                                     @error('remarks')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -256,11 +272,34 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const statusSelect = document.getElementById('job_lead_status');
+    const reasonField = document.getElementById('reasonField');
+    const reasonTextarea = document.getElementById('reason');
+    
+    // Function to toggle reason field
+    function toggleReasonField() {
+        const selectedStatus = statusSelect.value;
+        const requiresReason = ['ปฏิเสธ', 'ถอน'].includes(selectedStatus);
+        
+        if (requiresReason) {
+            reasonField.style.display = 'block';
+            reasonTextarea.required = true;
+        } else {
+            reasonField.style.display = 'none';
+            reasonTextarea.required = false;
+            reasonTextarea.value = '';
+        }
+    }
+    
+    // Show reason field on page load if status is ปฏิเสธ or ถอน
+    toggleReasonField();
     
     // Show status change warning
     statusSelect.addEventListener('change', function() {
         const currentStatus = '{{ $jobLead->job_lead_status }}';
         const newStatus = this.value;
+        
+        // Toggle reason field
+        toggleReasonField();
         
         if (currentStatus !== newStatus) {
             const lockedStatuses = ['ส่งแล้ว', 'กำลังพิจารณา', 'นัดสัมภาษณ์', 'เสนองาน', 'ตอบรับ'];

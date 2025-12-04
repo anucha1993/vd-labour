@@ -22,6 +22,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Register JobLeadObserver
+        \App\Models\jobs\JobLeadModel::observe(\App\Observers\JobLeadObserver::class);
+        
         \Illuminate\Support\Facades\View::composer('*', function ($view) {
             // ตัวอย่าง: เรียกใช้ helper ที่มี logic จริง (แก้ path ตามจริง)
             if (!function_exists('getExpiringDiseaseConstruct')) {
@@ -38,6 +41,7 @@ class AppServiceProvider extends ServiceProvider
                 'visaNotUpdate' => getVisaNotUpdate(),
                 'visaApproved' => getVisaApproved(),
                 'visaRejected' => getVisaRejected(),
+                'pendingConversionCount' => \App\Models\jobs\JobLeadModel::pendingConversion()->count(),
             ]);
         });
     }

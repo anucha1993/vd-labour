@@ -6,9 +6,14 @@
         <h4 class="mb-0">
             <i class="bi bi-person-workspace me-2 text-primary"></i>จัดการรายชื่อสรรหา (Staff)
         </h4>
-        <a href="{{ route('staff.create') }}" class="btn btn-primary">
-            <i class="bi bi-plus-circle"></i> เพิ่มเจ้าหน้าที่
-        </a>
+        <div class="d-flex gap-2">
+            <a href="{{ route('staff.export') }}" class="btn btn-success">
+                <i class="bi bi-file-earmark-excel"></i> Export Excel
+            </a>
+            <a href="{{ route('staff.create') }}" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> เพิ่มเจ้าหน้าที่
+            </a>
+        </div>
     </div>
 
     @if(session('success'))
@@ -71,6 +76,7 @@
                                 <th style="width: 80px;">#</th>
                                 <th>ชื่อเจ้าหน้าที่</th>
                                 <th>ชื่อเล่น</th>
+                                <th>User (บัญชีผู้ใช้)</th>
                                 <th style="width: 100px;">สถานะ</th>
                                 <th style="width: 100px;">จำนวน Lead</th>
                                 <th style="width: 150px;">การจัดการ</th>
@@ -96,6 +102,20 @@
                                             <span class="badge bg-light text-dark">{{ $staff->staff_nickname }}</span>
                                         @else
                                             <span class="text-muted">-</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if($staff->user)
+                                            <div>
+                                                <i class="bi bi-person-check-fill text-success me-1"></i>
+                                                <strong>{{ $staff->user->name }}</strong>
+                                                <br>
+                                                <small class="text-muted">{{ $staff->user->email }}</small>
+                                            </div>
+                                        @else
+                                            <span class="text-muted">
+                                                <i class="bi bi-person-x me-1"></i>ไม่ได้เชื่อมโยง
+                                            </span>
                                         @endif
                                     </td>
                                     <td>
@@ -143,7 +163,8 @@
 
                 <!-- Pagination -->
                 <div class="d-flex justify-content-center mt-4">
-                    {{ $staffs->withQueryString()->links() }}
+   
+                      {!! $staffs->withQueryString()->links('pagination::bootstrap-5') !!}
                 </div>
             @else
                 <div class="text-center py-5">

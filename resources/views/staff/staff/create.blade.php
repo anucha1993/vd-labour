@@ -71,6 +71,24 @@
                             </div>
                         </div>
 
+                        <div class="mb-3">
+                            <label class="form-label">
+                                <i class="bi bi-person-check me-1"></i>เชื่อมโยงกับ User (บัญชีผู้ใช้)
+                            </label>
+                            <select class="form-select @error('user_id') is-invalid @enderror" name="user_id">
+                                <option value="">-- ไม่เชื่อมโยง --</option>
+                                @foreach($users as $user)
+                                    <option value="{{ $user->id }}" {{ old('user_id') == $user->id ? 'selected' : '' }}>
+                                        {{ $user->name }} ({{ $user->email }})
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('user_id')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <small class="text-muted">เลือก User เพื่อให้สามารถเข้าสู่ระบบได้</small>
+                        </div>
+
                         <div class="mb-4">
                             <label class="form-label">
                                 สถานะ <span class="text-danger">*</span>

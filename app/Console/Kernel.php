@@ -12,7 +12,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
+        // ตรวจสอบการแจ้งเตือนใบสมัครงานทุกวันเวลา 09:00
+        $schedule->command('joblead:check-notifications')->dailyAt('09:00');
     }
 
     /**

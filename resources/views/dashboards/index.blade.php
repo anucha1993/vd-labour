@@ -233,7 +233,21 @@
             </a>
         </div>
 
-         <div class="row mb-4">
+        <!-- Job Lead Notification -->
+        <div class="col-12 col-sm-6 col-md-3">
+            <a href="{{ route('notifications.index') }}" class="text-decoration-none">
+                <div class="alert-card">
+                    <span class="alert-icon bg-purple"><i class="mdi mdi-briefcase-alert"></i></span>
+                    <span class="alert-badge" style="background:#9c27b0;">ใบสมัครงาน</span>
+                    <div class="alert-label">แจ้งเตือนใบสมัครงาน</div>
+                    <div class="alert-value">{{ number_format($jobLeadNotifications) }}</div>
+                    <div class="alert-desc">ต้องติดตาม/ตอบกลับ</div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <div class="row mb-4">
         <div class="col-12 col-lg-10">
             <div class="card shadow-sm p-4">
                 <h5 class="mb-3">เปรียบเทียบจำนวนแจ้งเตือนแต่ละประเภทกับจำนวนคนงานทั้งหมด</h5>

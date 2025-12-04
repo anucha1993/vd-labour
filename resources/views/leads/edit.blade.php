@@ -799,6 +799,21 @@
                             </div>
                         </div>
 
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-12">
+                                <label class="form-label">About The Company (เกี่ยวกับบริษัท)
+                                    <button type="button" class="btn btn-outline-info btn-sm ms-2" onclick="translateJobField('modal_company_about')" title="แปลจากไทยเป็นอังกฤษ">
+                                        <i class="bi bi-translate"></i>
+                                    </button>
+                                </label>
+                                <textarea class="form-control" id="modal_company_about" rows="3" 
+                                          placeholder="เล่าสั้น ๆ เกี่ยวกับบริษัท ธรรมชาติของงาน สินค้า/บริการ เป็นต้น"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Hidden inputs for job history form submission -->
+                        <div id="jobHistoryInputs"></div>
+
                         <div class="alert alert-danger d-none" id="modalOverlapError">
                             <i class="bi bi-exclamation-triangle-fill me-2"></i>
                             <strong>คำเตือน:</strong> ช่วงเวลาทำงานซ้ำซ้อนกับประวัติที่มีอยู่แล้ว
@@ -962,11 +977,14 @@
         let jobHistoryData = @json($lead->jobHistory->toArray());
         let editingJobHistoryIndex = -1;
 
-        // แสดง job history ที่มีอยู่แล้วเมื่อโหลดหน้า
-        document.addEventListener('DOMContentLoaded', function() {
-            // แปลงข้อมูลจาก Laravel model เป็นรูปแบบที่ JavaScript ใช้
+        // Debug: Log job history data
+        console.log('Job History Data:', jobHistoryData);
+
+        // Initialize job history data transformation immediately
+        if (jobHistoryData && jobHistoryData.length > 0) {
             jobHistoryData = jobHistoryData.map(function(history) {
                 return {
+                    job_history_id: history.job_history_id,
                     start_date: history.start_date,
                     end_date: history.end_date,
                     position: history.position,
@@ -975,14 +993,36 @@
                     country: history.country,
                     experience_years: history.experience_years,
                     description: history.description,
+                    company_about: history.company_about || '',
                     display_order: history.display_order
                 };
             });
             
+            console.log('Transformed Job History Data:', jobHistoryData);
+        }
+
+        // แสดง job history ที่มีอยู่แล้วเมื่อโหลดหน้า
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOMContentLoaded - Job History Count:', jobHistoryData.length);
+            console.log('DOMContentLoaded - Table exists:', !!document.getElementById('jobHistoryTable'));
+            console.log('DOMContentLoaded - TableBody exists:', !!document.getElementById('jobHistoryTableBody'));
+            
             if (jobHistoryData.length > 0) {
+                console.log('Calling updateJobHistoryTable from DOMContentLoaded');
                 updateJobHistoryTable();
             }
         });
+
+        // Also try to show table immediately if DOM is already ready
+        if (document.readyState === 'loading') {
+            // Document is still loading, will handle in DOMContentLoaded
+        } else {
+            // Document already loaded
+            if (jobHistoryData.length > 0) {
+                console.log('Calling updateJobHistoryTable immediately (DOM ready)');
+                setTimeout(() => updateJobHistoryTable(), 100);
+            }
+        }
 
         // เปิด modal สำหรับเพิ่มประวัติใหม่
         document.getElementById('jobHistoryModal').addEventListener('show.bs.modal', function (e) {
@@ -995,7 +1035,7 @@
         });
 
         // บันทึกข้อมูล job history
-        document.getElementById('saveJobHistory').addEventListener('click', function() {
+        document.getElementById('saveJobHistory').addEventListener('click', async function() {
             if (validateModalForm()) {
                 const formData = {
                     start_date: document.getElementById('modal_start_date').value,
@@ -1005,7 +1045,8 @@
                     experience_years: document.getElementById('modal_experience_years').value,
                     company_type: document.getElementById('modal_company_type').value,
                     company_name: document.getElementById('modal_company_name').value,
-                    description: document.getElementById('modal_description').value
+                    description: document.getElementById('modal_description').value,
+                    company_about: document.getElementById('modal_company_about').value
                 };
 
                 // ตรวจสอบการซ้ำซ้อนก่อนบันทึก
@@ -1016,17 +1057,56 @@
                     document.getElementById('modalOverlapError').classList.add('d-none');
                 }
 
-                if (editingJobHistoryIndex === -1) {
-                    // เพิ่มใหม่
-                    jobHistoryData.push(formData);
-                } else {
-                    // แก้ไข
-                    jobHistoryData[editingJobHistoryIndex] = formData;
-                    editingJobHistoryIndex = -1;
-                }
+                // Disable button while saving
+                const saveButton = document.getElementById('saveJobHistory');
+                const originalText = saveButton.innerHTML;
+                saveButton.disabled = true;
+                saveButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>กำลังบันทึก...';
 
-                updateJobHistoryTable();
-                bootstrap.Modal.getInstance(document.getElementById('jobHistoryModal')).hide();
+                try {
+                    let response;
+                    if (editingJobHistoryIndex === -1) {
+                        // เพิ่มใหม่ - POST request
+                        response = await fetch(`/leads/{{ $lead->lead_id }}/job-history`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            body: JSON.stringify(formData)
+                        });
+                    } else {
+                        // แก้ไข - PUT request
+                        const jobHistoryId = jobHistoryData[editingJobHistoryIndex].job_history_id;
+                        response = await fetch(`/leads/{{ $lead->lead_id }}/job-history/${jobHistoryId}`, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            body: JSON.stringify(formData)
+                        });
+                    }
+
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        // Show success message and reload page
+                        alert(result.message);
+                        
+                        // Reload the page to refresh all data
+                        window.location.reload();
+                    } else {
+                        alert('เกิดข้อผิดพลาด: ' + result.message);
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('เกิดข้อผิดพลาดในการบันทึก กรุณาลองใหม่อีกครั้ง');
+                } finally {
+                    // Re-enable button
+                    saveButton.disabled = false;
+                    saveButton.innerHTML = originalText;
+                }
             }
         });
 
@@ -1078,11 +1158,13 @@
             if (jobHistoryData.length === 0) {
                 table.style.display = 'none';
                 noDataAlert.style.display = 'block';
+                document.getElementById('jobHistoryInputs').innerHTML = '';
                 return;
             }
 
             table.style.display = 'table';
             noDataAlert.style.display = 'none';
+            updateJobHistoryInputs();
 
             tableBody.innerHTML = '';
             jobHistoryData.forEach((data, index) => {
@@ -1111,18 +1193,6 @@
                     </td>
                 `;
 
-                // เพิ่ม hidden inputs สำหรับ submit
-                row.innerHTML += `
-                    <input type="hidden" name="job_history[${index}][start_date]" value="${data.start_date}">
-                    <input type="hidden" name="job_history[${index}][end_date]" value="${data.end_date}">
-                    <input type="hidden" name="job_history[${index}][position]" value="${data.position}">
-                    <input type="hidden" name="job_history[${index}][country]" value="${data.country}">
-                    <input type="hidden" name="job_history[${index}][experience_years]" value="${data.experience_years}">
-                    <input type="hidden" name="job_history[${index}][company_type]" value="${data.company_type}">
-                    <input type="hidden" name="job_history[${index}][company_name]" value="${data.company_name}">
-                    <input type="hidden" name="job_history[${index}][description]" value="${data.description}">
-                `;
-
                 tableBody.appendChild(row);
             });
         }
@@ -1144,15 +1214,37 @@
             document.getElementById('modal_company_type').value = data.company_type;
             document.getElementById('modal_company_name').value = data.company_name;
             document.getElementById('modal_description').value = data.description;
+            document.getElementById('modal_company_about').value = data.company_about || '';
 
             bootstrap.Modal.getOrCreateInstance(document.getElementById('jobHistoryModal')).show();
         }
 
         // ลบประวัติ
-        function removeJobHistory(index) {
+        async function removeJobHistory(index) {
             if (confirm('ต้องการลบประวัติการทำงานนี้หรือไม่?')) {
-                jobHistoryData.splice(index, 1);
-                updateJobHistoryTable();
+                const jobHistoryId = jobHistoryData[index].job_history_id;
+                
+                try {
+                    const response = await fetch(`/leads/{{ $lead->lead_id }}/job-history/${jobHistoryId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        }
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        jobHistoryData.splice(index, 1);
+                        updateJobHistoryTable();
+                        alert(result.message);
+                    } else {
+                        alert('เกิดข้อผิดพลาด: ' + result.message);
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('เกิดข้อผิดพลาดในการลบ กรุณาลองใหม่อีกครั้ง');
+                }
             }
         }
 
@@ -1168,13 +1260,49 @@
             });
         }
 
+        // อัพเดต hidden inputs สำหรับ form submission
+        function updateJobHistoryInputs() {
+            const container = document.getElementById('jobHistoryInputs');
+            container.innerHTML = '';
+            
+            jobHistoryData.forEach((data, index) => {
+                const inputs = `
+                    <input type="hidden" name="job_history[${index}][start_date]" value="${escapeHtml(data.start_date)}">
+                    <input type="hidden" name="job_history[${index}][end_date]" value="${escapeHtml(data.end_date)}">
+                    <input type="hidden" name="job_history[${index}][position]" value="${escapeHtml(data.position)}">
+                    <input type="hidden" name="job_history[${index}][country]" value="${escapeHtml(data.country)}">
+                    <input type="hidden" name="job_history[${index}][experience_years]" value="${escapeHtml(data.experience_years)}">
+                    <input type="hidden" name="job_history[${index}][company_type]" value="${escapeHtml(data.company_type)}">
+                    <input type="hidden" name="job_history[${index}][company_name]" value="${escapeHtml(data.company_name)}">
+                    <input type="hidden" name="job_history[${index}][description]" value="${escapeHtml(data.description)}">
+                    <input type="hidden" name="job_history[${index}][company_about]" value="${escapeHtml(data.company_about)}">
+                `;
+                container.innerHTML += inputs;
+            });
+        }
+        
+        // Helper function to escape HTML in form values
+        function escapeHtml(text) {
+            if (!text) return '';
+            // Convert to string first to handle numbers and other types
+            text = String(text);
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+
         // ฟอร์แมตวันที่
         function formatDate(dateString) {
             if (!dateString) return '';
             const [year, month] = dateString.split('-');
-            const monthNames = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 
-                              'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
-            return `${monthNames[parseInt(month) - 1]} ${parseInt(year) + 543}`;
+            const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+                              'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            return `${monthNames[parseInt(month) - 1]} ${year}`;
         }
 
         // ฟังก์ชันตรวจสอบการซ้ำซ้อนของช่วงเวลาทำงาน (ใช้กับข้อมูลใน jobHistoryData)

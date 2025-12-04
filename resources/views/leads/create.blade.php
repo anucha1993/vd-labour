@@ -795,6 +795,18 @@
                             </div>
                         </div>
 
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-12">
+                                <label class="form-label">About The Company (เกี่ยวกับบริษัท)
+                                    <button type="button" class="btn btn-outline-info btn-sm ms-2" onclick="translateJobField('modal_company_about')" title="แปลจากไทยเป็นอังกฤษ">
+                                        <i class="bi bi-translate"></i>
+                                    </button>
+                                </label>
+                                <textarea class="form-control" id="modal_company_about" rows="3" 
+                                          placeholder="ระบุข้อมูลเกี่ยวกับบริษัท เช่น ประเภทธุรกิจ ขนาดบริษัท"></textarea>
+                            </div>
+                        </div>
+
                         <div class="alert alert-danger d-none" id="modalOverlapError">
                             <i class="bi bi-exclamation-triangle-fill me-2"></i>
                             <strong>คำเตือน:</strong> ช่วงเวลาทำงานซ้ำซ้อนกับประวัติที่มีอยู่แล้ว
@@ -979,7 +991,8 @@
                     experience_years: document.getElementById('modal_experience_years').value,
                     company_type: document.getElementById('modal_company_type').value,
                     company_name: document.getElementById('modal_company_name').value,
-                    description: document.getElementById('modal_description').value
+                    description: document.getElementById('modal_description').value,
+                    company_about: document.getElementById('modal_company_about').value
                 };
 
                 // ตรวจสอบการซ้ำซ้อนก่อนบันทึก
@@ -1087,14 +1100,15 @@
 
                 // เพิ่ม hidden inputs สำหรับ submit
                 row.innerHTML += `
-                    <input type="hidden" name="job_history[${index}][start_date]" value="${data.start_date}">
-                    <input type="hidden" name="job_history[${index}][end_date]" value="${data.end_date}">
-                    <input type="hidden" name="job_history[${index}][position]" value="${data.position}">
-                    <input type="hidden" name="job_history[${index}][country]" value="${data.country}">
-                    <input type="hidden" name="job_history[${index}][experience_years]" value="${data.experience_years}">
-                    <input type="hidden" name="job_history[${index}][company_type]" value="${data.company_type}">
-                    <input type="hidden" name="job_history[${index}][company_name]" value="${data.company_name}">
-                    <input type="hidden" name="job_history[${index}][description]" value="${data.description}">
+                    <input type="hidden" name="job_history[${index}][start_date]" value="${escapeHtml(data.start_date)}">
+                    <input type="hidden" name="job_history[${index}][end_date]" value="${escapeHtml(data.end_date)}">
+                    <input type="hidden" name="job_history[${index}][position]" value="${escapeHtml(data.position)}">
+                    <input type="hidden" name="job_history[${index}][country]" value="${escapeHtml(data.country)}">
+                    <input type="hidden" name="job_history[${index}][experience_years]" value="${escapeHtml(data.experience_years)}">
+                    <input type="hidden" name="job_history[${index}][company_type]" value="${escapeHtml(data.company_type)}">
+                    <input type="hidden" name="job_history[${index}][company_name]" value="${escapeHtml(data.company_name)}">
+                    <input type="hidden" name="job_history[${index}][description]" value="${escapeHtml(data.description)}">
+                    <input type="hidden" name="job_history[${index}][company_about]" value="${escapeHtml(data.company_about)}">
                 `;
 
                 tableBody.appendChild(row);
@@ -1118,6 +1132,7 @@
             document.getElementById('modal_company_type').value = data.company_type;
             document.getElementById('modal_company_name').value = data.company_name;
             document.getElementById('modal_description').value = data.description;
+            document.getElementById('modal_company_about').value = data.company_about || '';
 
             bootstrap.Modal.getOrCreateInstance(document.getElementById('jobHistoryModal')).show();
         }
@@ -1146,9 +1161,24 @@
         function formatDate(dateString) {
             if (!dateString) return '';
             const [year, month] = dateString.split('-');
-            const monthNames = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 
-                              'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
-            return `${monthNames[parseInt(month) - 1]} ${parseInt(year) + 543}`;
+            const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+                              'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            return `${monthNames[parseInt(month) - 1]} ${year}`;
+        }
+        
+        // Helper function to escape HTML in form values
+        function escapeHtml(text) {
+            if (!text) return '';
+            // Convert to string first to handle numbers and other types
+            text = String(text);
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, m => map[m]);
         }
 
         // ฟังก์ชันตรวจสอบการซ้ำซ้อนของช่วงเวลาทำงาน (ใช้กับข้อมูลใน jobHistoryData)

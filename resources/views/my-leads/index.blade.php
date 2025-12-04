@@ -17,36 +17,19 @@
     <div class="card card-custom mb-4">
         <div class="card-body">
             <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
-                <h4 class="mb-0"><i class="bi bi-person-plus-fill me-2 text-primary"></i>จัดการข้อมูลผู้สนใจ (Leads)</h4>
+                <h4 class="mb-0"><i class="bi bi-people-fill me-2 text-success"></i>ผู้สมัครของเรา (My Applicants)</h4>
                 <div class="d-flex gap-2">
-                    @can('view lead')
-                    <div class="btn-group">
-                        <a href="{{ route('pdf.leads.list', request()->query()) }}" class="btn btn-success" target="_blank">
-                            <i class="bi bi-file-pdf"></i> Preview PDF
-                        </a>
-                        <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown">
-                            <span class="visually-hidden">Toggle Dropdown</span>
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ route('pdf.download.leads.list', request()->query()) }}">
-                                <i class="bi bi-download"></i> ดาวน์โหลด PDF
-                            </a></li>
-                        </ul>
-                    </div>
-                    @endcan
-                    @can('create lead')
                     <a href="{{ route('leads.create') }}" class="btn btn-primary">
                         <i class="bi bi-plus-circle-fill"></i> เพิ่มผู้สนใจ
                     </a>
-                    @endcan
                 </div>
             </div>
 
             <!-- Search Form -->
-            <form method="GET" action="{{ route('leads.index') }}" class="mb-3">
+            <form method="GET" action="{{ route('my-leads.index') }}" class="mb-3">
                 <div class="row g-2">
                     <div class="col-md-3">
-                        <input type="text" class="form-control" name="search" placeholder="ค้นหา ชื่อ, โทร, พาสปอร์ต, ผู้ดูแล, สายแนะนำ..." value="{{ request('search') }}">
+                        <input type="text" class="form-control" name="search" placeholder="ค้นหา ชื่อ, โทร, พาสปอร์ต..." value="{{ request('search') }}">
                     </div>
                     <div class="col-md-2">
                         <select class="form-select" name="lead_status">
@@ -73,7 +56,7 @@
                         <button type="submit" class="btn btn-primary w-100"><i class="bi bi-search"></i> ค้นหา</button>
                     </div>
                     <div class="col-md-2">
-                        <a href="{{ route('leads.index') }}" class="btn btn-secondary w-100"><i class="bi bi-arrow-clockwise"></i> รีเซ็ต</a>
+                        <a href="{{ route('my-leads.index') }}" class="btn btn-secondary w-100"><i class="bi bi-arrow-clockwise"></i> รีเซ็ต</a>
                     </div>
                 </div>
             </form>
@@ -88,11 +71,10 @@
                             <th><i class="bi bi-telephone me-1"></i> โทรศัพท์</th>
                             <th><i class="bi bi-briefcase me-1"></i> ตำแหน่ง</th>
                             <th class="text-center"><i class="bi bi-flag me-1"></i> ประเทศ</th>
-                            <th><i class="bi bi-person-badge me-1"></i> ผู้ดูแล/สายแนะนำ</th>
-
+                            <th><i class="bi bi-person-badge me-1"></i> สายแนะนำ</th>
                             <th class="text-center"><i class="bi bi-info-circle me-1"></i> สถานะ</th>
                             <th class="text-center"><i class="bi bi-calendar me-1"></i> วันที่สร้าง</th>
-                            <th class="text-center" width="280"><i class="bi bi-gear me-1"></i> จัดการ</th>
+                            <th class="text-center" width="250"><i class="bi bi-gear me-1"></i> จัดการ</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -121,7 +103,6 @@
                                 <td>
                                     @if($item->position)
                                         <span class="badge bg-info">{{ $item->position->position_name_th ?? $item->position->position_name ?? '' }}</span>
-                                   
                                     @else
                                         -
                                     @endif
@@ -133,11 +114,11 @@
                                         -
                                     @endif
                                 </td>
-                                <td>
+                               <td>
                                       
-                                            <small><b>ผู้ดูแล: </b>{{ $item->staff->staff_name?? '-' }}</small>
+                                     <small><b>ผู้ดูแล: </b>{{ $item->staff->staff_name?? '-' }}</small>
                                             <br>
-                                             <small><b>สายแนะนำ: </b>{{ $item->recommenderStaff->staff_sub_name?? '-' }}</small>
+                                    <small><b>สายแนะนำ: </b>{{ $item->recommenderStaff->staff_sub_name?? '-' }}</small>
                                       
                                     </td>
                                 <td class="text-center">{!! $item->statusBadge !!}</td>
@@ -158,59 +139,32 @@
                                             <i class="bi bi-file-person"></i>
                                         </a>
                                         
-                                        @can('view lead')
                                         <a href="{{ route('leads.show', $item->lead_id) }}" 
                                            class="btn btn-sm btn-outline-primary" 
                                            title="ดูรายละเอียด">
                                             <i class="bi bi-eye-fill"></i>
                                         </a>
-                                        @endcan
 
-                                        @can('view lead')
-                                        <div class="btn-group">
-                                            <a href="{{ route('pdf.cv.form', $item->lead_id) }}" 
-                                               class="btn btn-sm btn-outline-success" 
-                                               title="Preview PDF" 
-                                               target="_blank">
-                                                <i class="bi bi-file-pdf-fill"></i>
-                                            </a>
-                                         
-                                           
-                                            </ul>
-                                        </div>
-                                        @endcan
+                                        <a href="{{ route('pdf.cv.form', $item->lead_id) }}" 
+                                           class="btn btn-sm btn-outline-success" 
+                                           title="Preview PDF" 
+                                           target="_blank">
+                                            <i class="bi bi-file-pdf-fill"></i>
+                                        </a>
 
-                                        @can('update lead')
                                         <a href="{{ route('leads.edit', $item->lead_id) }}" 
                                            class="btn btn-sm btn-outline-warning" 
                                            title="แก้ไข">
                                             <i class="bi bi-pencil-fill"></i>
                                         </a>
-                                        @endcan
-
-
-                                        @can('delete lead')
-                                        @if(!$item->isConverted())
-                                        <form action="{{ route('leads.destroy', $item->lead_id) }}" 
-                                              method="POST" 
-                                              class="d-inline" 
-                                              onsubmit="return confirm('คุณแน่ใจหรือไม่ว่าต้องการลบผู้สนใจนี้?');">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="ลบ">
-                                                <i class="bi bi-trash-fill"></i>
-                                            </button>
-                                        </form>
-                                        @endif
-                                        @endcan
                                     </div>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="9" class="text-center text-muted py-4">
+                                <td colspan="10" class="text-center text-muted py-4">
                                     <i class="bi bi-inbox fs-1 d-block mb-2"></i>
-                                    ไม่มีข้อมูลผู้สนใจ
+                                    ไม่มีข้อมูลผู้สมัครของคุณ
                                 </td>
                             </tr>
                         @endforelse
@@ -223,7 +177,6 @@
             </div>
         </div>
     </div>
-</div>
 
 <!-- Photo Modal -->
 <div class="modal fade" id="photoModal" tabindex="-1" aria-labelledby="photoModalLabel" aria-hidden="true">
@@ -285,8 +238,8 @@
         
         modal.show();
         
-        // Fetch timeline data
-        fetch(`{{ url('leads') }}/${leadId}/timeline`, {
+        // Fetch timeline data - use my-leads route
+        fetch(`{{ url('my-leads') }}/${leadId}/timeline`, {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',

@@ -4,8 +4,10 @@ namespace App\Http\Controllers\staff;
 
 use App\Http\Controllers\Controller;
 use App\Models\staff\staffModel;
+use App\Exports\StaffExport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class StaffController extends Controller
 {
@@ -23,7 +25,7 @@ class StaffController extends Controller
      */
     public function index(Request $request)
     {
-        $query = staffModel::query();
+        $query = staffModel::with('user');
         
         // Search functionality
         if ($request->filled('search')) {
@@ -49,7 +51,8 @@ class StaffController extends Controller
      */
     public function create()
     {
-        return view('staff.staff.create');
+        $users = \App\Models\User::orderBy('name', 'asc')->get();
+        return view('staff.staff.create', compact('users'));
     }
 
     /**
@@ -97,7 +100,8 @@ class StaffController extends Controller
     public function edit(string $id)
     {
         $staff = staffModel::findOrFail($id);
-        return view('staff.staff.edit', compact('staff'));
+        $users = \App\Models\User::orderBy('name', 'asc')->get();
+        return view('staff.staff.edit', compact('staff', 'users'));
     }
 
     /**
@@ -162,5 +166,13 @@ class StaffController extends Controller
                 'message' => 'เกิดข้อผิดพลาด: ' . $e->getMessage()
             ]);
         }
+    }
+
+    /**
+     * Export staff list to Excel
+     */
+    public function export()
+    {
+        return Excel::download(new StaffExport, 'staff-list-' . date('Y-m-d') . '.xlsx');
     }
 }

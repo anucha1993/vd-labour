@@ -32,7 +32,7 @@ class LeadController extends Controller
      */
     public function index(Request $request)
     {
-        $query = LeadModel::with(['position', 'country', 'jobGroup', 'staff']);
+        $query = LeadModel::with(['position', 'country', 'jobGroup', 'staff', 'recommenderStaff']);
         
         // Search filters
         if ($request->filled('search')) {
@@ -41,7 +41,13 @@ class LeadController extends Controller
                 $q->where('lead_firstname', 'like', "%{$search}%")
                   ->orWhere('lead_lastname', 'like', "%{$search}%")
                   ->orWhere('lead_phone', 'like', "%{$search}%")
-                  ->orWhere('lead_passport_number', 'like', "%{$search}%");
+                  ->orWhere('lead_passport_number', 'like', "%{$search}%")
+                  ->orWhereHas('staff', function($q) use ($search) {
+                      $q->where('staff_name', 'like', "%{$search}%");
+                  })
+                  ->orWhereHas('recommenderStaff', function($q) use ($search) {
+                      $q->where('staff_sub_name', 'like', "%{$search}%");
+                  });
             });
         }
         
@@ -108,6 +114,10 @@ class LeadController extends Controller
         
         $data = $request->except('lead_photo', 'job_history');
         
+        // Add created_by
+        $data['created_by'] = auth()->id();
+        $data['updated_by'] = auth()->id();
+        
         // Calculate BMI if height and weight provided
         if ($request->filled('lead_height') && $request->filled('lead_weight')) {
             $heightM = $request->lead_height / 100;
@@ -138,8 +148,12 @@ class LeadController extends Controller
                             'company_type' => $history['company_type'],
                             'company_name' => $history['company_name'] ?? null,
                             'position' => $history['position'],
+                            'start_date' => $history['start_date'] ?? null,
+                            'end_date' => $history['end_date'] ?? null,
                             'country' => $history['country'] ?? 'THAI',
                             'experience_years' => $history['experience_years'] ?? 0,
+                            'description' => $history['description'] ?? null,
+                            'company_about' => $history['company_about'] ?? null,
                             'display_order' => $index + 1,
                         ]);
                     }
@@ -213,6 +227,9 @@ class LeadController extends Controller
         
         $data = $request->except('lead_photo', 'job_history');
         
+        // Add updated_by
+        $data['updated_by'] = auth()->id();
+        
         // Calculate BMI
         if ($request->filled('lead_height') && $request->filled('lead_weight')) {
             $heightM = $request->lead_height / 100;
@@ -239,23 +256,8 @@ class LeadController extends Controller
         try {
             $lead->update($data);
             
-            // Update job history
-            $lead->jobHistory()->delete();
-            if ($request->has('job_history') && is_array($request->job_history)) {
-                foreach ($request->job_history as $index => $history) {
-                    if (!empty($history['company_type']) && !empty($history['position'])) {
-                        LeadJobHistoryModel::create([
-                            'lead_id' => $lead->lead_id,
-                            'company_type' => $history['company_type'],
-                            'company_name' => $history['company_name'] ?? null,
-                            'position' => $history['position'],
-                            'country' => $history['country'] ?? 'THAI',
-                            'experience_years' => $history['experience_years'] ?? 0,
-                            'display_order' => $index + 1,
-                        ]);
-                    }
-                }
-            }
+            // Job history is now managed via separate API endpoints
+            // No need to update here since it's saved in real-time
             
             DB::commit();
             return redirect()->route('leads.index')->with('success', 'อัปเดตข้อมูล Lead สำเร็จ');
@@ -361,8 +363,215 @@ class LeadController extends Controller
         }
     }
 
-       public function cv(Request $request)
+    /**
+     * Get timeline of lead activities (from job applications)
+     */
+    public function timeline($lead)
+    {
+        try {
+            // Support both ID and model binding
+            if (!$lead instanceof LeadModel) {
+                $lead = LeadModel::findOrFail($lead);
+            }
+            
+            // Get all job leads for this lead with activities
+            $jobLeads = \App\Models\jobs\JobLeadModel::with([
+                'activities.user',
+                'job.country',
+                'job.demand'
+            ])
+            ->where('lead_id', $lead->lead_id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+            
+            // Collect all activities from all job leads
+            $allActivities = collect();
+            foreach ($jobLeads as $jobLead) {
+                foreach ($jobLead->activities as $activity) {
+                    $activity->job_info = [
+                        'number' => $jobLead->job_lead_number,
+                        'name' => $jobLead->job->job_name ?? '',
+                        'country' => $jobLead->job->country->country_name_th ?? ''
+                    ];
+                    $allActivities->push($activity);
+                }
+            }
+            
+            // Sort by created_at desc
+            $activities = $allActivities->sortByDesc('created_at')->values();
+            
+            // Render view
+            $html = view('leads.partials.timeline', [
+                'activities' => $activities,
+                'lead' => $lead
+            ])->render();
+            
+            return response()->json([
+                'success' => true,
+                'html' => $html,
+                'count' => $activities->count()
+            ]);
+                           
+        } catch (\Exception $e) {
+            \Log::error('Lead Timeline Error: ' . $e->getMessage());
+            \Log::error($e->getTraceAsString());
+            
+            return response()->json([
+                'success' => false,
+                'error' => 'เกิดข้อผิดพลาด: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function cv(Request $request)
     {
         return view('leads.cv');
     }
+
+    /**
+     * Generate Resume/CV for a lead
+     */
+    public function resume($id)
+    {
+        try {
+            $lead = LeadModel::with([
+                'position', 
+                'position2', 
+                'position3',
+                'country', 
+                'jobGroup', 
+                'staff',
+                'recommenderStaff',
+                'jobHistory',
+                'examinationRound'
+            ])->findOrFail($id);
+            
+            return view('leads.resume', compact('lead'));
+            
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'ไม่พบข้อมูลผู้สมัคร');
+        }
+    }
+
+    /**
+     * Store job history for a lead
+     */
+    public function storeJobHistory(Request $request, $id)
+    {
+        $request->validate([
+            'company_type' => 'required|string',
+            'position' => 'required|string',
+            'start_date' => 'nullable|string',
+            'end_date' => 'nullable|string',
+            'country' => 'nullable|string',
+            'experience_years' => 'nullable|numeric',
+            'company_name' => 'nullable|string',
+            'description' => 'nullable|string',
+            'company_about' => 'nullable|string',
+        ]);
+
+        try {
+            $lead = LeadModel::findOrFail($id);
+            
+            // Get the max display_order
+            $maxOrder = $lead->jobHistory()->max('display_order') ?? 0;
+            
+            $jobHistory = LeadJobHistoryModel::create([
+                'lead_id' => $lead->lead_id,
+                'company_type' => $request->company_type,
+                'company_name' => $request->company_name,
+                'position' => $request->position,
+                'start_date' => $request->start_date,
+                'end_date' => $request->end_date,
+                'country' => $request->country ?? 'THAI',
+                'experience_years' => $request->experience_years ?? 0,
+                'description' => $request->description,
+                'company_about' => $request->company_about,
+                'display_order' => $maxOrder + 1,
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'บันทึกประวัติการทำงานสำเร็จ',
+                'data' => $jobHistory
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'เกิดข้อผิดพลาด: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Update job history for a lead
+     */
+    public function updateJobHistory(Request $request, $leadId, $jobHistoryId)
+    {
+        $request->validate([
+            'company_type' => 'required|string',
+            'position' => 'required|string',
+            'start_date' => 'nullable|string',
+            'end_date' => 'nullable|string',
+            'country' => 'nullable|string',
+            'experience_years' => 'nullable|numeric',
+            'company_name' => 'nullable|string',
+            'description' => 'nullable|string',
+            'company_about' => 'nullable|string',
+        ]);
+
+        try {
+            $jobHistory = LeadJobHistoryModel::where('job_history_id', $jobHistoryId)
+                ->where('lead_id', $leadId)
+                ->firstOrFail();
+            
+            $jobHistory->update([
+                'company_type' => $request->company_type,
+                'company_name' => $request->company_name,
+                'position' => $request->position,
+                'start_date' => $request->start_date,
+                'end_date' => $request->end_date,
+                'country' => $request->country ?? 'THAI',
+                'experience_years' => $request->experience_years ?? 0,
+                'description' => $request->description,
+                'company_about' => $request->company_about,
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'อัปเดตประวัติการทำงานสำเร็จ',
+                'data' => $jobHistory
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'เกิดข้อผิดพลาด: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Delete job history for a lead
+     */
+    public function deleteJobHistory($leadId, $jobHistoryId)
+    {
+        try {
+            $jobHistory = LeadJobHistoryModel::where('job_history_id', $jobHistoryId)
+                ->where('lead_id', $leadId)
+                ->firstOrFail();
+            
+            $jobHistory->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'ลบประวัติการทำงานสำเร็จ'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'เกิดข้อผิดพลาด: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }
+
