@@ -15,6 +15,8 @@ class JobLeadActivityModel extends Model
     
     protected $fillable = [
         'job_lead_id',
+        'lead_id',
+        'job_lead_number',
         'activity_type',
         'old_status',
         'new_status',

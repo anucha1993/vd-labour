@@ -139,14 +139,14 @@
 
                     <!-- Mass Update Form -->
                     @can('job-lead-bulk-update')
-                    <div class="card border-warning mb-4">
-                        <div class="card-header bg-warning bg-opacity-10">
-                            <h6 class="mb-0"><i class="bi bi-lightning"></i> อัปเดตสถานะหลายรายการ</h6>
-                        </div>
-                        <div class="card-body">
-                            <form id="massUpdateForm" method="POST" action="{{ route('job-leads.bulk-update') }}">
-                                @csrf
-                                @method('PATCH')
+                    <form id="massUpdateForm" method="POST" action="{{ route('job-leads.bulk-update') }}">
+                        @csrf
+                        @method('PATCH')
+                        <div class="card border-warning mb-4">
+                            <div class="card-header bg-warning bg-opacity-10">
+                                <h6 class="mb-0"><i class="bi bi-lightning"></i> อัปเดตสถานะหลายรายการ</h6>
+                            </div>
+                            <div class="card-body">
                                 <div class="row align-items-end">
                                     <div class="col-md-2">
                                         <label class="form-label small">สถานะใหม่:</label>
@@ -179,10 +179,8 @@
                                         </button>
                                     </div>
                                 </div>
-                            </form>
+                            </div>
                         </div>
-                    </div>
-                    @endcan
 
                     <!-- Applicants Table -->
                     @if($jobLeads->count() > 0)
@@ -374,6 +372,8 @@
                     <div class="d-flex justify-content-center">
                         {{ $jobLeads->appends(request()->query())->links() }}
                     </div>
+                    </form>
+                    @endcan
                     @else
                     <!-- No Applicants -->
                     <div class="text-center py-5">
@@ -688,16 +688,18 @@ document.addEventListener('DOMContentLoaded', function() {
     const massUpdateForm = document.getElementById('massUpdateForm');
     if (massUpdateForm) {
         massUpdateForm.addEventListener('submit', function(e) {
-            const selectedCount = document.querySelectorAll('.applicant-checkbox:checked').length;
+            e.preventDefault(); // Prevent default first
+            
+            const selectedCheckboxes = document.querySelectorAll('.applicant-checkbox:checked');
+            const selectedCount = selectedCheckboxes.length;
+            
             if (selectedCount === 0) {
-                e.preventDefault();
                 alert('กรุณาเลือกผู้สมัครอย่างน้อย 1 คน');
                 return;
             }
             
             const newStatus = this.querySelector('[name="new_status"]').value;
             if (!newStatus) {
-                e.preventDefault();
                 alert('กรุณาเลือกสถานะใหม่');
                 return;
             }
@@ -706,28 +708,56 @@ document.addEventListener('DOMContentLoaded', function() {
             const requiresReason = ['ปฏิเสธ', 'ถอน'].includes(newStatus);
             const reason = bulkReason.value.trim();
             if (requiresReason && !reason) {
-                e.preventDefault();
                 alert(`กรุณาระบุเหตุผลสำหรับการเปลี่ยนสถานะเป็น "${newStatus}"`);
                 return;
             }
             
             if (!confirm(`คุณต้องการเปลี่ยนสถานะของผู้สมัคร ${selectedCount} คน เป็น "${newStatus}" หรือไม่?`)) {
-                e.preventDefault();
+                return;
             }
+            
+            // Add selected job_lead_ids to form
+            selectedCheckboxes.forEach(checkbox => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'job_lead_ids[]';
+                input.value = checkbox.value;
+                this.appendChild(input);
+            });
+            
+            // Now submit the form
+            this.submit();
         });
     }
 });
 
 // Cancel application function  
 function cancelApplication(jobLeadId, jobLeadNumber) {
-    if (confirm(`คุณต้องการยกเลิกใบสมัคร "${jobLeadNumber}" หรือไม่?\n\nการยกเลิกจะปลดล็อคคนงานและลบใบสมัครออกจากระบบ`)) {
+    // Prompt for cancellation reason
+    const reason = prompt(`กรุณาระบุเหตุผลในการยกเลิกใบสมัคร "${jobLeadNumber}":`);
+    
+    // Check if user cancelled the prompt or entered empty reason
+    if (reason === null) {
+        return; // User clicked cancel
+    }
+    
+    if (reason.trim() === '') {
+        alert('กรุณาระบุเหตุผลในการยกเลิก');
+        return;
+    }
+    
+    if (confirm(`คุณต้องการยกเลิกใบสมัคร "${jobLeadNumber}" หรือไม่?\n\nเหตุผล: ${reason}\n\nการยกเลิกจะปลดล็อคคนงานและลบใบสมัครออกจากระบบ`)) {
         fetch(`{{ url('job-leads') }}/${jobLeadId}/cancel`, {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/json',
+                'Content-Type': 'application/json',
                 'X-Requested-With': 'XMLHttpRequest',
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            }
+            },
+            body: JSON.stringify({
+                reason: reason.trim()
+            })
         })
         .then(response => response.json())
         .then(data => {

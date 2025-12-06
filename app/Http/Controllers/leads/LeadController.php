@@ -104,11 +104,24 @@ class LeadController extends Controller
 
         // ตรวจสอบ Passport ซ้ำใน Lead และ Labour
         if ($request->filled('lead_passport_number')) {
-            $passportExists = LeadModel::where('lead_passport_number', $request->lead_passport_number)->exists();
-            $passportInLabour = labourModel::where('labour_passport_number', $request->lead_passport_number)->exists();
+            $passportNumber = $request->lead_passport_number;
             
-            if ($passportExists || $passportInLabour) {
-                return back()->with('error', 'เลขที่ Passport นี้มีในระบบแล้ว กรุณาตรวจสอบอีกครั้ง')->withInput();
+            // ตรวจสอบใน leads table
+            $duplicateInLead = LeadModel::where('lead_passport_number', $passportNumber)->first();
+            
+            // ตรวจสอบใน labours table
+            $duplicateInLabour = labourModel::where('labour_passport_number', $passportNumber)->first();
+            
+            if ($duplicateInLead) {
+                return back()->withErrors([
+                    'lead_passport_number' => 'หมายเลข Passport นี้มีอยู่ในระบบแล้ว (ผู้สมัคร: ' . $duplicateInLead->lead_firstname . ' ' . $duplicateInLead->lead_lastname . ')'
+                ])->withInput();
+            }
+            
+            if ($duplicateInLabour) {
+                return back()->withErrors([
+                    'lead_passport_number' => 'หมายเลข Passport นี้มีอยู่ในระบบแล้ว (แรงงาน: ' . $duplicateInLabour->labour_firstname . ' ' . $duplicateInLabour->labour_lastname . ')'
+                ])->withInput();
             }
         }
         
@@ -215,13 +228,27 @@ class LeadController extends Controller
 
         // ตรวจสอบ Passport ซ้ำใน Lead และ Labour (ยกเว้นตัวเอง)
         if ($request->filled('lead_passport_number')) {
-            $passportExists = LeadModel::where('lead_passport_number', $request->lead_passport_number)
-                                      ->where('lead_id', '!=', $id)
-                                      ->exists();
-            $passportInLabour = labourModel::where('labour_passport_number', $request->lead_passport_number)->exists();
+            $passportNumber = $request->lead_passport_number;
             
-            if ($passportExists || $passportInLabour) {
-                return back()->with('error', 'เลขที่ Passport นี้มีในระบบแล้ว กรุณาตรวจสอบอีกครั้ง')->withInput();
+            // ตรวจสอบใน leads table (ยกเว้น id ของตัวเอง)
+            $duplicateInLead = LeadModel::where('lead_passport_number', $passportNumber)
+                ->where('lead_id', '!=', $id)
+                ->first();
+            
+            // ตรวจสอบใน labours table
+            $duplicateInLabour = labourModel::where('labour_passport_number', $passportNumber)
+                ->first();
+            
+            if ($duplicateInLead) {
+                return back()->withErrors([
+                    'lead_passport_number' => 'หมายเลข Passport นี้มีอยู่ในระบบแล้ว (ผู้สมัคร: ' . $duplicateInLead->lead_firstname . ' ' . $duplicateInLead->lead_lastname . ')'
+                ])->withInput();
+            }
+            
+            if ($duplicateInLabour) {
+                return back()->withErrors([
+                    'lead_passport_number' => 'หมายเลข Passport นี้มีอยู่ในระบบแล้ว (แรงงาน: ' . $duplicateInLabour->labour_firstname . ' ' . $duplicateInLabour->labour_lastname . ')'
+                ])->withInput();
             }
         }
         
@@ -374,31 +401,35 @@ class LeadController extends Controller
                 $lead = LeadModel::findOrFail($lead);
             }
             
-            // Get all job leads for this lead with activities
-            $jobLeads = \App\Models\jobs\JobLeadModel::with([
-                'activities.user',
-                'job.country',
-                'job.demand'
-            ])
-            ->where('lead_id', $lead->lead_id)
-            ->orderBy('created_at', 'desc')
-            ->get();
+            // Get all activities for this lead (รวมถึงที่ job_lead ถูกยกเลิก)
+            $activities = \App\Models\jobs\JobLeadActivityModel::with(['user'])
+                ->where('lead_id', $lead->lead_id)
+                ->orderBy('created_at', 'desc')
+                ->get();
             
-            // Collect all activities from all job leads
-            $allActivities = collect();
-            foreach ($jobLeads as $jobLead) {
-                foreach ($jobLead->activities as $activity) {
+            // Load job info for each activity
+            foreach ($activities as $activity) {
+                if ($activity->job_lead_id) {
+                    // ยังมี job_lead อยู่
+                    $jobLead = \App\Models\jobs\JobLeadModel::with(['job.country', 'job.demand'])
+                        ->find($activity->job_lead_id);
+                    
+                    if ($jobLead) {
+                        $activity->job_info = [
+                            'number' => $jobLead->job_lead_number,
+                            'name' => $jobLead->job->job_name ?? '',
+                            'country' => $jobLead->job->country->country_name_th ?? ''
+                        ];
+                    }
+                } else {
+                    // job_lead ถูกยกเลิกแล้ว - ใช้ข้อมูลที่เก็บไว้
                     $activity->job_info = [
-                        'number' => $jobLead->job_lead_number,
-                        'name' => $jobLead->job->job_name ?? '',
-                        'country' => $jobLead->job->country->country_name_th ?? ''
+                        'number' => $activity->job_lead_number ?? 'ไม่ระบุ',
+                        'name' => 'ถูกยกเลิกแล้ว',
+                        'country' => ''
                     ];
-                    $allActivities->push($activity);
                 }
             }
-            
-            // Sort by created_at desc
-            $activities = $allActivities->sortByDesc('created_at')->values();
             
             // Render view
             $html = view('leads.partials.timeline', [

@@ -584,37 +584,81 @@ class JobLeadController extends Controller
     /**
      * Cancel job application (specific route)
      */
-    public function cancel($id)
+    public function cancel(JobLeadModel $jobLead)
     {
         try {
             DB::beginTransaction();
             
-            $jobLead = JobLeadModel::findOrFail($id);
+            // Load relationships
+            $jobLead->load(['lead', 'job']);
             
             // Check if user has permission
             if (!auth()->user()->can('job-lead-delete')) {
+                DB::rollBack();
                 return response()->json(['error' => 'ไม่มีสิทธิ์ในการยกเลิกใบสมัคร'], 403);
             }
             
             // Check if status allows cancellation
             if (!in_array($jobLead->job_lead_status, ['ร่าง', 'ส่งแล้ว'])) {
-                return response()->json(['error' => 'ไม่สามารถยกเลิกใบสมัครในสถานะนี้ได้'], 400);
+                DB::rollBack();
+                return response()->json(['error' => 'ไม่สามารถยกเลิกใบสมัครในสถานะนี้ได้ (สถานะปัจจุบัน: ' . $jobLead->job_lead_status . ')'], 400);
+            }
+            
+            // Get reason from request
+            $reason = request()->input('reason');
+            if (empty($reason)) {
+                DB::rollBack();
+                return response()->json(['error' => 'กรุณาระบุเหตุผลในการยกเลิก'], 400);
             }
             
             // Unlock lead if locked
-            if ($jobLead->is_locked) {
-                $jobLead->unlock('ยกเลิกใบสมัคร');
+            if ($jobLead->is_locked && $jobLead->lead) {
+                try {
+                    // Update lead to unlock
+                    $jobLead->lead->update([
+                        'lead_status' => 'active'
+                    ]);
+                } catch (\Exception $e) {
+                    \Log::error('Error unlocking lead: ' . $e->getMessage());
+                }
             }
             
-            // Delete the job lead
+            // บันทึก activity log ก่อนลบ
+            \DB::table('job_lead_activities')->insert([
+                'job_lead_id' => $jobLead->job_lead_id,
+                'lead_id' => $jobLead->lead_id,
+                'job_lead_number' => $jobLead->job_lead_number,
+                'activity_type' => 'cancelled',
+                'old_status' => $jobLead->job_lead_status,
+                'new_status' => 'ยกเลิก',
+                'reason' => $reason,
+                'remarks' => 'ยกเลิกโดย ' . auth()->user()->name . ' - ' . $reason,
+                'user_id' => auth()->id(),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+            
+            // Log the cancellation
+            \Log::info('Cancelling job application', [
+                'job_lead_id' => $jobLead->job_lead_id,
+                'job_lead_number' => $jobLead->job_lead_number,
+                'user' => auth()->user()->name,
+                'reason' => $reason
+            ]);
+            
+            // ลบ job_lead (activities จะถูก set null แต่ไม่หาย)
             $jobLead->delete();
             
             DB::commit();
             
-            return response()->json(['success' => 'ยกเลิกใบสมัครสำเร็จ']);
+            return response()->json(['success' => 'ยกเลิกใบสมัคร ' . $jobLead->job_lead_number . ' สำเร็จ']);
                            
         } catch (\Exception $e) {
             DB::rollBack();
+            \Log::error('Error cancelling job application: ' . $e->getMessage(), [
+                'job_lead_id' => $jobLead->job_lead_id ?? null,
+                'trace' => $e->getTraceAsString()
+            ]);
             return response()->json(['error' => 'เกิดข้อผิดพลาด: ' . $e->getMessage()], 500);
         }
     }

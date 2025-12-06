@@ -69,6 +69,8 @@
                                     </div>
                                 </div>
 
+                             
+
                                 <div class="row mb-3">
                                     <div class="col-md-1">
                                         <label class="form-label">เพศ</label>
@@ -409,32 +411,54 @@
                     </div>
                     <div class="card-body">
                         <div class="row mb-3">
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <label class="form-label">EMERGENCY CONTACT NAME (ผู้ติดต่อฉุกเฉิน)</label>
                                 <input type="text" class="form-control" name="lead_emergency_name" 
                                        placeholder="ชื่อผู้ติดต่อฉุกเฉิน" value="{{ old('lead_emergency_name', $lead->lead_emergency_name) }}">
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <label class="form-label">STATUS (ความสัมพันธ์)</label>
                                 <input type="text" class="form-control" name="lead_emergency_status" 
                                        placeholder="เช่น พ่อ, แม่, พี่, น้อง" value="{{ old('lead_emergency_status', $lead->lead_emergency_status) }}">
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <label class="form-label">TEL (เบอร์โทรศัพท์)</label>
                                 <input type="text" class="form-control" name="lead_emergency_phone" 
                                        placeholder="เบอร์โทรผู้ติดต่อฉุกเฉิน" value="{{ old('lead_emergency_phone', $lead->lead_emergency_phone) }}">
                             </div>
                         </div>
 
+                           <div class="row mb-3">
+                                    <div class="col-md-3">
+                                        <label class="form-label">ชื่อบิดา (Father Name)</label>
+                                        <input type="text" class="form-control" name="lead_father_name" value="{{ old('lead_father_name', $lead->lead_father_name) }}" placeholder="กรอกชื่อบิดา">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">ชื่อมารดา (Mother Name)</label>
+                                        <input type="text" class="form-control" name="lead_mother_name" value="{{ old('lead_mother_name', $lead->lead_mother_name) }}" placeholder="กรอกชื่อมารดา">
+                                    </div>
+                               
+                            <div class="col-md-3">
+                                <label class="form-label">เลขที่บัญชี (Bank Account Number)</label>
+                                <input type="text" class="form-control" name="lead_bank_account_number" 
+                                       placeholder="กรอกเลขที่บัญชีธนาคาร" value="{{ old('lead_bank_account_number', $lead->lead_bank_account_number) }}">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">ธนาคาร (Bank Name)</label>
+                                <input type="text" class="form-control" name="lead_bank_name" 
+                                       placeholder="กรอกชื่อธนาคาร เช่น ธนาคารกรุงเทพ" value="{{ old('lead_bank_name', $lead->lead_bank_name) }}">
+                            </div>
+                        </div>
+
                         <div class="row mb-3">
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <label class="form-label">DRIVING LICENSE (ใบขับขี่)</label>
                                 <select class="form-select" name="lead_driving_license">
                                     <option value="no" {{ old('lead_driving_license', $lead->lead_driving_license ?? 'no') == 'no' ? 'selected' : '' }}>NO (ไม่มี)</option>
                                     <option value="yes" {{ old('lead_driving_license', $lead->lead_driving_license) == 'yes' ? 'selected' : '' }}>YES (มี)</option>
                                 </select>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <label class="form-label">TYPE OF CAR (ประเภทรถ) 
                                     <i class="bi bi-info-circle text-info ms-1" data-bs-toggle="tooltip" data-bs-placement="top" 
                                        title="เลือกประเภทใบขับขี่ที่มี หากไม่มีให้เลือก 'None'"></i>
@@ -495,7 +519,7 @@
                                     </optgroup>
                                 </select>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <label class="form-label">Valid Until date (วันหมดอายุ)</label>
                                 <input type="date" class="form-control" name="lead_license_valid_until" value="{{ old('lead_license_valid_until') }}">
                             </div>
@@ -977,6 +1001,13 @@
         let jobHistoryData = @json($lead->jobHistory->toArray());
         let editingJobHistoryIndex = -1;
 
+        // Define route URLs from Laravel routes
+        const routes = {
+            jobHistoryStore: '{{ route('leads.job-history.store', ['id' => $lead->lead_id]) }}',
+            jobHistoryUpdate: '{{ route('leads.job-history.update', ['leadId' => $lead->lead_id, 'jobHistoryId' => '__JOB_HISTORY_ID__']) }}'.replace('__JOB_HISTORY_ID__', ':id'),
+            jobHistoryDestroy: '{{ route('leads.job-history.delete', ['leadId' => $lead->lead_id, 'jobHistoryId' => '__JOB_HISTORY_ID__']) }}'.replace('__JOB_HISTORY_ID__', ':id')
+        };
+
         // Debug: Log job history data
         console.log('Job History Data:', jobHistoryData);
 
@@ -1067,9 +1098,9 @@
                     let response;
                     if (editingJobHistoryIndex === -1) {
                         // เพิ่มใหม่ - POST request
-                        response = await fetch(`/leads/{{ $lead->lead_id }}/job-history`, {
+                        response = await fetch(routes.jobHistoryStore, {
                             method: 'POST',
-                            headers: {
+                            headers: { 
                                 'Content-Type': 'application/json',
                                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
                             },
@@ -1078,7 +1109,8 @@
                     } else {
                         // แก้ไข - PUT request
                         const jobHistoryId = jobHistoryData[editingJobHistoryIndex].job_history_id;
-                        response = await fetch(`/leads/{{ $lead->lead_id }}/job-history/${jobHistoryId}`, {
+                        const updateUrl = routes.jobHistoryUpdate.replace(':id', jobHistoryId);
+                        response = await fetch(updateUrl, {
                             method: 'PUT',
                             headers: {
                                 'Content-Type': 'application/json',
@@ -1225,7 +1257,8 @@
                 const jobHistoryId = jobHistoryData[index].job_history_id;
                 
                 try {
-                    const response = await fetch(`/leads/{{ $lead->lead_id }}/job-history/${jobHistoryId}`, {
+                    const deleteUrl = routes.jobHistoryDestroy.replace(':id', jobHistoryId);
+                    const response = await fetch(deleteUrl, {
                         method: 'DELETE',
                         headers: {
                             'X-CSRF-TOKEN': '{{ csrf_token() }}'

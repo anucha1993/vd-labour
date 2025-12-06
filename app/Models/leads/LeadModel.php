@@ -19,7 +19,8 @@ class LeadModel extends Model
     protected $primaryKey = 'lead_id';
     
     protected $fillable = [
-        'lead_prefix', 'lead_firstname', 'lead_lastname', 'lead_gender',
+        'lead_prefix', 'lead_firstname', 'lead_lastname', 'lead_father_name', 
+        'lead_mother_name', 'lead_gender',
         'lead_marital_status', 'lead_birthday', 'lead_age', 'lead_height',
         'lead_weight', 'lead_bmi', 'lead_phone', 'lead_phone_2', 'lead_email',
         'lead_address', 'lead_passport_number', 'lead_passport_issue_date',
@@ -29,7 +30,8 @@ class LeadModel extends Model
         'lead_work_israel', 'lead_work_israel_details', 'lead_criminal_history',
         'lead_criminal_details', 'lead_eyesight', 'lead_color_blindness',
         'lead_additional_details', 'lead_emergency_name', 'lead_emergency_phone', 
-        'lead_emergency_status', 'lead_driving_license', 'lead_car_type', 
+        'lead_emergency_status', 'lead_bank_account_number', 'lead_bank_name',
+        'lead_driving_license', 'lead_car_type', 
         'lead_license_valid_until', 'position_id', 'position_id_2', 'position_id_3', 
         'lead_skills', 'country_id', 'job_group_id', 'lead_status', 'lead_note',
         'staff_id', 'lead_photo', 'labour_id', 'converted_at',

@@ -14,11 +14,11 @@
                         </a>
                         @endcan
                         
-                        @can('print demand')
+                        {{-- @can('print demand')
                         <a href="{{ route('demands.pdf', $demand->dm_id) }}" class="btn btn-secondary" target="_blank">
                             <i class="fas fa-print"></i> พิมพ์ PDF
                         </a>
-                        @endcan
+                        @endcan --}}
                         
                         @can('update demand')
                         <a href="{{ route('demands.edit', $demand->dm_id) }}" class="btn btn-warning">

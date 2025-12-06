@@ -64,6 +64,7 @@
                                     </div>
                                 </div>
 
+                                
                                 <div class="row mb-3">
                                     <div class="col-md-1">
                                         <label class="form-label">เพศ</label>
@@ -404,17 +405,17 @@
                     </div>
                     <div class="card-body">
                         <div class="row mb-3">
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <label class="form-label">EMERGENCY CONTACT NAME (ผู้ติดต่อฉุกเฉิน)</label>
                                 <input type="text" class="form-control" name="lead_emergency_name" 
                                        placeholder="ชื่อผู้ติดต่อฉุกเฉิน" value="{{ old('lead_emergency_name') }}">
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <label class="form-label">STATUS (ความสัมพันธ์)</label>
                                 <input type="text" class="form-control" name="lead_emergency_status" 
                                        placeholder="เช่น พ่อ, แม่, พี่, น้อง" value="{{ old('lead_emergency_status') }}">
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <label class="form-label">TEL (เบอร์โทรศัพท์)</label>
                                 <input type="text" class="form-control" name="lead_emergency_phone" 
                                        placeholder="เบอร์โทรผู้ติดต่อฉุกเฉิน" value="{{ old('lead_emergency_phone') }}">
@@ -422,14 +423,36 @@
                         </div>
 
                         <div class="row mb-3">
-                            <div class="col-md-4">
+                                    <div class="col-md-3">
+                                        <label class="form-label">ชื่อบิดา (Father Name)</label>
+                                        <input type="text" class="form-control" name="lead_father_name" value="{{ old('lead_father_name') }}" placeholder="กรอกชื่อบิดา">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">ชื่อมารดา (Mother Name)</label>
+                                        <input type="text" class="form-control" name="lead_mother_name" value="{{ old('lead_mother_name') }}" placeholder="กรอกชื่อมารดา">
+                                    </div>
+                               
+                            <div class="col-md-3">
+                                <label class="form-label">เลขที่บัญชี (Bank Account Number)</label>
+                                <input type="text" class="form-control" name="lead_bank_account_number" 
+                                       placeholder="กรอกเลขที่บัญชีธนาคาร" value="{{ old('lead_bank_account_number') }}">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">ธนาคาร (Bank Name)</label>
+                                <input type="text" class="form-control" name="lead_bank_name" 
+                                       placeholder="กรอกชื่อธนาคาร เช่น ธนาคารกรุงเทพ" value="{{ old('lead_bank_name') }}">
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-3">
                                 <label class="form-label">DRIVING LICENSE (ใบขับขี่)</label>
                                 <select class="form-select" name="lead_driving_license">
                                     <option value="no" {{ old('lead_driving_license', 'no') == 'no' ? 'selected' : '' }}>NO (ไม่มี)</option>
                                     <option value="yes" {{ old('lead_driving_license') == 'yes' ? 'selected' : '' }}>YES (มี)</option>
                                 </select>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <label class="form-label">TYPE OF CAR (ประเภทรถ) 
                                     <i class="bi bi-info-circle text-info ms-1" data-bs-toggle="tooltip" data-bs-placement="top" 
                                        title="เลือกประเภทใบขับขี่ที่มี หากไม่มีให้เลือก 'None'"></i>

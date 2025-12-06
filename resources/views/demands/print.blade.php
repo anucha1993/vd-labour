@@ -306,24 +306,35 @@
             <tr>
                 <td class="label" style="text-align: center; vertical-align: middle;">EXPENSE AND<br>BENEFIT<br><br>(ค่าใช้จ่ายและสวัสดิการ)</td>
                 <td>
-                    @if($demand->dm_exp && is_array($demand->dm_exp))
+                    @if($demand->dm_exp && is_array($demand->dm_exp) && count($demand->dm_exp) > 0)
                     <ul class="checkbox-list">
+                        @if(in_array('accomm', $demand->dm_exp))
                         <li>
-                            <span class="checkbox {{ in_array('accomm', $demand->dm_exp) ? 'checked' : '' }}"></span>
+                            <span class="checkbox checked"></span>
                             ที่พักอาศัย นายจ้างจะจัดหาที่พักให้โดยจะหักจากเงินเดือนตามที่กฎหมายกำหนด
                         </li>
+                        @endif
+                        
+                        @if(in_array('food', $demand->dm_exp))
                         <li>
-                            <span class="checkbox {{ in_array('food', $demand->dm_exp) ? 'checked' : '' }}"></span>
+                            <span class="checkbox checked"></span>
                             Food provided by workers อาหารจัดเตรียมโดยคนงานเอง
                         </li>
+                        @endif
+                        
+                        @if(in_array('med', $demand->dm_exp))
                         <li>
-                            <span class="checkbox {{ in_array('med', $demand->dm_exp) ? 'checked' : '' }}"></span>
+                            <span class="checkbox checked"></span>
                             ประกันสุขภาพ ตามกฎหมายอิสราเอล นายจ้างจะจัดให้มีประกันสุขภาพสำหรับลูกจ้างตั้งแต่วันแรกที่เริ่ม ทำงาน โดยจะมีการหักค่าใช้จ่ายจากเงินเดือนของลูกจ้าง
                         </li>
+                        @endif
+                        
+                        @if(in_array('shuttle', $demand->dm_exp))
                         <li>
-                            <span class="checkbox {{ in_array('shuttle', $demand->dm_exp) ? 'checked' : '' }}"></span>
+                            <span class="checkbox checked"></span>
                             รถรับส่งฟรี
                         </li>
+                        @endif
                     </ul>
                     @else
                     <p>ไม่มีข้อมูลค่าใช้จ่ายและสวัสดิการ</p>

@@ -269,7 +269,7 @@
 
 
 <div class="text-center text-secondary small mt-5" style="position:absolute; bottom:18px; left:0; width:100%; opacity:0.85;">
-  <span>VD-LABOURS V2.0.0</span>
+  <span>VD-LABOURS V2.1.0 <br> Updated At 06/12/2025</span>
 </div>
 </div>
 

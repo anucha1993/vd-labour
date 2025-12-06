@@ -381,7 +381,7 @@
                             <div class="col-md-4">
                                 <label>สายหาคน</label>
                                 <select name="labour_staff_sub" class="form-select" required
-                                    @cannot('update labour') disabled @endcannot>
+                                    @cannot('update labour staff') disabled @endcannot>
                                     <option @if ($labourModel->labour_staff_sub === 'no-sub') selected @endif value="no-sub">ไม่ระบุ
                                     </option>
 
@@ -402,7 +402,7 @@
                             <div class="col-md-4">
                                 <label>Staff</label>
                                 <select name="labour_staff" class="form-select"
-                                    @cannot('update labour') disabled @endcannot>
+                                    @cannot('update labour staff') disabled @endcannot>
                                     <option value="">Select a Staff</option>
                                     @forelse ($staffs as $item)
                                         <option @if ($item->staff_id === $labourModel->labour_staff) selected @endif

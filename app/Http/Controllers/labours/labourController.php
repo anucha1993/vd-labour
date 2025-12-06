@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\staff\staffModel;
 use App\Models\files\listFileModel;
 use App\Models\labours\labourModel;
+use App\Models\leads\LeadModel;
 use App\Models\staff\staffSubModel;
 use App\Http\Controllers\Controller;
 use App\Models\country\countryModel;
@@ -159,6 +160,33 @@ class labourController extends Controller
     {
 
         //dd($request->all());
+        
+        // ตรวจสอบ Passport ซ้ำ
+        if ($request->has('labour_passport_number') && !empty($request->labour_passport_number)) {
+            $passportNumber = $request->labour_passport_number;
+            
+            // ตรวจสอบใน labours table (ยกเว้น id ของตัวเอง)
+            $duplicateInLabour = labourModel::where('labour_passport_number', $passportNumber)
+                ->where('labour_id', '!=', $labourModel->labour_id)
+                ->first();
+            
+            // ตรวจสอบใน leads table
+            $duplicateInLead = LeadModel::where('lead_passport_number', $passportNumber)
+                ->first();
+            
+            if ($duplicateInLabour) {
+                return back()->withErrors([
+                    'labour_passport_number' => 'หมายเลข Passport นี้มีอยู่ในระบบแล้ว (แรงงาน: ' . $duplicateInLabour->labour_firstname . ' ' . $duplicateInLabour->labour_lastname . ')'
+                ])->withInput();
+            }
+            
+            if ($duplicateInLead) {
+                return back()->withErrors([
+                    'labour_passport_number' => 'หมายเลข Passport นี้มีอยู่ในระบบแล้ว (ผู้สมัคร: ' . $duplicateInLead->lead_firstname . ' ' . $duplicateInLead->lead_lastname . ')'
+                ])->withInput();
+            }
+        }
+        
         $labourModel->update($request->all());
         labourFileModel::where('labour_id', $labourModel->labour_id)->update(['labour_passport_number' => $labourModel->labour_passport_number]);
         $files = $request->file('files');

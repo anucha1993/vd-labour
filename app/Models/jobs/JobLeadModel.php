@@ -113,8 +113,10 @@ class JobLeadModel extends Model
         return $query->where('job_lead_status', 'ตอบรับ')
                     ->where(function($q) {
                         $q->whereNull('convert_status')
-                          ->orWhere('convert_status', '!=', 'converted');
-                    });
+                          ->orWhere('convert_status', 'pending')
+                          ->orWhere('convert_status', 'failed');
+                    })
+                    ->whereNull('labour_id'); // ยังไม่ได้ convert เป็น labour
     }
     
     // Accessors & Mutators

@@ -27,6 +27,8 @@ trait LogsJobLeadActivity
     ): JobLeadActivityModel {
         return JobLeadActivityModel::create([
             'job_lead_id' => $this->job_lead_id,
+            'lead_id' => $this->lead_id, // เก็บ lead_id ไว้
+            'job_lead_number' => $this->job_lead_number, // เก็บเลขที่ใบสมัครไว้
             'activity_type' => $activityType,
             'old_status' => $oldStatus,
             'new_status' => $newStatus,

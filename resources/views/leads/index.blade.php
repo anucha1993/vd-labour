@@ -116,7 +116,38 @@
                                         </div>
                                     @endif
                                 </td>
-                                <td><strong>{{ $item->fullName }}</strong></td>
+                                <td>
+                                    <strong>{{ $item->fullName }}</strong>
+                                    @if($item->lead_bmi)
+                                        @php
+                                            $bmi = $item->lead_bmi;
+                                            $category = '';
+                                            $badgeClass = 'secondary';
+                                            
+                                            if ($bmi < 18.50) {
+                                                $category = 'ผอม';
+                                                $badgeClass = 'primary';
+                                            } elseif ($bmi >= 18.50 && $bmi <= 22.90) {
+                                                $category = 'ปกติ';
+                                                $badgeClass = 'success';
+                                            } elseif ($bmi >= 23 && $bmi <= 24.90) {
+                                                $category = 'ท้วม';
+                                                $badgeClass = 'warning';
+                                            } elseif ($bmi >= 25 && $bmi <= 29.90) {
+                                                $category = 'อ้วน 1';
+                                                $badgeClass = 'warning';
+                                            } else {
+                                                $category = 'อ้วน 2';
+                                                $badgeClass = 'danger';
+                                            }
+                                        @endphp
+                                        <br>
+                                        <small>
+                                  
+                                            <span class="badge bg-{{ $badgeClass }}" style="font-size: 0.65rem;">BMI : {{ number_format($bmi, 1) }} {{ $category }}</span>
+                                        </small>
+                                    @endif
+                                </td>
                                 <td>{{ $item->lead_phone ?? '-' }}</td>
                                 <td>
                                     @if($item->position)
