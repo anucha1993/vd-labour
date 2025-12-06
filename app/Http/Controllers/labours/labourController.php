@@ -187,8 +187,13 @@ class labourController extends Controller
             }
         }
         
-        $labourModel->update($request->all());
-        labourFileModel::where('labour_id', $labourModel->labour_id)->update(['labour_passport_number' => $labourModel->labour_passport_number]);
+        $data = $request->all();
+        $data['updated_by'] = auth()->id();
+        $labourModel->update($data);
+        labourFileModel::where('labour_id', $labourModel->labour_id)->update([
+            'labour_passport_number' => $labourModel->labour_passport_number,
+            'updated_by' => auth()->id()
+        ]);
         $files = $request->file('files');
         $fullPath = 'LABOURS/' . $labourModel->labour_path;
         if ($files) {
@@ -208,7 +213,10 @@ class labourController extends Controller
 
                 // ตรวจสอบผลลัพธ์ของการอัปโหลด
                 if ($path) {
-                    labourFileModel::where('labour_file_id', $request->labour_file_id[$key])->update(['labour_file_path' => $uniqueName]);
+                    labourFileModel::where('labour_file_id', $request->labour_file_id[$key])->update([
+                        'labour_file_path' => $uniqueName,
+                        'updated_by' => auth()->id()
+                    ]);
                 } else {
                     // อัปโหลดไม่สำเร็จ
                 }
@@ -235,6 +243,7 @@ class labourController extends Controller
             if ($path) {
                 labourModel::where('labour_id', $labourModel->labour_id)->update([
                     'labour_cid_results_file' => $uniqueName,
+                    'updated_by' => auth()->id(),
                 ]);
             }
         }
@@ -260,6 +269,7 @@ class labourController extends Controller
             if ($path) {
                 labourModel::where('labour_id', $labourModel->labour_id)->update([
                     'labour_visa_file' => $uniqueName,
+                    'updated_by' => auth()->id(),
                 ]);
             }
         }
@@ -273,7 +283,11 @@ class labourController extends Controller
         $counFileNotNull = labourFileModel::where('labour_id', $labourModel->labour_id)
             ->whereNotNull('labour_file_path')
             ->count('labour_file_id');
-        $labourModel->update(['labour_file_count' => $counFile, 'labour_file_list' => $counFileNotNull]);
+        $labourModel->update([
+            'labour_file_count' => $counFile, 
+            'labour_file_list' => $counFileNotNull,
+            'updated_by' => auth()->id()
+        ]);
 
 
       
@@ -292,7 +306,10 @@ class labourController extends Controller
         }
 
         // เคลียร์ชื่อไฟล์ออกจากฐานข้อมูล
-        $labour->update(['labour_cid_results_file' => null]);
+        $labour->update([
+            'labour_cid_results_file' => null,
+            'updated_by' => auth()->id()
+        ]);
     }
 
     return redirect()->back()->with('success', 'ลบไฟล์เรียบร้อยแล้ว');
@@ -310,7 +327,10 @@ public function deleteVisaFile($labourId)
         }
 
         // เคลียร์ชื่อไฟล์ออกจากฐานข้อมูล
-        $labour->update(['labour_visa_file' => null]);
+        $labour->update([
+            'labour_visa_file' => null,
+            'updated_by' => auth()->id()
+        ]);
     }
 
     return redirect()->back()->with('success', 'ลบไฟล์ VISA เรียบร้อยแล้ว');
@@ -330,7 +350,8 @@ public function deleteVisaFile($labourId)
        
 
         if (empty($checkLabour)) {
-            $request->merge(['created_by' => Auth::user()->name]);
+            $request->merge(['created_by' => auth()->id()]);
+            $request->merge(['updated_by' => auth()->id()]);
             $request->merge(['labour_folder_year' => date('Y')]);
             $labourModel = labourModel::create($request->all());
          
@@ -346,7 +367,12 @@ public function deleteVisaFile($labourId)
             $listfiles = listFileModel::where('file_manage_id', $labourModel->labour_location_doc)->get();
             $filecount = $listfiles->count();
 
-            $labourModel->update(['labour_path' => $folderPath, 'labour_file_count' => $filecount, 'labour_file_list' => 0]);
+            $labourModel->update([
+                'labour_path' => $folderPath, 
+                'labour_file_count' => $filecount, 
+                'labour_file_list' => 0,
+                'updated_by' => auth()->id()
+            ]);
 
             if ($labourModel) {
                 foreach ($listfiles as $list) {
@@ -357,6 +383,8 @@ public function deleteVisaFile($labourId)
                         'list_file_id' => $list->list_file_id,
                         'labour_id' => $labourModel->labour_id,
                         'labour_passport_number' => $labourModel->labour_passport_number,
+                        'created_by' => auth()->id(),
+                        'updated_by' => auth()->id(),
                     ]);
                 }
 
@@ -375,6 +403,7 @@ public function deleteVisaFile($labourId)
                     if ($path) {
                         $labourModel->update([
                             'labour_cid_results_file' => $uniqueName,
+                            'updated_by' => auth()->id(),
                         ]);
                     }
                 }
@@ -394,6 +423,7 @@ public function deleteVisaFile($labourId)
                     if ($path) {
                         $labourModel->update([
                             'labour_visa_file' => $uniqueName,
+                            'updated_by' => auth()->id(),
                         ]);
                     }
                 }

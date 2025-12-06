@@ -228,6 +228,8 @@ class JobLeadConversionController extends Controller
                     'list_file_id' => $list->list_file_id,
                     'labour_id' => $labour->labour_id,
                     'labour_passport_number' => $labour->labour_passport_number,
+                    'created_by' => auth()->id(),
+                    'updated_by' => auth()->id(),
                 ]);
             }
         }

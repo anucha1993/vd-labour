@@ -27,11 +27,17 @@ class labourFileController extends Controller
         if (Storage::disk('public')->exists($path)) {
             Storage::disk('public')->delete($path); // ลบไฟล์ที่ระบุ
 
-            labourFileModel::where('labour_file_id', $request->fileId)->update(['labour_file_path' => null]);
+            labourFileModel::where('labour_file_id', $request->fileId)->update([
+                'labour_file_path' => null,
+                'updated_by' => auth()->id()
+            ]);
 
             return response()->json(['success' => 'Deleted File Path ' . $request->path . ' Successfully.']);
         } else {
-            labourFileModel::where('labour_file_id', $request->fileId)->update(['labour_file_path' => null]);
+            labourFileModel::where('labour_file_id', $request->fileId)->update([
+                'labour_file_path' => null,
+                'updated_by' => auth()->id()
+            ]);
             return response()->json(['error' => 'Cannot Delete File Path ' . $request->path . ' Error.']);
         }
     }

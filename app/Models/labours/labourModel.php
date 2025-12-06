@@ -112,6 +112,15 @@ class labourModel extends Model
         return $this->belongsTo(staffSubModel::class, 'labour_staff_sub', 'staff_sub_id');
     }
     
+    public function creator()
+    {
+        return $this->belongsTo(\App\Models\User::class, 'created_by');
+    }
+
+    public function updater()
+    {
+        return $this->belongsTo(\App\Models\User::class, 'updated_by');
+    }
 
     public function labourFile()
     {
