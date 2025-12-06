@@ -221,18 +221,35 @@
 
 
                                         @can('delete lead')
-                                        @if(!$item->isConverted())
-                                        <form action="{{ route('leads.destroy', $item->lead_id) }}" 
-                                              method="POST" 
-                                              class="d-inline" 
-                                              onsubmit="return confirm('คุณแน่ใจหรือไม่ว่าต้องการลบผู้สนใจนี้?');">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="ลบ">
-                                                <i class="bi bi-trash-fill"></i>
-                                            </button>
-                                        </form>
-                                        @endif
+                                            @if($item->isConverted())
+                                                @can('delete converted lead')
+                                                    <form action="{{ route('leads.destroy', $item->lead_id) }}" 
+                                                          method="POST" 
+                                                          class="d-inline" 
+                                                          onsubmit="return confirm('Lead นี้ถูก Convert แล้ว คุณแน่ใจหรือไม่ว่าต้องการลบ?');">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="ลบ (Converted)">
+                                                            <i class="bi bi-trash-fill"></i>
+                                                        </button>
+                                                    </form>
+                                                @else
+                                                    <button type="button" class="btn btn-sm btn-outline-secondary" disabled title="ไม่มีสิทธิ์ลบ Lead ที่ Convert แล้ว">
+                                                        <i class="bi bi-lock-fill"></i>
+                                                    </button>
+                                                @endcan
+                                            @else
+                                                <form action="{{ route('leads.destroy', $item->lead_id) }}" 
+                                                      method="POST" 
+                                                      class="d-inline" 
+                                                      onsubmit="return confirm('คุณแน่ใจหรือไม่ว่าต้องการลบผู้สนใจนี้?');">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger" title="ลบ">
+                                                        <i class="bi bi-trash-fill"></i>
+                                                    </button>
+                                                </form>
+                                            @endif
                                         @endcan
                                     </div>
                                 </td>

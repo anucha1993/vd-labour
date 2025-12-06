@@ -530,7 +530,7 @@
                                         <option @if ($item->file_manage_id === $labourModel->labour_location_doc) selected @endif
                                             value="{{ $item->file_manage_id }}">{{ $item->file_manage_name }}</option>
                                     @empty
-                                    @endforelse
+                                    @endforelse 
                                 </select>
                             </div>
 

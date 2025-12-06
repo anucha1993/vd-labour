@@ -3,11 +3,24 @@
     <div class="card card-custom mb-4">
         <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h4 class="mb-0"><i class="bi bi-pencil-square me-2 text-primary"></i>แก้ไขข้อมูลผู้สนใจ (Lead): {{ $lead->getFullNameAttribute() }}</h4>
+                <h4 class="mb-0">
+                    <i class="bi bi-pencil-square me-2 text-primary"></i>แก้ไขข้อมูลผู้สนใจ (Lead): {{ $lead->getFullNameAttribute() }}
+                    @if($lead->lead_status == 'converted')
+                        <span class="badge bg-success ms-2">
+                            <i class="bi bi-check-circle-fill"></i> Converted
+                        </span>
+                    @endif
+                </h4>
                 <a href="{{ route('leads.index') }}" class="btn btn-secondary">
                     <i class="bi bi-arrow-left"></i> กลับ
                 </a>
             </div>
+
+            @if($lead->lead_status == 'converted' && !auth()->user()->can('update converted lead'))
+                <div class="alert alert-warning">
+                    <i class="bi bi-lock-fill"></i> <strong>ข้อมูลถูกล็อก:</strong> Lead นี้ถูก Convert เป็นแรงงานแล้ว คุณไม่มีสิทธิ์แก้ไขข้อมูล (ติดต่อผู้ดูแลระบบหากจำเป็นต้องแก้ไข)
+                </div>
+            @endif
 
             @if ($errors->any())
                 <div class="alert alert-danger">
@@ -557,12 +570,20 @@
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label class="form-label">สถานะ Lead</label>
-                                <select class="form-select" name="lead_status">
-                                    <option value="new" {{ old('lead_status', $lead->lead_status ?? 'new') == 'new' ? 'selected' : '' }}>ใหม่</option>
-                                    <option value="contacted" {{ old('lead_status', $lead->lead_status) == 'contacted' ? 'selected' : '' }}>ติดต่อแล้ว</option>
-                                    <option value="interview" {{ old('lead_status', $lead->lead_status) == 'interview' ? 'selected' : '' }}>นัดสัมภาษณ์</option>
-                                    <option value="qualified" {{ old('lead_status', $lead->lead_status) == 'qualified' ? 'selected' : '' }}>ผ่านคุณสมบัติ</option>
-                                </select>
+                                @if($lead->lead_status == 'converted')
+                                    <input type="text" class="form-control bg-success text-white" value="แปลงเป็นแรงงานแล้ว (ล็อกสถานะ)" readonly>
+                                    <input type="hidden" name="lead_status" value="converted">
+                                    <small class="text-muted">
+                                        <i class="bi bi-lock-fill"></i> ไม่สามารถเปลี่ยนสถานะได้เนื่องจากถูก Convert ไปแล้ว
+                                    </small>
+                                @else
+                                    <select class="form-select" name="lead_status">
+                                        <option value="new" {{ old('lead_status', $lead->lead_status ?? 'new') == 'new' ? 'selected' : '' }}>ใหม่</option>
+                                        <option value="contacted" {{ old('lead_status', $lead->lead_status) == 'contacted' ? 'selected' : '' }}>ติดต่อแล้ว</option>
+                                        <option value="interview" {{ old('lead_status', $lead->lead_status) == 'interview' ? 'selected' : '' }}>นัดสัมภาษณ์</option>
+                                        <option value="qualified" {{ old('lead_status', $lead->lead_status) == 'qualified' ? 'selected' : '' }}>ผ่านคุณสมบัติ</option>
+                                    </select>
+                                @endif
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">เจ้าหน้าที่ผู้รับผิดชอบ (พนักงาน วีดี)</label>
@@ -729,9 +750,15 @@
                     <a href="{{ route('leads.index') }}" class="btn btn-secondary">
                         <i class="bi bi-x-circle"></i> ยกเลิก
                     </a>
-                    <button type="submit" class="btn btn-success btn-lg">
-                        <i class="bi bi-save"></i> บันทึกการแก้ไข
-                    </button>
+                    @if($lead->lead_status == 'converted' && !auth()->user()->can('update converted lead'))
+                        <button type="button" class="btn btn-success btn-lg" disabled>
+                            <i class="bi bi-lock-fill"></i> ไม่สามารถบันทึกได้ (ถูก Convert แล้ว)
+                        </button>
+                    @else
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="bi bi-save"></i> บันทึกการแก้ไข
+                        </button>
+                    @endif
                 </div>
             </form>
         </div>

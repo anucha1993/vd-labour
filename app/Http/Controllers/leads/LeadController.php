@@ -101,7 +101,7 @@ class LeadController extends Controller
             'lead_photo.mimes' => 'รูปภาพต้องเป็นไฟล์ประเภท: jpeg, png, jpg, gif',
             'lead_photo.max' => 'ขนาดรูปภาพต้องไม่เกิน 2MB',
         ]);
-
+          
         // ตรวจสอบ Passport ซ้ำใน Lead และ Labour
         if ($request->filled('lead_passport_number')) {
             $passportNumber = $request->lead_passport_number;
@@ -214,6 +214,11 @@ class LeadController extends Controller
     {
         $lead = LeadModel::findOrFail($id);
         
+        // ตรวจสอบสิทธิ์สำหรับแก้ไข Lead ที่ Convert แล้ว
+        if ($lead->lead_status === 'converted' && !auth()->user()->can('update converted lead')) {
+            return back()->with('error', 'คุณไม่มีสิทธิ์แก้ไข Lead ที่ถูก Convert แล้ว');
+        }
+        
         $request->validate([
             'lead_firstname' => 'required|string|max:255',
             'lead_lastname' => 'required|string|max:255',
@@ -237,6 +242,7 @@ class LeadController extends Controller
             
             // ตรวจสอบใน labours table
             $duplicateInLabour = labourModel::where('labour_passport_number', $passportNumber)
+                 ->where('lead_id', '!=', $id)
                 ->first();
             
             if ($duplicateInLead) {
@@ -256,6 +262,13 @@ class LeadController extends Controller
         
         // Add updated_by
         $data['updated_by'] = auth()->id();
+        
+        // Lock lead_status if already converted - ห้ามเปลี่ยน status ถ้าถูก convert แล้ว
+        if ($lead->lead_status === 'converted') {
+            $data['lead_status'] = 'converted';
+            $data['labour_id'] = $lead->labour_id;
+            $data['converted_at'] = $lead->converted_at;
+        }
         
         // Calculate BMI
         if ($request->filled('lead_height') && $request->filled('lead_weight')) {
@@ -301,8 +314,12 @@ class LeadController extends Controller
     {
         $lead = LeadModel::findOrFail($id);
         
+        // ตรวจสอบว่า Lead ถูก Convert แล้วหรือไม่
         if ($lead->isConverted()) {
-            return back()->with('error', 'ไม่สามารถลบ Lead ที่ถูก Convert แล้ว');
+            // ถ้า Convert แล้ว ต้องมีสิทธิ์พิเศษถึงจะลบได้
+            if (!auth()->user()->can('delete converted lead')) {
+                return back()->with('error', 'ไม่สามารถลบ Lead ที่ถูก Convert แล้ว (ต้องมีสิทธิ์พิเศษ)');
+            }
         }
         
         try {
