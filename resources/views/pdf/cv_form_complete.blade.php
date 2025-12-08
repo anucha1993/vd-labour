@@ -132,7 +132,6 @@
                 <td colspan="7" style="border: 1px solid black; padding: 4px; font-weight: bold;">Position 2 : {{ $lead && $lead->position2 ? $lead->position2->position_name : '' }}</td>
                 <td colspan="6" style="border: 1px solid black; padding: 4px; font-weight: bold;">Position 3 : {{ $lead && $lead->position3 ? $lead->position3->position_name : '' }}</td>
             </tr>
-
             <!-- Full Name Row -->
             <tr>
                 <td colspan="10" style="border: 1px solid black; padding: 4px; font-weight: bold;">Full Name : {{ $lead ? ($lead->lead_prefix ? $lead->lead_prefix . ' ' : '') . $lead->lead_firstname . ' ' . $lead->lead_lastname : '' }}</td>
@@ -657,10 +656,15 @@
      <br>
 
      <div style="padding: 10px; text-align: left; font-weight: bold;">การยืนยันสถานะทางกฎหมายและความบริสุทธิ์ทางคดี</div>
-     <div style="padding: 10px; text-align: left; font-weight: bold;"> <span class="checkbox">✓</span>   ไม่มีคดี &nbsp; &nbsp; &nbsp; <span class="checkbox">✓</span>   มีคดี ระบุรายละเอียด.</div>
-     <div style="padding: 10px; text-align: left; font-weight: bold;">[ ] ข้าพเจ้ายืนยันว่าข้าพเจ้าไม่เคยมีประวัติอาชญากรรม ไม่เคยถูกดำเนินคดีอาญาใด ๆ  ทั้งในอดีตและ																									
+     <div style="padding: 10px; text-align: left; font-weight: bold;"> 
+        <span class="checkbox">{!! $lead && $lead->lead_criminal_history == 'no' ? '✓' : '<span style="color:white;">✓</span>' !!}</span> ไม่มีคดี &nbsp; &nbsp; &nbsp; 
+        <span class="checkbox">{!! $lead && $lead->lead_criminal_history == 'yes' ? '✓' : '<span style="color:white;">✓</span>' !!}</span> มีคดี ระบุรายละเอียด: {{ $lead && $lead->lead_criminal_details ? $lead->lead_criminal_details : '' }}
+     </div>
+     <div style="padding: 10px; text-align: left; font-weight: bold;">
+        <span class="checkbox"><span style="color:white;">✓</span></span> ข้าพเจ้ายืนยันว่าข้าพเจ้าไม่เคยมีประวัติอาชญากรรม ไม่เคยถูกดำเนินคดีอาญาใด ๆ  ทั้งในอดีตและ																									
 ปัจจุบัน และไม่มีคดีอาญาที่อยู่ในกระบวนการพิจารณาของศาล หากมีการเปลี่ยนแปลงเกี่ยวกับสถานะทาง																									
-กฎหมายในอนาคต ข้าพเจ้าจะแจ้งให้บริษัททราบโดยทันที </div>
+กฎหมายในอนาคต ข้าพเจ้าจะแจ้งให้บริษัททราบโดยทันที 
+     </div>
 </div>
 <br>
 <br>
