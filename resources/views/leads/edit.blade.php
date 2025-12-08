@@ -414,6 +414,50 @@
                                 </select>
                             </div>
                         </div>
+
+                        <!-- Skills Section -->
+                        <div class="row mt-4">
+                            <div class="col-md-12">
+                                <label class="form-label fw-bold">SKILLS (ทักษะ) - เลือกได้หลายรายการ</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            @php
+                                $skills = [
+                                    'electrician' => 'ELECTRICIAN',
+                                    'painter' => 'PAINTER',
+                                    'welder' => 'WELDER',
+                                    'tile' => 'TILE',
+                                    'agriculture' => 'AGRICULTURE',
+                                    'factory' => 'FACTORY',
+                                    'carpenter' => 'CARPENTER',
+                                    'plasterer' => 'PLASTERER',
+                                    'iron' => 'IRON',
+                                    'brick' => 'BRICK',
+                                    'plumber' => 'PLUMBER',
+                                    'roller' => 'ROLLER',
+                                    'loader' => 'LOADER',
+                                    'excavators' => 'Excavators',
+                                    'jcb' => 'JCB',
+                                    'telescopic' => 'Telescopic',
+                                    'forklift' => 'Driving a Forklift',
+                                    'etc' => 'Etc.'
+                                ];
+                                $selectedSkills = old('lead_skills', $lead->lead_skills ?? []);
+                            @endphp
+                            @foreach($skills as $value => $label)
+                                <div class="col-md-2 col-sm-4 col-6 mb-2">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="lead_skills[]" 
+                                               value="{{ $value }}" id="skill_{{ $value }}"
+                                               {{ in_array($value, $selectedSkills) ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="skill_{{ $value }}">
+                                            {{ $label }}
+                                        </label>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
                     </div>
                 </div>
 

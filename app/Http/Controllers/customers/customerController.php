@@ -43,5 +43,6 @@ class customerController extends Controller
     public function update(customerModel $customerModel, Request $request)
     {
         $customerModel->update($request->all());
+         return redirect()->back();
     }
 }
