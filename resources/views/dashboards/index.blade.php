@@ -236,7 +236,35 @@
         <!-- Job Lead Notification -->
         <div class="col-12 col-sm-6 col-md-3">
             <a href="{{ route('notifications.index') }}" class="text-decoration-none">
-                <div class="alert-card">
+                <div class="alert-card" 
+                     data-bs-toggle="tooltip" 
+                     data-bs-placement="top" 
+                     data-bs-html="true"
+                     title="<div style='text-align: left; padding: 8px;'>
+                                <strong style='color: #9c27b0; font-size: 14px;'>📋 เงื่อนไขการแจ้งเตือนใบสมัครงาน</strong>
+                                <hr style='margin: 8px 0; border-color: #ddd;'>
+                                <div style='margin-bottom: 10px;'>
+                                    <strong>⏰ ระยะเวลาการแจ้งเตือน:</strong><br>
+                                    • <span style='color: #2196f3;'>7 วัน</span> - แจ้งเตือนครั้งที่ 1<br>
+                                    • <span style='color: #ff9800;'>14 วัน</span> - แจ้งเตือนครั้งที่ 2<br>
+                                    • <span style='color: #f44336;'>21 วัน</span> - แจ้งเตือนครั้งสุดท้าย (สามารถรอได้)<br>
+                                    • <span style='color: #d32f2f; font-weight: bold;'>มากกว่า 21 วัน</span> - บังคับถอนใบสมัคร
+                                </div>
+                                <hr style='margin: 8px 0; border-color: #ddd;'>
+                                <div style='margin-bottom: 10px;'>
+                                    <strong>🔄 การตรวจสอบอัตโนมัติ:</strong><br>
+                                    • รอบเช็ค: <span style='color: #4caf50;'>วันละ 2 รอบ</span><br>
+                                    • เวลา: <span style='color: #4caf50;'>ทุกวัน 08:00 น.</span>
+                                    • เวลา: <span style='color: #4caf50;'>ทุกวัน 12:00 น.</span>
+                                    • เวลา: <span style='color: #4caf50;'>ทุกวัน 17:00 น.</span>
+                                </div>
+                                <hr style='margin: 8px 0; border-color: #ddd;'>
+                                <div style='font-size: 12px; color: #666;'>
+                                    <strong>📌 สถานะที่ติดตาม:</strong><br>
+                                    ร่าง | ส่งแล้ว | กำลังพิจารณา<br>
+                                    นัดสัมภาษณ์ | เสนองาน
+                                </div>
+                            </div>">
                     <span class="alert-icon bg-purple"><i class="mdi mdi-briefcase-alert"></i></span>
                     <span class="alert-badge" style="background:#9c27b0;">ใบสมัครงาน</span>
                     <div class="alert-label">แจ้งเตือนใบสมัครงาน</div>
@@ -333,6 +361,14 @@
         }
       }
     }
+  });
+
+  // Initialize Bootstrap Tooltips
+  document.addEventListener('DOMContentLoaded', function() {
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
   });
 </script>
 

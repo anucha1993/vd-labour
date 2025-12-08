@@ -12,8 +12,12 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // ตรวจสอบการแจ้งเตือนใบสมัครงานทุกวันเวลา 09:00
-        $schedule->command('joblead:check-notifications')->dailyAt('09:00');
+        // ตรวจสอบการแจ้งเตือนใบสมัครงานทุกนาที (สำหรับทดสอบ)
+        // เปลี่ยนเป็น dailyAt('09:00') เมื่อใช้งานจริง
+        $schedule->command('joblead:check-notifications')->everyMinute();
+        
+        // หรือใช้แบบนี้สำหรับ production:
+        // $schedule->command('joblead:check-notifications')->dailyAt('09:00');
     }
 
     /**
