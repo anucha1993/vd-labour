@@ -520,18 +520,58 @@
                         <div class="row g-3">
 
                             <h4 class=" mt-3">จัดเก็บเอกสาร</h4>
+                            
+                            @if($labourModel->lead_id)
+                                <div class="col-md-12">
+                                    <div class="alert alert-info">
+                                        <i class="bi bi-info-circle-fill"></i> <strong>แปลงมาจาก Lead</strong> - สามารถเปลี่ยน Docs. Type ได้ (เฉพาะครั้งแรกเท่านั้น หากยังไม่มีการตั้งค่า)
+                                    </div>
+                                </div>
+                            @endif
 
                             <div class="col-md-3">
                                 <label>Docs. Type. (Path จัดเก็บเอกสาร)</label>
-                                <select name="labour_location_doc" class="form-select" required
-                                    @cannot('update labour') disabled @endcannot>
-                                    <option value="">Select a File Manage</option>
-                                    @forelse ($fileManage as $item)
-                                        <option @if ($item->file_manage_id === $labourModel->labour_location_doc) selected @endif
-                                            value="{{ $item->file_manage_id }}">{{ $item->file_manage_name }}</option>
-                                    @empty
-                                    @endforelse 
-                                </select>
+                                @if(!empty($labourModel->labour_location_doc) && empty($labourModel->lead_id))
+                                    {{-- ถ้ามีค่าแล้วและไม่ได้มาจาก Lead ให้ล็อก --}}
+                                    <select class="form-select" disabled>
+                                        <option value="">Select a File Manage</option>
+                                        @forelse ($fileManage as $item)
+                                            <option @if ($item->file_manage_id === $labourModel->labour_location_doc) selected @endif
+                                                value="{{ $item->file_manage_id }}">{{ $item->file_manage_name }}</option>
+                                        @empty
+                                        @endforelse 
+                                    </select>
+                                    <input type="hidden" name="labour_location_doc" value="{{ $labourModel->labour_location_doc }}">
+                                    <small class="text-warning">
+                                        <i class="bi bi-lock-fill"></i> ล็อกแล้ว - ไม่สามารถเปลี่ยนได้หลังจากตั้งค่าแล้ว
+                                    </small>
+                                @elseif(!empty($labourModel->labour_location_doc) && !empty($labourModel->lead_id))
+                                    {{-- ถ้ามาจาก Lead และมี location_doc อยู่แล้ว ให้ส่งค่าแต่แสดงปกติ --}}
+                                    <select name="labour_location_doc" class="form-select" required>
+                                        <option value="">Select a File Manage</option>
+                                        @forelse ($fileManage as $item)
+                                            <option @if ($item->file_manage_id === $labourModel->labour_location_doc) selected @endif
+                                                value="{{ $item->file_manage_id }}">{{ $item->file_manage_name }}</option>
+                                        @empty
+                                        @endforelse 
+                                    </select>
+                                    <small class="text-info">
+                                        <i class="bi bi-info-circle-fill"></i> แปลงมาจาก Lead - มี Docs Type อยู่แล้ว
+                                    </small>
+                                @else
+                                    {{-- ถ้ายังไม่มีค่า ให้เลือกได้ --}}
+                                    <select name="labour_location_doc" class="form-select" required>
+                                        <option value="">Select a File Manage</option>
+                                        @forelse ($fileManage as $item)
+                                            <option @if ($item->file_manage_id === $labourModel->labour_location_doc) selected @endif
+                                                value="{{ $item->file_manage_id }}">{{ $item->file_manage_name }}</option>
+                                        @empty
+                                        @endforelse 
+                                    </select>
+                                    <small class="text-success">
+                                        <i class="bi bi-unlock-fill"></i> ยังไม่มีการตั้งค่า - สามารถเลือกได้
+                                    </small>
+                                @endif
                             </div>
 
                             <div class="col-md-3 mb-2">

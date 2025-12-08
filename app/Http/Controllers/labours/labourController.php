@@ -170,8 +170,9 @@ class labourController extends Controller
                 ->where('labour_id', '!=', $labourModel->labour_id)
                 ->first();
             
-            // ตรวจสอบใน leads table
+            // ตรวจสอบใน leads table (ยกเว้น lead ที่เป็นต้นทางของ labour นี้)
             $duplicateInLead = LeadModel::where('lead_passport_number', $passportNumber)
+                ->where('lead_id', '!=', $labourModel->lead_id) // ยกเว้น lead ที่ถูก convert มา
                 ->first();
             
             if ($duplicateInLabour) {
@@ -189,7 +190,43 @@ class labourController extends Controller
         
         $data = $request->all();
         $data['updated_by'] = auth()->id();
+        
+        // ตรวจสอบว่ามีการเปลี่ยน labour_location_doc หรือไม่
+        $oldLocationDoc = $labourModel->labour_location_doc;
+        $newLocationDoc = $request->labour_location_doc;
+        
         $labourModel->update($data);
+        
+        // ตรวจสอบว่ามี labour_file หรือยัง
+        $existingFileCount = labourFileModel::where('labour_id', $labourModel->labour_id)->count();
+        
+        // ถ้ายังไม่มี labour_file เลย และมี labour_location_doc ให้สร้างรายการเอกสาร
+        if ($existingFileCount == 0 && !empty($newLocationDoc)) {
+            // ดึงรายการเอกสารจาก file_manage
+            $listfiles = listFileModel::where('file_manage_id', $newLocationDoc)->get();
+            
+            // สร้างรายการเอกสารใหม่
+            foreach ($listfiles as $list) {
+                labourFileModel::create([
+                    'labour_file_name' => $list->list_file_name,
+                    'labour_file_note' => $list->list_file_note,
+                    'labour_file_path' => null,
+                    'list_file_id' => $list->list_file_id,
+                    'labour_id' => $labourModel->labour_id,
+                    'labour_passport_number' => $labourModel->labour_passport_number,
+                    'created_by' => auth()->id(),
+                    'updated_by' => auth()->id(),
+                ]);
+            }
+            
+            // อัปเดตจำนวนไฟล์
+            $filecount = labourFileModel::where('labour_id', $labourModel->labour_id)->count();
+            $labourModel->update([
+                'labour_file_count' => $filecount,
+                'updated_by' => auth()->id()
+            ]);
+        }
+        
         labourFileModel::where('labour_id', $labourModel->labour_id)->update([
             'labour_passport_number' => $labourModel->labour_passport_number,
             'updated_by' => auth()->id()
