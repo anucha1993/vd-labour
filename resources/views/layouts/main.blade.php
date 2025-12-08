@@ -79,6 +79,12 @@
     .dropdown-icon.rotate {
       transform: rotate(90deg);
     }
+    .text-purple {
+      color: #9c27b0 !important;
+    }
+    .bg-purple {
+      background-color: #9c27b0 !important;
+    }
   .content {
   margin-left: 250px;
   padding: 30px;
@@ -295,7 +301,8 @@
             ($scopeExpiringAffidavit ?? 0) > 0 ||
             ($visaNotUpdate ?? 0) > 0 ||
             ($visaApproved ?? 0) > 0 ||
-            ($visaRejected ?? 0) > 0;
+            ($visaRejected ?? 0) > 0 ||
+            ($jobLeadNotifications ?? 0) > 0;
         @endphp
         <button class="btn position-relative p-0 border-0 bg-transparent{{ $hasAlert ? '' : ' disabled' }}" id="notifyDropdown" data-bs-toggle="dropdown" aria-expanded="false" {{ $hasAlert ? '' : 'tabindex="-1" aria-disabled="true"' }}>
           <i class="bi bi-bell fs-3"></i>
@@ -392,6 +399,15 @@
                 <i class="bi bi-x-circle text-warning"></i>
                 <span>VISA ไม่อนุมัติ</span>
                 <span class="badge bg-warning ms-auto">{{ $visaRejected }}</span>
+              </a>
+            </li>
+            @endif
+            @if(($jobLeadNotifications ?? 0) > 0)
+            <li>
+              <a class="dropdown-item d-flex align-items-center gap-2" href="{{ route('notifications.index') }}">
+                <i class="bi bi-briefcase-fill text-purple"></i>
+                <span>แจ้งเตือนใบสมัครงาน</span>
+                <span class="badge bg-purple ms-auto">{{ $jobLeadNotifications }}</span>
               </a>
             </li>
             @endif
