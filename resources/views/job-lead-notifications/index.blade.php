@@ -151,9 +151,7 @@
     </div>
 </div>
 
-@endsection
 
-@section('scripts')
 <script>
     let responseModal;
     
@@ -161,7 +159,7 @@
         responseModal = new bootstrap.Modal(document.getElementById('responseModal'));
     });
     
-    function showResponseModal(notificationId, notificationType) {
+    window.showResponseModal = function(notificationId, notificationType) {
         document.getElementById('notification_id').value = notificationId;
         document.getElementById('notification_type').value = notificationType;
         
@@ -177,7 +175,7 @@
         responseModal.show();
     }
     
-    function submitResponse() {
+    window.submitResponse = function() {
         const form = document.getElementById('responseForm');
         const formData = new FormData(form);
         const notificationId = document.getElementById('notification_id').value;

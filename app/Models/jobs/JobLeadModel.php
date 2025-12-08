@@ -146,6 +146,23 @@ class JobLeadModel extends Model
         return in_array($this->job_lead_status, self::UNLOCKED_STATUSES);
     }
     
+    // Helper methods
+    public function getStatusColor()
+    {
+        $colors = [
+            'ร่าง' => 'secondary',
+            'ส่งแล้ว' => 'primary',
+            'กำลังพิจารณา' => 'info',
+            'นัดสัมภาษณ์' => 'warning',
+            'เสนองาน' => 'warning',
+            'ตอบรับ' => 'success',
+            'ปฏิเสธ' => 'danger',
+            'ถอน' => 'dark'
+        ];
+        
+        return $colors[$this->job_lead_status] ?? 'secondary';
+    }
+    
     // Static methods
     public static function generateJobLeadNumber($countryId)
     {
