@@ -153,7 +153,9 @@ Route::middleware(['auth'])->group(function () {
     // My Leads Routes (User's own leads)
     Route::get('/my-leads', [\App\Http\Controllers\leads\MyLeadsController::class, 'index'])->name('my-leads.index');
     Route::get('/my-leads/{lead}/timeline', [\App\Http\Controllers\leads\MyLeadsController::class, 'timeline'])->name('my-leads.timeline');
-     
+    
+    // Manual Routes
+    Route::get('/manual', [\App\Http\Controllers\ManualController::class, 'index'])->name('manual.index');
 
     // Demand Management Routes
     Route::resource('demands', \App\Http\Controllers\demands\DemandController::class);

@@ -231,6 +231,11 @@
      class="{{ Request::routeIs('category.examination') ? 'active' : '' }}">
      <i class="bi bi-calendar2-week-fill me-2"></i> รอบสอบ</a>
 
+  <!-- Manual -->
+  <a href="{{ route('manual.index') }}"
+     class="{{ Request::routeIs('manual.*') ? 'active' : '' }}">
+     <i class="bi bi-book-fill me-2"></i> คู่มือการใช้งาน</a>
+
   <!-- Settings Dropdown -->
   <div class="sidebar-dropdown">
     <a class="{{ Request::routeIs('file-manage.*', 'roles.*', 'permissions.*', 'users.*', 'positions.*', 'jobgroups.*', 'staff-sub.*', 'staff.*') ? 'active' : '' }}">

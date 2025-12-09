@@ -119,6 +119,22 @@
                                         <label class="form-label">โทรศัพท์ (รอง)</label>
                                         <input type="text" class="form-control" name="lead_phone_2" value="{{ old('lead_phone_2', $lead->lead_phone_2) }}">
                                     </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">อีเมล</label>
+                                        <input type="email" class="form-control" name="lead_email" value="{{ old('lead_email', $lead->lead_email) }}" placeholder="example@email.com">
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-12">
+                                        <label class="form-label">ข้อมูลสรุป / Summary
+                                            <button type="button" class="btn btn-outline-primary btn-sm ms-2" onclick="translateSummary()" title="แปลจากภาษาไทยเป็นอังกฤษ">
+                                                <i class="bi bi-translate"></i> แปลภาษา
+                                            </button>
+                                        </label>
+                                        <textarea class="form-control" name="lead_summary" id="lead_summary" rows="3" placeholder="สรุปประวัติและข้อมูลสำคัญของผู้สมัคร...">{{ old('lead_summary', $lead->lead_summary) }}</textarea>
+                                        <small class="text-muted">กรอกข้อมูลสรุปสำคัญของผู้สมัคร เช่น ประสบการณ์โดดเด่น, ทักษะพิเศษ, ความสามารถ</small>
+                                    </div>
                                 </div>
 
                                 <div class="row mb-3">
@@ -1439,6 +1455,61 @@
             
             // ตรวจสอบว่าทับซ้อนกันหรือไม่
             return s1 <= e2 && s2 <= e1;
+        }
+
+        // ฟังก์ชันแปลภาษา Summary
+        async function translateSummary() {
+            const summaryField = document.getElementById('lead_summary');
+            const summaryText = summaryField.value.trim();
+            
+            if (!summaryText) {
+                alert('กรุณากรอกข้อมูลสรุปก่อนแปลภาษา');
+                return;
+            }
+
+            // แสดง loading
+            const btn = event.target.closest('button');
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>กำลังแปล...';
+            btn.disabled = true;
+            
+            try {
+                // ตรวจสอบว่าเป็นภาษาไทยหรือไม่
+                if (containsThai(summaryText)) {
+                    // แปลจากไทยเป็นอังกฤษ
+                    const translatedText = await translateWithGoogle(summaryText, 'th', 'en');
+                    summaryField.value = translatedText;
+                    showSuccessMessage(summaryField, 'แปลภาษาสำเร็จ!');
+                } else {
+                    // ถ้าเป็นอังกฤษอยู่แล้ว ลองแปลกลับเป็นไทย
+                    if (confirm('ข้อความนี้ดูเหมือนเป็นภาษาอังกฤษ ต้องการแปลเป็นไทยหรือไม่?')) {
+                        const translatedText = await translateWithGoogle(summaryText, 'en', 'th');
+                        summaryField.value = translatedText;
+                        showSuccessMessage(summaryField, 'แปลภาษาสำเร็จ!');
+                    }
+                }
+            } catch (error) {
+                console.error('Translation error:', error);
+                alert('เกิดข้อผิดพลาดในการแปลภาษา: ' + (error.message || 'กรุณาลองใหม่อีกครั้ง'));
+            } finally {
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+            }
+        }
+
+        // ฟังก์ชันแสดงข้อความสำเร็จ
+        function showSuccessMessage(field, message) {
+            const successMsg = document.createElement('div');
+            successMsg.className = 'alert alert-success alert-dismissible fade show mt-2';
+            successMsg.innerHTML = `
+                <i class="bi bi-check-circle-fill me-2"></i>
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            field.parentNode.appendChild(successMsg);
+            setTimeout(() => {
+                if (successMsg.parentNode) successMsg.parentNode.removeChild(successMsg);
+            }, 3000);
         }
 
         // ฟังก์ชันแปลภาษาที่อยู่ด้วย Google Translate API

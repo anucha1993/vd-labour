@@ -536,9 +536,9 @@ class LeadController extends Controller
     }
 
     /**
-     * Generate Resume/CV for a lead
+     * Generate Resume/CV for a lead with template selection
      */
-    public function resume($id)
+    public function resume(Request $request, $id)
     {
         try {
             $lead = LeadModel::with([
@@ -553,7 +553,15 @@ class LeadController extends Controller
                 'examinationRound'
             ])->findOrFail($id);
             
-            return view('leads.resume', compact('lead'));
+            // Get selected template (default to template 1)
+            $template = $request->input('template', '1');
+            
+            // Validate template number
+            if (!in_array($template, range('1', '14'))) {
+                $template = '1';
+            }
+            
+            return view('leads.resume.template' . $template, compact('lead', 'template'));
             
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'ไม่พบข้อมูลผู้สมัคร');

@@ -33,7 +33,7 @@ class LeadModel extends Model
         'lead_emergency_status', 'lead_bank_account_number', 'lead_bank_name',
         'lead_driving_license', 'lead_car_type', 
         'lead_license_valid_until', 'position_id', 'position_id_2', 'position_id_3', 
-        'lead_skills', 'country_id', 'job_group_id', 'lead_status', 'lead_note',
+        'lead_skills', 'country_id', 'job_group_id', 'lead_status', 'lead_note', 'lead_summary',
         'staff_id', 'lead_photo', 'labour_id', 'converted_at',
         'examination_round_id', 'lead_date_location', 'lead_recommender_staff_sub_id',
         'documents', 'license_number', 'created_by', 'updated_by'
