@@ -82,19 +82,8 @@
             <tr>
                 <td colspan="24"
                     style="border-left: 2px solid black; border-right: 2px solid black; padding: 4px; text-align: right; font-weight: bold; font-size: 11px;">
-                    @php
-                        $jobLeadNumber = 'ไม่มีเลขที่ใบสมัคร';
-                        if($lead && $lead->lead_id) {
-                            $jobLead = \App\Models\jobs\JobLeadModel::where('lead_id', $lead->lead_id)
-                                ->whereNotIn('job_lead_status', ['ถอน', 'ปฏิเสธ'])
-                                ->orderBy('created_at', 'desc')
-                                ->first();
-                            if($jobLead && $jobLead->job_lead_number) {
-                                $jobLeadNumber = 'เลขที่ใบสมัคร: ' . $jobLead->job_lead_number;
-                            }
-                        }
-                    @endphp
-                    {{ $jobLeadNumber }}
+                  
+                    {{ 'No.'.$lead->lead_number ?? '' }}
                 </td>
             </tr>
             <tr>

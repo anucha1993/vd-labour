@@ -188,6 +188,36 @@ class labourController extends Controller
             }
         }
         
+        // ตรวจสอบชื่อ-นามสกุล ซ้ำ (ยกเว้นตัวเอง)
+        if ($request->has('labour_firstname') && $request->has('labour_lastname')) {
+            $firstname = $request->labour_firstname;
+            $lastname = $request->labour_lastname;
+            
+            // ตรวจสอบใน labours table (ยกเว้น id ของตัวเอง)
+            $duplicateNameInLabour = labourModel::where('labour_firstname', $firstname)
+                ->where('labour_lastname', $lastname)
+                ->where('labour_id', '!=', $labourModel->labour_id)
+                ->first();
+            
+            // ตรวจสอบใน leads table (ยกเว้น lead ที่เป็นต้นทางของ labour นี้)
+            $duplicateNameInLead = LeadModel::where('lead_firstname', $firstname)
+                ->where('lead_lastname', $lastname)
+                ->where('lead_id', '!=', $labourModel->lead_id)
+                ->first();
+            
+            if ($duplicateNameInLabour) {
+                return back()->withErrors([
+                    'labour_firstname' => 'ชื่อ-นามสกุล นี้มีอยู่ในระบบแล้ว (แรงงาน: ' . $duplicateNameInLabour->labour_firstname . ' ' . $duplicateNameInLabour->labour_lastname . ')'
+                ])->withInput();
+            }
+            
+            if ($duplicateNameInLead) {
+                return back()->withErrors([
+                    'labour_firstname' => 'ชื่อ-นามสกุล นี้มีอยู่ในระบบแล้ว (ผู้สมัคร: ' . $duplicateNameInLead->lead_firstname . ' ' . $duplicateNameInLead->lead_lastname . ')'
+                ])->withInput();
+            }
+        }
+        
         $data = $request->all();
         $data['updated_by'] = auth()->id();
         
@@ -376,21 +406,62 @@ public function deleteVisaFile($labourId)
 
     public function store(Request $request)
     {
-        $checkLabour = null;
+        // ตรวจสอบ Passport ซ้ำใน Labour และ Lead
+        if ($request->filled('labour_passport_number')) {
+            $passportNumber = $request->labour_passport_number;
+            
+            // ตรวจสอบใน labours table
+            $duplicateInLabour = labourModel::where('labour_passport_number', $passportNumber)->first();
+            
+            // ตรวจสอบใน leads table
+            $duplicateInLead = LeadModel::where('lead_passport_number', $passportNumber)->first();
+            
+            if ($duplicateInLabour) {
+                return back()->withErrors([
+                    'labour_passport_number' => 'หมายเลข Passport นี้มีอยู่ในระบบแล้ว (แรงงาน: ' . $duplicateInLabour->labour_firstname . ' ' . $duplicateInLabour->labour_lastname . ')'
+                ])->withInput();
+            }
+            
+            if ($duplicateInLead) {
+                return back()->withErrors([
+                    'labour_passport_number' => 'หมายเลข Passport นี้มีอยู่ในระบบแล้ว (ผู้สมัคร: ' . $duplicateInLead->lead_firstname . ' ' . $duplicateInLead->lead_lastname . ')'
+                ])->withInput();
+            }
+        }
+        
+        // ตรวจสอบชื่อ-นามสกุล ซ้ำใน Labour และ Lead
+        if ($request->filled('labour_firstname') && $request->filled('labour_lastname')) {
+            $firstname = $request->labour_firstname;
+            $lastname = $request->labour_lastname;
+            
+            // ตรวจสอบใน labours table
+            $duplicateNameInLabour = labourModel::where('labour_firstname', $firstname)
+                ->where('labour_lastname', $lastname)
+                ->first();
+            
+            // ตรวจสอบใน leads table
+            $duplicateNameInLead = LeadModel::where('lead_firstname', $firstname)
+                ->where('lead_lastname', $lastname)
+                ->first();
+            
+            if ($duplicateNameInLabour) {
+                return back()->withErrors([
+                    'labour_firstname' => 'ชื่อ-นามสกุล นี้มีอยู่ในระบบแล้ว (แรงงาน: ' . $duplicateNameInLabour->labour_firstname . ' ' . $duplicateNameInLabour->labour_lastname . ')'
+                ])->withInput();
+            }
+            
+            if ($duplicateNameInLead) {
+                return back()->withErrors([
+                    'labour_firstname' => 'ชื่อ-นามสกุล นี้มีอยู่ในระบบแล้ว (ผู้สมัคร: ' . $duplicateNameInLead->lead_firstname . ' ' . $duplicateNameInLead->lead_lastname . ')'
+                ])->withInput();
+            }
+        }
 
-        $checkLabour = labourModel::orWhere(function($query) use ($request) {
-            $query->where('labour_firstname', $request->labour_firstname)
-                  ->where('labour_lastname', $request->labour_lastname);
-        })
-        ->first();
-
-       
-
-        if (empty($checkLabour)) {
-            $request->merge(['created_by' => auth()->id()]);
-            $request->merge(['updated_by' => auth()->id()]);
-            $request->merge(['labour_folder_year' => date('Y')]);
-            $labourModel = labourModel::create($request->all());
+        // เพิ่มข้อมูลผู้สร้างและปีโฟลเดอร์
+        $request->merge(['created_by' => auth()->id()]);
+        $request->merge(['updated_by' => auth()->id()]);
+        $request->merge(['labour_folder_year' => date('Y')]);
+        $labourModel = labourModel::create($request->all());
          
             $folderYear = $labourModel->labour_folder_year;
             $folderMonth = date('m');
@@ -465,10 +536,8 @@ public function deleteVisaFile($labourId)
                     }
                 }
             }
-        } else {
-            dd('ข้อมูลคนงานซ้ำในระบบกรุณาตรวสอบข้อมูล : ' . $request->labour_firstname . ' ' . $request->labour_lastname);
-        }
-        return redirect()->back();
+
+        return redirect()->route('labour.index')->with('success', 'เพิ่มข้อมูลแรงงานสำเร็จ');
     }
 
     public function CombinePDF(labourModel $labourModel, Request $request)

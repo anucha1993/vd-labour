@@ -19,7 +19,7 @@ class LeadModel extends Model
     protected $primaryKey = 'lead_id';
     
     protected $fillable = [
-        'lead_prefix', 'lead_firstname', 'lead_lastname', 'lead_father_name', 
+        'lead_number', 'lead_prefix', 'lead_firstname', 'lead_lastname', 'lead_father_name', 
         'lead_mother_name', 'lead_gender',
         'lead_marital_status', 'lead_birthday', 'lead_age', 'lead_height',
         'lead_weight', 'lead_bmi', 'lead_phone', 'lead_phone_2', 'lead_email',
@@ -48,6 +48,41 @@ class LeadModel extends Model
         'lead_license_valid_until' => 'date',
         'converted_at' => 'datetime',
     ];
+    
+    /**
+     * Boot the model and register event listeners
+     */
+    protected static function booted()
+    {
+        static::creating(function ($lead) {
+            if (empty($lead->lead_number)) {
+                $lead->lead_number = self::generateLeadNumber();
+            }
+        });
+    }
+    
+    /**
+     * Generate a unique lead number in format: VD+YYYY+XXXXX
+     * Counter continues across years (e.g., VD2025-00008 → VD2026-00009)
+     * 
+     * @return string
+     */
+    public static function generateLeadNumber()
+    {
+        // Get the last lead number (ordered descending to get the highest)
+        $lastLead = self::orderBy('lead_number', 'desc')->first();
+        
+        $nextNumber = 1;
+        
+        if ($lastLead && $lastLead->lead_number) {
+            // Extract the last 5 digits from the lead_number
+            $lastNumber = (int) substr($lastLead->lead_number, -5);
+            $nextNumber = $lastNumber + 1;
+        }
+        
+        // Format: VD + current year + 5-digit zero-padded number
+        return 'VD' . date('Y') . str_pad($nextNumber, 5, '0', STR_PAD_LEFT);
+    }
     
     // Relationships
     public function position()

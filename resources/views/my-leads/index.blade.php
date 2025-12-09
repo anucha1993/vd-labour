@@ -25,11 +25,192 @@
                 </div>
             </div>
 
+            <!-- Statistics Cards -->
+            <div class="row g-3 mb-4">
+                <!-- Total Leads -->
+                <div class="col-md-3">
+                    <div class="card border-primary shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="text-muted mb-1">จำนวนผู้สมัครทั้งหมด</h6>
+                                    <h3 class="mb-0 text-primary">{{ number_format($totalLeads) }}</h3>
+                                </div>
+                                <div class="bg-primary bg-opacity-10 rounded-circle p-3">
+                                    <i class="bi bi-people-fill text-primary fs-3"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Converted Leads -->
+                <div class="col-md-3">
+                    <div class="card border-success shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="text-muted mb-1">Convert แล้ว</h6>
+                                    <h3 class="mb-0 text-success">{{ number_format($convertedLeads) }}</h3>
+                                </div>
+                                <div class="bg-success bg-opacity-10 rounded-circle p-3">
+                                    <i class="bi bi-check-circle-fill text-success fs-3"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Flying Labour -->
+                <div class="col-md-2">
+                    <div class="card border-info shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="text-muted mb-1" style="font-size: 0.85rem;">บินแล้ว</h6>
+                                    <h3 class="mb-0 text-info">{{ number_format($labourStats['flying']) }}</h3>
+                                </div>
+                                <div class="bg-info bg-opacity-10 rounded-circle p-2">
+                                    <i class="bi bi-airplane-fill text-info fs-4"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Processing Labour -->
+                <div class="col-md-2">
+                    <div class="card border-warning shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="text-muted mb-1" style="font-size: 0.85rem;">กำลังดำเนินการ</h6>
+                                    <h3 class="mb-0 text-warning">{{ number_format($labourStats['processing']) }}</h3>
+                                </div>
+                                <div class="bg-warning bg-opacity-10 rounded-circle p-2">
+                                    <i class="bi bi-hourglass-split text-warning fs-4"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cancelled Labour -->
+                <div class="col-md-2">
+                    <div class="card border-danger shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="text-muted mb-1" style="font-size: 0.85rem;">ยกเลิก</h6>
+                                    <h3 class="mb-0 text-danger">{{ number_format($labourStats['cancelled']) }}</h3>
+                                </div>
+                                <div class="bg-danger bg-opacity-10 rounded-circle p-2">
+                                    <i class="bi bi-x-circle-fill text-danger fs-4"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Job Application Statistics -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-gradient py-3" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); cursor: pointer;" 
+                     data-bs-toggle="collapse" 
+                     data-bs-target="#jobStatsCollapse" 
+                     aria-expanded="false" 
+                     aria-controls="jobStatsCollapse">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="flex-grow-1">
+                            <div class="d-flex align-items-center mb-1">
+                                <h6 class="mb-0 text-white">
+                                    <i class="bi bi-bar-chart-fill me-2"></i>สถิติใบสมัครงาน
+                                </h6>
+                                <span class="badge bg-white bg-opacity-25 ms-2">
+                                    รวม: {{ number_format(array_sum($jobLeadStats)) }} ใบสมัคร
+                                </span>
+                            </div>
+                            <div class="d-block">
+                                <small class="text d-block" style="opacity: 0.9; font-size: 0.8rem;">
+                                    <i class="bi bi-hand-index-thumb me-1"></i>คลิกเพื่อดูรายละเอียดแต่ละสถานะ
+                                </small>
+                            </div>
+                        </div>
+                        <i class="bi bi-chevron-down text-white fs-4" id="jobStatsIcon"></i>
+                    </div>
+                </div>
+
+                <div class="collapse" id="jobStatsCollapse">
+                    <div class="card-body p-0">
+                        <table class="table table-hover mb-0">
+                            <tbody>
+                                <tr>
+                                    <td style="width: 50px;" class="text-center">
+                                        <i class="bi bi-file-earmark text-secondary fs-5"></i>
+                                    </td>
+                                    <td><strong>ร่าง</strong></td>
+                                    <td class="text-end"><span class="badge bg-secondary">{{ number_format($jobLeadStats['draft']) }}</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center">
+                                        <i class="bi bi-send text-info fs-5"></i>
+                                    </td>
+                                    <td><strong>ส่งแล้ว</strong></td>
+                                    <td class="text-end"><span class="badge bg-info">{{ number_format($jobLeadStats['sent']) }}</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center">
+                                        <i class="bi bi-hourglass-split text-primary fs-5"></i>
+                                    </td>
+                                    <td><strong>กำลังพิจารณา</strong></td>
+                                    <td class="text-end"><span class="badge bg-primary">{{ number_format($jobLeadStats['considering']) }}</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center">
+                                        <i class="bi bi-calendar-event text-warning fs-5"></i>
+                                    </td>
+                                    <td><strong>นัดสัมภาษณ์</strong></td>
+                                    <td class="text-end"><span class="badge bg-warning">{{ number_format($jobLeadStats['interview']) }}</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center">
+                                        <i class="bi bi-briefcase text-info fs-5"></i>
+                                    </td>
+                                    <td><strong>เสนองาน</strong></td>
+                                    <td class="text-end"><span class="badge bg-info">{{ number_format($jobLeadStats['offer']) }}</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center">
+                                        <i class="bi bi-check-circle-fill text-success fs-5"></i>
+                                    </td>
+                                    <td><strong>ตอบรับ</strong></td>
+                                    <td class="text-end"><span class="badge bg-success">{{ number_format($jobLeadStats['accepted']) }}</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center">
+                                        <i class="bi bi-x-circle text-danger fs-5"></i>
+                                    </td>
+                                    <td><strong>ปฏิเสธ</strong></td>
+                                    <td class="text-end"><span class="badge bg-danger">{{ number_format($jobLeadStats['rejected']) }}</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center">
+                                        <i class="bi bi-arrow-return-left text-dark fs-5"></i>
+                                    </td>
+                                    <td><strong>ถอน</strong></td>
+                                    <td class="text-end"><span class="badge bg-dark">{{ number_format($jobLeadStats['withdrawn']) }}</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
             <!-- Search Form -->
             <form method="GET" action="{{ route('my-leads.index') }}" class="mb-3">
                 <div class="row g-2">
                     <div class="col-md-3">
-                        <input type="text" class="form-control" name="search" placeholder="ค้นหา ชื่อ, โทร, พาสปอร์ต..." value="{{ request('search') }}">
+                        <input type="text" class="form-control" name="search" placeholder="ค้นหา เลขที่ผู้สมัคร, ชื่อ, โทร, พาสปอร์ต..." value="{{ request('search') }}">
                     </div>
                     <div class="col-md-2">
                         <select class="form-select" name="lead_status">
@@ -72,7 +253,8 @@
                             <th><i class="bi bi-briefcase me-1"></i> ตำแหน่ง</th>
                             <th class="text-center"><i class="bi bi-flag me-1"></i> ประเทศ</th>
                             <th><i class="bi bi-person-badge me-1"></i> สายแนะนำ</th>
-                            <th class="text-center"><i class="bi bi-info-circle me-1"></i> สถานะ</th>
+                            <th class="text-center"><i class="bi bi-file-text me-1"></i> สถานะใบสมัคร</th>
+                            <th class="text-center"><i class="bi bi-info-circle me-1"></i> สถานะ Lead</th>
                             <th class="text-center"><i class="bi bi-calendar me-1"></i> วันที่สร้าง</th>
                             <th class="text-center" width="250"><i class="bi bi-gear me-1"></i> จัดการ</th>
                         </tr>
@@ -98,7 +280,32 @@
                                         </div>
                                     @endif
                                 </td>
-                                <td><strong>{{ $item->fullName }}</strong></td>
+                               <td>
+                                    <strong>{{ $item->fullName }}</strong>
+                                    @if($item->lead_bmi)
+                                        @php
+                                            $bmi = $item->lead_bmi;
+                                            $category = '';
+                                            $badgeClass = 'secondary';
+                                            
+                                            if ($bmi < 18) {
+                                                $category = 'ต่ำกว่าเกณฑ์';
+                                                $badgeClass = 'danger';
+                                            } elseif ($bmi >= 18 && $bmi <= 30) {
+                                                $category = 'ผ่านเกณฑ์';
+                                                $badgeClass = 'success';
+                                            } else {
+                                                $category = 'เกินเกณฑ์';
+                                                $badgeClass = 'danger';
+                                            }
+                                        @endphp
+                                        <br>
+                                        <small>
+                                  
+                                            <span class="badge bg-{{ $badgeClass }}" style="font-size: 0.65rem;">BMI : {{ number_format($bmi, 1) }} {{ $category }}</span>
+                                        </small>
+                                    @endif
+                                </td>
                                 <td>{{ $item->lead_phone ?? '-' }}</td>
                                 <td>
                                     @if($item->position)
@@ -106,6 +313,8 @@
                                     @else
                                         -
                                     @endif
+
+                                    
                                 </td>
                                 <td class="text-center">
                                     @if($item->country)
@@ -121,6 +330,69 @@
                                     <small><b>สายแนะนำ: </b>{{ $item->recommenderStaff->staff_sub_name?? '-' }}</small>
                                       
                                     </td>
+                                <td class="text-center">
+                                    @php
+                                        $jobLeadsCount = $item->jobLeads->count();
+                                        $draftCount = $item->jobLeads->where('job_lead_status', 'ร่าง')->count();
+                                        $sentCount = $item->jobLeads->where('job_lead_status', 'ส่งแล้ว')->count();
+                                        $consideringCount = $item->jobLeads->where('job_lead_status', 'กำลังพิจารณา')->count();
+                                        $interviewCount = $item->jobLeads->where('job_lead_status', 'นัดสัมภาษณ์')->count();
+                                        $offerCount = $item->jobLeads->where('job_lead_status', 'เสนองาน')->count();
+                                        $acceptedCount = $item->jobLeads->where('job_lead_status', 'ตอบรับ')->count();
+                                        $rejectedCount = $item->jobLeads->where('job_lead_status', 'ปฏิเสธ')->count();
+                                        $withdrawnCount = $item->jobLeads->where('job_lead_status', 'ถอน')->count();
+                                    @endphp
+                                    
+                                    @if($jobLeadsCount > 0)
+                                        <div class="d-flex flex-column gap-1 align-items-start">
+                                            @if($draftCount > 0)
+                                                <span class="badge bg-secondary" style="font-size: 0.7rem;">
+                                                    <i class="bi bi-file-earmark"></i> ร่าง: {{ $draftCount }}
+                                                </span>
+                                            @endif
+                                            @if($sentCount > 0)
+                                                <span class="badge bg-info" style="font-size: 0.7rem;">
+                                                    <i class="bi bi-send"></i> ส่งแล้ว: {{ $sentCount }}
+                                                </span>
+                                            @endif
+                                            @if($consideringCount > 0)
+                                                <span class="badge bg-primary" style="font-size: 0.7rem;">
+                                                    <i class="bi bi-hourglass-split"></i> กำลังพิจารณา: {{ $consideringCount }}
+                                                </span>
+                                            @endif
+                                            @if($interviewCount > 0)
+                                                <span class="badge bg-warning" style="font-size: 0.7rem;">
+                                                    <i class="bi bi-calendar-event"></i> นัดสัมภาษณ์: {{ $interviewCount }}
+                                                </span>
+                                            @endif
+                                            @if($offerCount > 0)
+                                                <span class="badge bg-info" style="font-size: 0.7rem;">
+                                                    <i class="bi bi-briefcase"></i> เสนองาน: {{ $offerCount }}
+                                                </span>
+                                            @endif
+                                            @if($acceptedCount > 0)
+                                                <span class="badge bg-success" style="font-size: 0.7rem;">
+                                                    <i class="bi bi-check-circle-fill"></i> ตอบรับ: {{ $acceptedCount }}
+                                                </span>
+                                            @endif
+                                            @if($rejectedCount > 0)
+                                                <span class="badge bg-danger" style="font-size: 0.7rem;">
+                                                    <i class="bi bi-x-circle"></i> ปฏิเสธ: {{ $rejectedCount }}
+                                                </span>
+                                            @endif
+                                            @if($withdrawnCount > 0)
+                                                <span class="badge bg-dark" style="font-size: 0.7rem;">
+                                                    <i class="bi bi-arrow-return-left"></i> ถอน: {{ $withdrawnCount }}
+                                                </span>
+                                            @endif
+                                            <small class="text-muted mt-1"><strong>รวม: {{ $jobLeadsCount }} ใบสมัคร</strong></small>
+                                        </div>
+                                    @else
+                                        <span class="badge bg-light text-dark border" style="font-size: 0.7rem;">
+                                            <i class="bi bi-dash-circle"></i> ยังไม่มีใบสมัคร
+                                        </span>
+                                    @endif
+                                </td>
                                 <td class="text-center">{!! $item->statusBadge !!}</td>
                                 <td class="text-center">{{ $item->created_at->format('d/m/Y') }}</td>
                                 <td class="text-center">
@@ -162,7 +434,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="10" class="text-center text-muted py-4">
+                                <td colspan="11" class="text-center text-muted py-4">
                                     <i class="bi bi-inbox fs-1 d-block mb-2"></i>
                                     ไม่มีข้อมูลผู้สมัครของคุณ
                                 </td>
@@ -267,6 +539,22 @@
         var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
             return new bootstrap.Tooltip(tooltipTriggerEl);
         });
+
+        // Toggle icon when collapse is shown/hidden
+        var jobStatsCollapse = document.getElementById('jobStatsCollapse');
+        var jobStatsIcon = document.getElementById('jobStatsIcon');
+        
+        if (jobStatsCollapse && jobStatsIcon) {
+            jobStatsCollapse.addEventListener('show.bs.collapse', function () {
+                jobStatsIcon.classList.remove('bi-chevron-down');
+                jobStatsIcon.classList.add('bi-chevron-up');
+            });
+            
+            jobStatsCollapse.addEventListener('hide.bs.collapse', function () {
+                jobStatsIcon.classList.remove('bi-chevron-up');
+                jobStatsIcon.classList.add('bi-chevron-down');
+            });
+        }
     });
 </script>
 

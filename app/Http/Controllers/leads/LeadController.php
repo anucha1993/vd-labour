@@ -32,13 +32,14 @@ class LeadController extends Controller
      */
     public function index(Request $request)
     {
-        $query = LeadModel::with(['position', 'country', 'jobGroup', 'staff', 'recommenderStaff']);
+        $query = LeadModel::with(['position', 'country', 'jobGroup', 'staff', 'recommenderStaff', 'jobLeads']);
         
         // Search filters
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
-                $q->where('lead_firstname', 'like', "%{$search}%")
+                $q->where('lead_number', 'like', "%{$search}%")
+                  ->orWhere('lead_firstname', 'like', "%{$search}%")
                   ->orWhere('lead_lastname', 'like', "%{$search}%")
                   ->orWhere('lead_phone', 'like', "%{$search}%")
                   ->orWhere('lead_passport_number', 'like', "%{$search}%")
@@ -121,6 +122,34 @@ class LeadController extends Controller
             if ($duplicateInLabour) {
                 return back()->withErrors([
                     'lead_passport_number' => 'หมายเลข Passport นี้มีอยู่ในระบบแล้ว (แรงงาน: ' . $duplicateInLabour->labour_firstname . ' ' . $duplicateInLabour->labour_lastname . ')'
+                ])->withInput();
+            }
+        }
+        
+        // ตรวจสอบชื่อ-นามสกุล ซ้ำใน Lead และ Labour
+        if ($request->filled('lead_firstname') && $request->filled('lead_lastname')) {
+            $firstname = $request->lead_firstname;
+            $lastname = $request->lead_lastname;
+            
+            // ตรวจสอบใน leads table
+            $duplicateNameInLead = LeadModel::where('lead_firstname', $firstname)
+                ->where('lead_lastname', $lastname)
+                ->first();
+            
+            // ตรวจสอบใน labours table
+            $duplicateNameInLabour = labourModel::where('labour_firstname', $firstname)
+                ->where('labour_lastname', $lastname)
+                ->first();
+            
+            if ($duplicateNameInLead) {
+                return back()->withErrors([
+                    'lead_firstname' => 'ชื่อ-นามสกุล นี้มีอยู่ในระบบแล้ว (ผู้สมัคร: ' . $duplicateNameInLead->lead_firstname . ' ' . $duplicateNameInLead->lead_lastname . ')'
+                ])->withInput();
+            }
+            
+            if ($duplicateNameInLabour) {
+                return back()->withErrors([
+                    'lead_firstname' => 'ชื่อ-นามสกุล นี้มีอยู่ในระบบแล้ว (แรงงาน: ' . $duplicateNameInLabour->labour_firstname . ' ' . $duplicateNameInLabour->labour_lastname . ')'
                 ])->withInput();
             }
         }
@@ -254,6 +283,36 @@ class LeadController extends Controller
             if ($duplicateInLabour) {
                 return back()->withErrors([
                     'lead_passport_number' => 'หมายเลข Passport นี้มีอยู่ในระบบแล้ว (แรงงาน: ' . $duplicateInLabour->labour_firstname . ' ' . $duplicateInLabour->labour_lastname . ')'
+                ])->withInput();
+            }
+        }
+        
+        // ตรวจสอบชื่อ-นามสกุล ซ้ำใน Lead และ Labour (ยกเว้นตัวเอง)
+        if ($request->filled('lead_firstname') && $request->filled('lead_lastname')) {
+            $firstname = $request->lead_firstname;
+            $lastname = $request->lead_lastname;
+            
+            // ตรวจสอบใน leads table (ยกเว้น id ของตัวเอง)
+            $duplicateNameInLead = LeadModel::where('lead_firstname', $firstname)
+                ->where('lead_lastname', $lastname)
+                ->where('lead_id', '!=', $id)
+                ->first();
+            
+            // ตรวจสอบใน labours table
+            $duplicateNameInLabour = labourModel::where('labour_firstname', $firstname)
+                ->where('labour_lastname', $lastname)
+                ->where('lead_id', '!=', $id)
+                ->first();
+            
+            if ($duplicateNameInLead) {
+                return back()->withErrors([
+                    'lead_firstname' => 'ชื่อ-นามสกุล นี้มีอยู่ในระบบแล้ว (ผู้สมัคร: ' . $duplicateNameInLead->lead_firstname . ' ' . $duplicateNameInLead->lead_lastname . ')'
+                ])->withInput();
+            }
+            
+            if ($duplicateNameInLabour) {
+                return back()->withErrors([
+                    'lead_firstname' => 'ชื่อ-นามสกุล นี้มีอยู่ในระบบแล้ว (แรงงาน: ' . $duplicateNameInLabour->labour_firstname . ' ' . $duplicateNameInLabour->labour_lastname . ')'
                 ])->withInput();
             }
         }

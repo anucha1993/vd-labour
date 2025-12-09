@@ -941,20 +941,14 @@
                 let category = '';
                 let categoryColor = '';
                 
-                if (bmi < 18.50) {
-                    category = 'น้ำหนักน้อย / ผอม';
-                    categoryColor = 'text-primary';
-                } else if (bmi >= 18.50 && bmi <= 22.90) {
-                    category = 'ปกติ (สุขภาพดี)';
+                if (bmi < 18) {
+                    category = 'ต่ำกว่าเกณฑ์ (ต่ำกว่า 18)';
+                    categoryColor = 'text-danger fw-bold';
+                } else if (bmi >= 18 && bmi <= 30) {
+                    category = 'ผ่านเกณฑ์ (18-30)';
                     categoryColor = 'text-success fw-bold';
-                } else if (bmi >= 23 && bmi <= 24.90) {
-                    category = 'ท้วม / โรคอ้วนระดับ 1';
-                    categoryColor = 'text-warning';
-                } else if (bmi >= 25 && bmi <= 29.90) {
-                    category = 'อ้วน / โรคอ้วนระดับ 2';
-                    categoryColor = 'text-danger';
-                } else if (bmi >= 30) {
-                    category = 'อ้วนมาก / โรคอ้วนระดับ 3';
+                } else {
+                    category = 'เกินเกณฑ์ (มากกว่า 30)';
                     categoryColor = 'text-danger fw-bold';
                 }
                 

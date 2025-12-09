@@ -29,14 +29,15 @@ class MyLeadsController extends Controller
             return view('my-leads.index', compact('leads', 'positions'));
         }
         
-        $query = LeadModel::with(['position', 'country', 'jobGroup', 'staff', 'recommenderStaff'])
+        $query = LeadModel::with(['position', 'country', 'jobGroup', 'staff', 'recommenderStaff', 'jobLeads'])
             ->where('staff_id', $userStaff->staff_id);
         
         // Search filters // 
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
-                $q->where('lead_firstname', 'like', "%{$search}%")
+                $q->where('lead_number', 'like', "%{$search}%")
+                  ->orWhere('lead_firstname', 'like', "%{$search}%")
                   ->orWhere('lead_lastname', 'like', "%{$search}%")
                   ->orWhere('lead_phone', 'like', "%{$search}%")
                   ->orWhere('lead_passport_number', 'like', "%{$search}%")
@@ -65,7 +66,47 @@ class MyLeadsController extends Controller
         
         $positions = positionModel::where('position_status', 'active')->get();
         
-        return view('my-leads.index', compact('leads', 'positions'));
+        // Calculate statistics for user's leads
+        $totalLeads = LeadModel::where('staff_id', $userStaff->staff_id)->count();
+        
+        // Job Application Status Statistics
+        $allJobLeads = \App\Models\jobs\JobLeadModel::whereHas('lead', function($q) use ($userStaff) {
+            $q->where('staff_id', $userStaff->staff_id);
+        });
+        
+        $jobLeadStats = [
+            'draft' => (clone $allJobLeads)->where('job_lead_status', 'ร่าง')->count(),
+            'sent' => (clone $allJobLeads)->where('job_lead_status', 'ส่งแล้ว')->count(),
+            'considering' => (clone $allJobLeads)->where('job_lead_status', 'กำลังพิจารณา')->count(),
+            'interview' => (clone $allJobLeads)->where('job_lead_status', 'นัดสัมภาษณ์')->count(),
+            'offer' => (clone $allJobLeads)->where('job_lead_status', 'เสนองาน')->count(),
+            'accepted' => (clone $allJobLeads)->where('job_lead_status', 'ตอบรับ')->count(),
+            'rejected' => (clone $allJobLeads)->where('job_lead_status', 'ปฏิเสธ')->count(),
+            'withdrawn' => (clone $allJobLeads)->where('job_lead_status', 'ถอน')->count(),
+        ];
+        
+        // Convert Statistics
+        $convertedLeads = LeadModel::where('staff_id', $userStaff->staff_id)
+            ->where('lead_status', 'converted')
+            ->whereNotNull('labour_id')
+            ->count();
+        
+        // Labour Statistics (from converted leads)
+        $labourStats = [
+            'flying' => \App\Models\labours\labourModel::whereHas('leadModel', function($q) use ($userStaff) {
+                $q->where('staff_id', $userStaff->staff_id);
+            })->where('labour_status', 'success')->count(),
+            
+            'processing' => \App\Models\labours\labourModel::whereHas('leadModel', function($q) use ($userStaff) {
+                $q->where('staff_id', $userStaff->staff_id);
+            })->where('labour_status', 'wait')->count(),
+            
+            'cancelled' => \App\Models\labours\labourModel::whereHas('leadModel', function($q) use ($userStaff) {
+                $q->where('staff_id', $userStaff->staff_id);
+            })->where('labour_status', 'cancel')->count(),
+        ];
+        
+        return view('my-leads.index', compact('leads', 'positions', 'totalLeads', 'jobLeadStats', 'convertedLeads', 'labourStats'));
     }
 
     /**
@@ -73,26 +114,70 @@ class MyLeadsController extends Controller
      */
     public function timeline($id)
     {
-        // Get staff_id that is linked to current user
-        $userStaff = \App\Models\staff\staffModel::where('user_id', auth()->id())->first();
-        
-        if (!$userStaff) {
-            abort(403, 'คุณไม่มีสิทธิ์เข้าถึงข้อมูลนี้');
+        try {
+            // Get staff_id that is linked to current user
+            $userStaff = \App\Models\staff\staffModel::where('user_id', auth()->id())->first();
+            
+            if (!$userStaff) {
+                return response()->json([
+                    'success' => false,
+                    'error' => 'คุณไม่มีสิทธิ์เข้าถึงข้อมูลนี้'
+                ], 403);
+            }
+            
+            $lead = LeadModel::where('staff_id', $userStaff->staff_id)
+                ->findOrFail($id);
+            
+            // Get all activities for this lead (รวมถึงที่ job_lead ถูกยกเลิก)
+            $activities = \App\Models\jobs\JobLeadActivityModel::with(['user'])
+                ->where('lead_id', $lead->lead_id)
+                ->orderBy('created_at', 'desc')
+                ->get();
+            
+            // Load job info for each activity
+            foreach ($activities as $activity) {
+                if ($activity->job_lead_id) {
+                    // ยังมี job_lead อยู่
+                    $jobLead = \App\Models\jobs\JobLeadModel::with(['job.country', 'job.demand'])
+                        ->find($activity->job_lead_id);
+                    
+                    if ($jobLead) {
+                        $activity->job_info = [
+                            'number' => $jobLead->job_lead_number,
+                            'name' => $jobLead->job->job_name ?? '',
+                            'country' => $jobLead->job->country->country_name_th ?? ''
+                        ];
+                    }
+                } else {
+                    // job_lead ถูกยกเลิกแล้ว - ใช้ข้อมูลที่เก็บไว้
+                    $activity->job_info = [
+                        'number' => $activity->job_lead_number ?? 'ไม่ระบุ',
+                        'name' => 'ถูกยกเลิกแล้ว',
+                        'country' => ''
+                    ];
+                }
+            }
+            
+            // Render view
+            $html = view('leads.partials.timeline', [
+                'activities' => $activities,
+                'lead' => $lead
+            ])->render();
+            
+            return response()->json([
+                'success' => true,
+                'html' => $html,
+                'count' => $activities->count()
+            ]);
+                           
+        } catch (\Exception $e) {
+            \Log::error('My Leads Timeline Error: ' . $e->getMessage());
+            \Log::error($e->getTraceAsString());
+            
+            return response()->json([
+                'success' => false,
+                'error' => 'เกิดข้อผิดพลาด: ' . $e->getMessage()
+            ], 500);
         }
-        
-        $lead = LeadModel::where('staff_id', $userStaff->staff_id)
-            ->findOrFail($id);
-        
-        $jobHistories = $lead->jobHistories()
-            ->with(['customer', 'position', 'createdBy', 'updatedBy'])
-            ->orderBy('created_at', 'desc')
-            ->get();
-        
-        $html = view('leads.partials.timeline', compact('jobHistories', 'lead'))->render();
-        
-        return response()->json([
-            'success' => true,
-            'html' => $html
-        ]);
     }
 }

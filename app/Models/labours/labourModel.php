@@ -127,6 +127,11 @@ class labourModel extends Model
         return $this->hasMany(labourFileModel::class, 'labour_id', 'labour_id');
     }
 
+    public function leadModel()
+    {
+        return $this->belongsTo(\App\Models\leads\LeadModel::class, 'lead_id', 'lead_id');
+    }
+
 
     public function scopeExpiringCidMoney($query)
    {

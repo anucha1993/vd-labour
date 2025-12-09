@@ -46,7 +46,7 @@
             <form method="GET" action="{{ route('leads.index') }}" class="mb-3">
                 <div class="row g-2">
                     <div class="col-md-3">
-                        <input type="text" class="form-control" name="search" placeholder="ค้นหา ชื่อ, โทร, พาสปอร์ต, ผู้ดูแล, สายแนะนำ..." value="{{ request('search') }}">
+                        <input type="text" class="form-control" name="search" placeholder="ค้นหา เลขที่ผู้สมัคร, ชื่อ, โทร, พาสปอร์ต, ผู้ดูแล, สายแนะนำ..." value="{{ request('search') }}">
                     </div>
                     <div class="col-md-2">
                         <select class="form-select" name="lead_status">
@@ -89,8 +89,8 @@
                             <th><i class="bi bi-briefcase me-1"></i> ตำแหน่ง</th>
                             <th class="text-center"><i class="bi bi-flag me-1"></i> ประเทศ</th>
                             <th><i class="bi bi-person-badge me-1"></i> ผู้ดูแล/สายแนะนำ</th>
-
-                            <th class="text-center"><i class="bi bi-info-circle me-1"></i> สถานะ</th>
+                            <th class="text-center"><i class="bi bi-file-text me-1"></i> สถานะใบสมัคร</th>
+                            <th class="text-center"><i class="bi bi-info-circle me-1"></i> สถานะ Lead</th>
                             <th class="text-center"><i class="bi bi-calendar me-1"></i> วันที่สร้าง</th>
                             <th class="text-center" width="280"><i class="bi bi-gear me-1"></i> จัดการ</th>
                         </tr>
@@ -124,20 +124,14 @@
                                             $category = '';
                                             $badgeClass = 'secondary';
                                             
-                                            if ($bmi < 18.50) {
-                                                $category = 'ผอม';
-                                                $badgeClass = 'primary';
-                                            } elseif ($bmi >= 18.50 && $bmi <= 22.90) {
-                                                $category = 'ปกติ';
+                                            if ($bmi < 18) {
+                                                $category = 'ต่ำกว่าเกณฑ์';
+                                                $badgeClass = 'danger';
+                                            } elseif ($bmi >= 18 && $bmi <= 30) {
+                                                $category = 'ผ่านเกณฑ์';
                                                 $badgeClass = 'success';
-                                            } elseif ($bmi >= 23 && $bmi <= 24.90) {
-                                                $category = 'ท้วม';
-                                                $badgeClass = 'warning';
-                                            } elseif ($bmi >= 25 && $bmi <= 29.90) {
-                                                $category = 'อ้วน 1';
-                                                $badgeClass = 'warning';
                                             } else {
-                                                $category = 'อ้วน 2';
+                                                $category = 'เกินเกณฑ์';
                                                 $badgeClass = 'danger';
                                             }
                                         @endphp
@@ -171,6 +165,69 @@
                                              <small><b>สายแนะนำ: </b>{{ $item->recommenderStaff->staff_sub_name?? '-' }}</small>
                                       
                                     </td>
+                                <td class="text-center">
+                                    @php
+                                        $jobLeadsCount = $item->jobLeads->count();
+                                        $draftCount = $item->jobLeads->where('job_lead_status', 'ร่าง')->count();
+                                        $sentCount = $item->jobLeads->where('job_lead_status', 'ส่งแล้ว')->count();
+                                        $consideringCount = $item->jobLeads->where('job_lead_status', 'กำลังพิจารณา')->count();
+                                        $interviewCount = $item->jobLeads->where('job_lead_status', 'นัดสัมภาษณ์')->count();
+                                        $offerCount = $item->jobLeads->where('job_lead_status', 'เสนองาน')->count();
+                                        $acceptedCount = $item->jobLeads->where('job_lead_status', 'ตอบรับ')->count();
+                                        $rejectedCount = $item->jobLeads->where('job_lead_status', 'ปฏิเสธ')->count();
+                                        $withdrawnCount = $item->jobLeads->where('job_lead_status', 'ถอน')->count();
+                                    @endphp
+                                    
+                                    @if($jobLeadsCount > 0)
+                                        <div class="d-flex flex-column gap-1 align-items-start">
+                                            @if($draftCount > 0)
+                                                <span class="badge bg-secondary" style="font-size: 0.7rem;">
+                                                    <i class="bi bi-file-earmark"></i> ร่าง: {{ $draftCount }}
+                                                </span>
+                                            @endif
+                                            @if($sentCount > 0)
+                                                <span class="badge bg-info" style="font-size: 0.7rem;">
+                                                    <i class="bi bi-send"></i> ส่งแล้ว: {{ $sentCount }}
+                                                </span>
+                                            @endif
+                                            @if($consideringCount > 0)
+                                                <span class="badge bg-primary" style="font-size: 0.7rem;">
+                                                    <i class="bi bi-hourglass-split"></i> กำลังพิจารณา: {{ $consideringCount }}
+                                                </span>
+                                            @endif
+                                            @if($interviewCount > 0)
+                                                <span class="badge bg-warning" style="font-size: 0.7rem;">
+                                                    <i class="bi bi-calendar-event"></i> นัดสัมภาษณ์: {{ $interviewCount }}
+                                                </span>
+                                            @endif
+                                            @if($offerCount > 0)
+                                                <span class="badge bg-info" style="font-size: 0.7rem;">
+                                                    <i class="bi bi-briefcase"></i> เสนองาน: {{ $offerCount }}
+                                                </span>
+                                            @endif
+                                            @if($acceptedCount > 0)
+                                                <span class="badge bg-success" style="font-size: 0.7rem;">
+                                                    <i class="bi bi-check-circle-fill"></i> ตอบรับ: {{ $acceptedCount }}
+                                                </span>
+                                            @endif
+                                            @if($rejectedCount > 0)
+                                                <span class="badge bg-danger" style="font-size: 0.7rem;">
+                                                    <i class="bi bi-x-circle"></i> ปฏิเสธ: {{ $rejectedCount }}
+                                                </span>
+                                            @endif
+                                            @if($withdrawnCount > 0)
+                                                <span class="badge bg-dark" style="font-size: 0.7rem;">
+                                                    <i class="bi bi-arrow-return-left"></i> ถอน: {{ $withdrawnCount }}
+                                                </span>
+                                            @endif
+                                            <small class="text-muted mt-1"><strong>รวม: {{ $jobLeadsCount }} ใบสมัคร</strong></small>
+                                        </div>
+                                    @else
+                                        <span class="badge bg-light text-dark border" style="font-size: 0.7rem;">
+                                            <i class="bi bi-dash-circle"></i> ยังไม่มีใบสมัคร
+                                        </span>
+                                    @endif
+                                </td>
                                 <td class="text-center">{!! $item->statusBadge !!}</td>
                                 <td class="text-center">{{ $item->created_at->format('d/m/Y') }}</td>
                                 <td class="text-center">
@@ -256,7 +313,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="9" class="text-center text-muted py-4">
+                                <td colspan="10" class="text-center text-muted py-4">
                                     <i class="bi bi-inbox fs-1 d-block mb-2"></i>
                                     ไม่มีข้อมูลผู้สนใจ
                                 </td>
