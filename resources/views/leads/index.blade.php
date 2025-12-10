@@ -189,7 +189,7 @@
                                              data-bs-toggle="modal"
                                              data-bs-target="#photoModal"
                                              onclick="showPhoto('{{ asset('storage/' . $item->lead_photo) }}', '{{ $item->fullName }}')"
-                                             title="คลิกเพื่อดูรูปใหญ่">.
+                                             title="คลิกเพื่อดูรูปใหญ่">
                                         
                                     @else
                                         <div class="rounded-circle bg-light border d-flex align-items-center justify-content-center" 
