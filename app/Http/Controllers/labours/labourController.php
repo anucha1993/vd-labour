@@ -552,7 +552,33 @@ public function deleteVisaFile($labourId)
         return view('labours.modal-view-doc', compact('labourfiles', 'labourModel'));
     }
 
+    public function destroy(labourModel $labourModel)
+    {
+        try {
+            // Delete related files if exists
+            if ($labourModel->labour_photo && Storage::exists('public/' . $labourModel->labour_photo)) {
+                Storage::delete('public/' . $labourModel->labour_photo);
+            }
 
-  
+            // Delete labour files
+            $labourFiles = labourFileModel::where('labour_id', $labourModel->labour_id)->get();
+            foreach ($labourFiles as $file) {
+                if ($file->labour_file_name && Storage::exists('public/' . $file->labour_file_name)) {
+                    Storage::delete('public/' . $file->labour_file_name);
+                }
+                $file->delete();
+            }
+
+            // Delete CID results
+            CIDresultsModel::where('labour_id', $labourModel->labour_id)->delete();
+
+            // Delete the labour
+            $labourModel->delete();
+
+            return redirect()->route('labour.index')->with('success', 'ลบข้อมูลแรงงานเรียบร้อยแล้ว');
+        } catch (\Exception $e) {
+            return redirect()->route('labour.index')->with('error', 'เกิดข้อผิดพลาดในการลบข้อมูล: ' . $e->getMessage());
+        }
+    }
 
 }

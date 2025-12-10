@@ -231,11 +231,23 @@
                                             <i class="bi bi-folder2-open"></i>
                                         </a>
                                         <a href="{{ route('labour.print', $item->labour_id) }}" 
-                                           class="btn btn-sm btn-outline-danger" 
+                                           class="btn btn-sm btn-outline-info" 
                                            target="_blank" 
                                            title="พิมพ์ข้อมูล">
                                             <i class="bi bi-printer"></i>
                                         </a>
+                                        @can('delete labour')
+                                        <button type="button" 
+                                                class="btn btn-sm btn-outline-danger" 
+                                                onclick="if(confirm('คุณแน่ใจหรือไม่ว่าต้องการลบแรงงานนี้? ข้อมูลทั้งหมดรวมถึงไฟล์จะถูกลบถาวร')) document.getElementById('delete-form-{{ $item->labour_id }}').submit();"
+                                                title="ลบ">
+                                            <i class="bi bi-trash-fill"></i>
+                                        </button>
+                                        <form id="delete-form-{{ $item->labour_id }}" action="{{ route('labour.destroy', $item->labour_id) }}" method="POST" class="d-none">
+                                            @csrf
+                                            @method('DELETE')
+                                        </form>
+                                        @endcan
                                     </div>
                                 </td>
                             </tr>

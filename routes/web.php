@@ -40,6 +40,7 @@ Route::get('labours',[labourController::class,'index'])->name('labour.index');
 Route::post('labour/store',[labourController::class,'store'])->name('labour.store');
 Route::get('labour/edit/{labourModel}',[labourController::class,'edit'])->name('labour.edit');
 Route::put('labour/update/{labourModel}',[labourController::class,'update'])->name('labour.update');
+Route::delete('labour/destroy/{labourModel}',[labourController::class,'destroy'])->name('labour.destroy');
 Route::get('labour/createFolder',[labourController::class,'createFolder'])->name('labour.createFolder');
 Route::get('labour/CombinePDF/{labourModel}',[labourController::class,'CombinePDF'])->name('labour.CombinePDF');
 Route::get('labour/view/doc/{labourModel}',[labourController::class,'viewDocs'])->name('labour.viewDocs');
