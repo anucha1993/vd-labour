@@ -383,6 +383,13 @@
                 min-height: auto;
             }
             
+            /* Ensure colors print correctly */
+            .summary-box,
+            .experience-wrapper {
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+            }
+            
             @page {
                 size: A4;
                 margin: 0;
