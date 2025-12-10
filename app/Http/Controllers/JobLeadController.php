@@ -32,7 +32,7 @@ class JobLeadController extends Controller
             return $this->showJobApplicants($request->job_id, $request);
         }
         
-        // แสดงรายการงานที่มีใบสมัคร
+        // แสดงรายการงานทั้งหมด (ไม่จำกัดเฉพาะที่มีใบสมัคร)
         $jobsQuery = JobModel::with(['country', 'demand'])
                             ->withCount([
                                 'jobLeads',
@@ -48,8 +48,7 @@ class JobLeadController extends Controller
                                 'jobLeads as locked_count' => function($q) {
                                     $q->where('is_locked', true);
                                 }
-                            ])
-                            ->having('job_leads_count', '>', 0);
+                            ]);
         
         // Search filter
         if ($request->filled('search')) {
@@ -295,7 +294,12 @@ class JobLeadController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $jobLead = JobLeadModel::findOrFail($id);
+        $jobLead = JobLeadModel::with('lead')->findOrFail($id);
+        
+        // ตรวจสอบว่า Lead ถูก Convert แล้วหรือไม่
+        if ($jobLead->lead && $jobLead->lead->isConverted()) {
+            return redirect()->back()->with('error', 'ไม่สามารถแก้ไขสถานะได้ เนื่องจาก Lead ถูก Convert เป็น Labour แล้ว (เลขที่: ' . $jobLead->lead->lead_number . ')');
+        }
         
         $validator = Validator::make($request->all(), [
             'job_lead_status' => 'required|in:ร่าง,ส่งแล้ว,กำลังพิจารณา,นัดสัมภาษณ์,เสนองาน,ตอบรับ,ปฏิเสธ,ถอน',
@@ -364,7 +368,12 @@ class JobLeadController extends Controller
         try {
             DB::beginTransaction();
             
-            $jobLead = JobLeadModel::findOrFail($id);
+            $jobLead = JobLeadModel::with('lead')->findOrFail($id);
+            
+            // ตรวจสอบว่า Lead ถูก Convert แล้วหรือไม่
+            if ($jobLead->lead && $jobLead->lead->isConverted()) {
+                return redirect()->back()->with('error', 'ไม่สามารถลบใบสมัครได้ เนื่องจาก Lead ถูก Convert เป็น Labour แล้ว (เลขที่: ' . $jobLead->lead->lead_number . ')');
+            }
             
             // บันทึก Activity Log ก่อนลบ
             $jobLead->logDeletion('ลบใบสมัครโดย ' . auth()->user()->name);
@@ -443,9 +452,17 @@ class JobLeadController extends Controller
             $remarks = $request->remarks;
             $reason = $request->reason;
             
+            $skippedConverted = [];
+            
             foreach ($request->job_lead_ids as $jobLeadId) {
-                $jobLead = JobLeadModel::find($jobLeadId);
+                $jobLead = JobLeadModel::with('lead')->find($jobLeadId);
                 if ($jobLead) {
+                    // ตรวจสอบว่า Lead ถูก Convert แล้วหรือไม่
+                    if ($jobLead->lead && $jobLead->lead->isConverted()) {
+                        $skippedConverted[] = $jobLead->lead->fullName . ' (เลขที่: ' . $jobLead->lead->lead_number . ')';
+                        continue;
+                    }
+                    
                     $oldStatus = $jobLead->job_lead_status;
                     
                     // สร้างข้อความหมายเหตุ
@@ -476,7 +493,14 @@ class JobLeadController extends Controller
             
             DB::commit();
             
-            return redirect()->back()->with('success', "อัปเดตสถานะสำเร็จ {$updatedCount} รายการ");
+            $message = "อัปเดตสถานะสำเร็จ {$updatedCount} รายการ";
+            
+            if (count($skippedConverted) > 0) {
+                $message .= "<br><strong>ข้ามการอัปเดต " . count($skippedConverted) . " รายการ (Lead ถูก Convert แล้ว):</strong><br>" . implode('<br>', $skippedConverted);
+                return redirect()->back()->with('warning', $message);
+            }
+            
+            return redirect()->back()->with('success', $message);
             
         } catch (\Exception $e) {
             DB::rollBack();

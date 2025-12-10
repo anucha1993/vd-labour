@@ -233,9 +233,17 @@
                                 <tr>
                                     @can('job-lead-bulk-update')
                                     <td>
-                                        <input type="checkbox" name="job_lead_ids[]" 
-                                               value="{{ $jobLead->job_lead_id }}" 
-                                               class="form-check-input applicant-checkbox">
+                                        @if($jobLead->lead && $jobLead->lead->isConverted())
+                                            <input type="checkbox" name="job_lead_ids[]" 
+                                                   value="{{ $jobLead->job_lead_id }}" 
+                                                   class="form-check-input applicant-checkbox"
+                                                   disabled
+                                                   title="Lead ถูก Convert เป็น Labour แล้ว ไม่สามารถแก้ไขได้">
+                                        @else
+                                            <input type="checkbox" name="job_lead_ids[]" 
+                                                   value="{{ $jobLead->job_lead_id }}" 
+                                                   class="form-check-input applicant-checkbox">
+                                        @endif
                                     </td>
                                     @endcan
                                     <td>

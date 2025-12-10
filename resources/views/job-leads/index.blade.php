@@ -45,7 +45,7 @@
                             </form>
                         </div>
                         <div class="col-md-6 text-end">
-                            <span class="text-muted">พบ {{ $jobs->count() }} งานที่มีใบสมัคร</span>
+                            <span class="text-muted">พบทั้งหมด {{ $jobs->count() }} งาน</span>
                         </div>
                     </div>
 
