@@ -150,26 +150,18 @@
                                             $badgeClass = 'secondary';
                                             $description = '';
                                             
-                                            if ($bmi < 18.50) {
-                                                $category = 'น้ำหนักน้อย / ผอม';
-                                                $badgeClass = 'primary';
-                                                $description = 'Underweight';
-                                            } elseif ($bmi >= 18.50 && $bmi <= 22.90) {
-                                                $category = 'ปกติ (สุขภาพดี)';
-                                                $badgeClass = 'success';
-                                                $description = 'Normal (Healthy)';
-                                            } elseif ($bmi >= 23 && $bmi <= 24.90) {
-                                                $category = 'ท้วม / โรคอ้วนระดับ 1';
-                                                $badgeClass = 'warning';
-                                                $description = 'Overweight / Obese I';
-                                            } elseif ($bmi >= 25 && $bmi <= 29.90) {
-                                                $category = 'โรคอ้วนระดับ 2';
-                                                $badgeClass = 'warning';
-                                                $description = 'Obese II';
-                                            } else {
-                                                $category = 'โรคอ้วนระดับ 3';
+                                            if ($bmi < 18) {
+                                                $category = 'ต่ำกว่าเกณฑ์';
                                                 $badgeClass = 'danger';
-                                                $description = 'Obese III';
+                                                $description = 'Below Standard';
+                                            } elseif ($bmi >= 18 && $bmi <= 30) {
+                                                $category = 'ผ่านเกณฑ์';
+                                                $badgeClass = 'success';
+                                                $description = 'Pass';
+                                            } else {
+                                                $category = 'เกินเกณฑ์';
+                                                $badgeClass = 'danger';
+                                                $description = 'Above Standard';
                                             }
                                         @endphp
                                         <div>

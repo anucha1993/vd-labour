@@ -1,4 +1,55 @@
 @extends('layouts.main')
+
+@section('styles')
+<style>
+    /* Fix dropdown being cut off in table */
+    .table-responsive {
+        overflow: visible !important;
+    }
+    
+    .card.card-custom {
+        overflow: visible !important;
+    }
+    
+    .card-body {
+        overflow: visible !important;
+    }
+    
+    table {
+        overflow: visible !important;
+    }
+    
+    tbody {
+        overflow: visible !important;
+    }
+    
+    tr {
+        overflow: visible !important;
+    }
+    
+    td {
+        overflow: visible !important;
+    }
+    
+    @media screen and (max-width: 768px) {
+        .table-responsive {
+            overflow-x: auto !important;
+            overflow-y: visible !important;
+        }
+    }
+    
+    /* Ensure dropdown appears above other elements */
+    .dropdown-menu {
+        z-index: 9999 !important;
+        position: absolute !important;
+    }
+    
+    .btn-group {
+        position: static !important;
+    }
+</style>
+@endsection
+
 @section('content')
     @if ($message = Session::get('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -84,15 +135,45 @@
                         <tr>
                             <th class="text-center" width="80">#</th>
                             <th class="text-center" width="80"><i class="bi bi-image me-1"></i></th>
-                            <th><i class="bi bi-person me-1"></i> ชื่อ-นามสกุล</th>
-                            <th><i class="bi bi-telephone me-1"></i> โทรศัพท์</th>
-                            <th><i class="bi bi-briefcase me-1"></i> ตำแหน่ง</th>
-                            <th class="text-center"><i class="bi bi-flag me-1"></i> ประเทศ</th>
-                            <th><i class="bi bi-person-badge me-1"></i> ผู้ดูแล/สายแนะนำ</th>
-                            <th class="text-center"><i class="bi bi-file-text me-1"></i> สถานะใบสมัคร</th>
-                            <th class="text-center"><i class="bi bi-info-circle me-1"></i> สถานะ Lead</th>
-                            <th class="text-center"><i class="bi bi-calendar me-1"></i> วันที่สร้าง</th>
-                            <th class="text-center" width="280"><i class="bi bi-gear me-1"></i> จัดการ</th>
+                            <th> ชื่อ-นามสกุล</th>
+                            <th>โทรศัพท์</th>
+                            <th> ตำแหน่ง</th>
+                            <th class="text-center">ประเทศ</th>
+                            <th> ผู้ดูแล/สายแนะนำ</th>
+                            <th class="text-center">
+                                สถานะใบสมัคร
+                                <i class="bi bi-info-circle text-primary ms-1" 
+                                   style="cursor: help;"
+                                   data-bs-toggle="tooltip" 
+                                   data-bs-placement="top" 
+                                   data-bs-html="true"
+                                   title="<div style='text-align: left;'><strong>คำอธิบายสถานะใบสมัคร:</strong><br>
+                                   • <strong>ร่าง</strong>: ยังไม่ดำเนินการส่งใบสมัคร<br>
+                                   • <strong>ส่งแล้ว</strong>: ส่งให้นายจ้างแล้ว<br>
+                                   • <strong>กำลังพิจารณา</strong>: นายจ้างกำลังพิจารณา<br>
+                                   • <strong>นัดสัมภาษณ์</strong>: นายจ้างนัดสัมภาษณ์<br>
+                                   • <strong>เสนองาน</strong>: นายจ้างเสนองาน/นายจ้างเลือก<br>
+                                   • <strong>ตอบรับ</strong>: ได้งานแล้ว ผู้สมัครตอบรับงานแล้ว<br>
+                                   • <strong>ปฏิเสธ</strong>: ไม่ผ่าน/นายจ้างไม่เลือก (ต้องระบุเหตุผล) *จะไม่สามารถสมัครงานนี้ใหม่ได้<br>
+                                   • <strong>ถอน</strong>: ผู้สมัครถอนตัว (ต้องระบุเหตุผล) *จะไม่สามารถสมัครงานนี้ใหม่ได้</div>"></i>
+                            </th>
+                            <th class="text-center">
+                               สถานะ Lead
+                                <i class="bi bi-info-circle text-primary ms-1" 
+                                   style="cursor: help;"
+                                   data-bs-toggle="tooltip" 
+                                   data-bs-placement="top" 
+                                   data-bs-html="true"
+                                   title="<div style='text-align: left;'><strong>คำอธิบายสถานะ Lead:</strong><br>
+                                   • <strong>ใหม่</strong>: Lead ที่เพิ่งสร้างใหม่<br>
+                                   • <strong>ติดต่อแล้ว</strong>: ได้ติดต่อ Lead แล้ว<br>
+                                   • <strong>นัดสัมภาษณ์</strong>: นัดหมายสัมภาษณ์แล้ว<br>
+                                   • <strong>ผ่านคุณสมบัติ</strong>: ผ่านการพิจารณาคุณสมบัติ<br>
+                                   • <strong>Convert แล้ว</strong>: แปลงเป็น Labour แล้ว<br>
+                                   • <strong>ไม่ผ่าน</strong>: ไม่ผ่านการพิจารณา</div>"></i>
+                            </th>
+                            <th class="text-center">วันที่สร้าง</th>
+                            <th class="text-center" width="150"><i class="bi bi-gear me-1"></i> จัดการ</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -108,7 +189,8 @@
                                              data-bs-toggle="modal"
                                              data-bs-target="#photoModal"
                                              onclick="showPhoto('{{ asset('storage/' . $item->lead_photo) }}', '{{ $item->fullName }}')"
-                                             title="คลิกเพื่อดูรูปใหญ่">
+                                             title="คลิกเพื่อดูรูปใหญ่">.
+                                        
                                     @else
                                         <div class="rounded-circle bg-light border d-flex align-items-center justify-content-center" 
                                              style="width: 50px; height: 50px;">
@@ -139,7 +221,8 @@
                                         <small>
                                   
                                             <span class="badge bg-{{ $badgeClass }}" style="font-size: 0.65rem;">BMI : {{ number_format($bmi, 1) }} {{ $category }}</span>
-                                        </small>
+                                        </small><br>
+                                           <small>{{$item->lead_number}}</small>
                                     @endif
                                 </td>
                                 <td>{{ $item->lead_phone ?? '-' }}</td>
@@ -231,83 +314,72 @@
                                 <td class="text-center">{!! $item->statusBadge !!}</td>
                                 <td class="text-center">{{ $item->created_at->format('d/m/Y') }}</td>
                                 <td class="text-center">
-                                    <div class="btn-group" role="group">
-                                        <button type="button" 
-                                                class="btn btn-sm btn-outline-info" 
-                                                onclick="showLeadTimeline({{ $item->lead_id }}, '{{ $item->getFullNameAttribute() }}')"
-                                                title="ดูประวัติการดำเนินการ">
-                                            <i class="bi bi-clock-history"></i>
+                                    <div class="btn-group dropstart">
+                                        <button type="button" class="btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" data-bs-auto-close="true" aria-expanded="false">
+                                            <i class="bi bi-gear"></i> จัดการ
                                         </button>
-
-                                        <a href="{{ route('leads.resume', $item->lead_id) }}" 
-                                           class="btn btn-sm btn-outline-secondary" 
-                                           title="Resume/CV"
-                                           target="_blank">
-                                            <i class="bi bi-file-person"></i>
-                                        </a>
-                                        
-                                        @can('view lead')
-                                        <a href="{{ route('leads.show', $item->lead_id) }}" 
-                                           class="btn btn-sm btn-outline-primary" 
-                                           title="ดูรายละเอียด">
-                                            <i class="bi bi-eye-fill"></i>
-                                        </a>
-                                        @endcan
-
-                                        @can('view lead')
-                                        <div class="btn-group">
-                                            <a href="{{ route('pdf.cv.form', $item->lead_id) }}" 
-                                               class="btn btn-sm btn-outline-success" 
-                                               title="Preview PDF" 
-                                               target="_blank">
-                                                <i class="bi bi-file-pdf-fill"></i>
-                                            </a>
-                                         
-                                           
-                                            </ul>
-                                        </div>
-                                        @endcan
-
-                                        @can('update lead')
-                                        <a href="{{ route('leads.edit', $item->lead_id) }}" 
-                                           class="btn btn-sm btn-outline-warning" 
-                                           title="แก้ไข">
-                                            <i class="bi bi-pencil-fill"></i>
-                                        </a>
-                                        @endcan
-
-
-                                        @can('delete lead')
-                                            @if($item->isConverted())
-                                                @can('delete converted lead')
-                                                    <form action="{{ route('leads.destroy', $item->lead_id) }}" 
-                                                          method="POST" 
-                                                          class="d-inline" 
-                                                          onsubmit="return confirm('Lead นี้ถูก Convert แล้ว คุณแน่ใจหรือไม่ว่าต้องการลบ?');">
+                                        <ul class="dropdown-menu dropdown-menu-end">
+                                            <li>
+                                                <a class="dropdown-item" href="javascript:void(0)" onclick="showLeadTimeline({{ $item->lead_id }}, '{{ $item->getFullNameAttribute() }}')">
+                                                    <i class="bi bi-clock-history text-info"></i> ประวัติการดำเนินการ
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" href="{{ route('leads.resume', $item->lead_id) }}" target="_blank">
+                                                    <i class="bi bi-file-person text-secondary"></i> Resume/CV
+                                                </a>
+                                            </li>
+                                            @can('view lead')
+                                            <li>
+                                                <a class="dropdown-item" href="{{ route('leads.show', $item->lead_id) }}">
+                                                    <i class="bi bi-eye-fill text-primary"></i> ดูรายละเอียด
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" href="{{ route('pdf.cv.form', $item->lead_id) }}" target="_blank">
+                                                    <i class="bi bi-file-pdf-fill text-success"></i> Preview PDF
+                                                </a>
+                                            </li>
+                                            @endcan
+                                            @can('update lead')
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li>
+                                                <a class="dropdown-item" href="{{ route('leads.edit', $item->lead_id) }}">
+                                                    <i class="bi bi-pencil-fill text-warning"></i> แก้ไข
+                                                </a>
+                                            </li>
+                                            @endcan
+                                            @can('delete lead')
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li>
+                                                @if($item->isConverted())
+                                                    @can('delete converted lead')
+                                                        <a class="dropdown-item text-danger" href="javascript:void(0)" 
+                                                           onclick="if(confirm('Lead นี้ถูก Convert แล้ว คุณแน่ใจหรือไม่ว่าต้องการลบ?')) document.getElementById('delete-form-{{ $item->lead_id }}').submit();">
+                                                            <i class="bi bi-trash-fill"></i> ลบ (Converted)
+                                                        </a>
+                                                        <form id="delete-form-{{ $item->lead_id }}" action="{{ route('leads.destroy', $item->lead_id) }}" method="POST" class="d-none">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                        </form>
+                                                    @else
+                                                        <a class="dropdown-item disabled" href="javascript:void(0)">
+                                                            <i class="bi bi-lock-fill"></i> ไม่มีสิทธิ์ลบ
+                                                        </a>
+                                                    @endcan
+                                                @else
+                                                    <a class="dropdown-item text-danger" href="javascript:void(0)" 
+                                                       onclick="if(confirm('คุณแน่ใจหรือไม่ว่าต้องการลบผู้สนใจนี้?')) document.getElementById('delete-form-{{ $item->lead_id }}').submit();">
+                                                        <i class="bi bi-trash-fill"></i> ลบ
+                                                    </a>
+                                                    <form id="delete-form-{{ $item->lead_id }}" action="{{ route('leads.destroy', $item->lead_id) }}" method="POST" class="d-none">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="ลบ (Converted)">
-                                                            <i class="bi bi-trash-fill"></i>
-                                                        </button>
                                                     </form>
-                                                @else
-                                                    <button type="button" class="btn btn-sm btn-outline-secondary" disabled title="ไม่มีสิทธิ์ลบ Lead ที่ Convert แล้ว">
-                                                        <i class="bi bi-lock-fill"></i>
-                                                    </button>
-                                                @endcan
-                                            @else
-                                                <form action="{{ route('leads.destroy', $item->lead_id) }}" 
-                                                      method="POST" 
-                                                      class="d-inline" 
-                                                      onsubmit="return confirm('คุณแน่ใจหรือไม่ว่าต้องการลบผู้สนใจนี้?');">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-outline-danger" title="ลบ">
-                                                        <i class="bi bi-trash-fill"></i>
-                                                    </button>
-                                                </form>
-                                            @endif
-                                        @endcan
+                                                @endif
+                                            </li>
+                                            @endcan
+                                        </ul>
                                     </div>
                                 </td>
                             </tr>
@@ -417,8 +489,13 @@
     document.addEventListener('DOMContentLoaded', function() {
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
         var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl);
+            return new bootstrap.Tooltip(tooltipTriggerEl, { html: true });
         });
+        
+        // Custom tooltip styling
+        var style = document.createElement('style');
+        style.textContent = `.tooltip-inner { text-align: left !important; max-width: 500px !important; width: 500px; }`;
+        document.head.appendChild(style);
     });
 </script>
 

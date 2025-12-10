@@ -148,13 +148,34 @@
                             </div>
                             <div class="card-body">
                                 <div class="row align-items-end">
-                                    <div class="col-md-2">
-                                        <label class="form-label small">สถานะใหม่:</label>
+                                    <div class="col-md-3">
+                                        <label class="form-label small">
+                                            สถานะใหม่:
+                                            <i class="bi bi-info-circle text-primary" 
+                                               style="cursor: help;"
+                                               data-bs-toggle="tooltip" 
+                                               data-bs-placement="top" 
+                                               data-bs-html="true"
+                                               title="<div style='text-align: left;'><strong>คำอธิบายสถานะ:</strong><br>
+                                               • <strong>ร่าง</strong>: ยังไม่ดำเนินการส่งใบสมัคร<br>
+                                               • <strong>ส่งแล้ว</strong>: ส่งให้นายจ้างแล้ว<br>
+                                               • <strong>กำลังพิจารณา</strong>: นายจ้างกำลังพิจารณา<br>
+                                               • <strong>นัดสัมภาษณ์</strong>: นายจ้างนัดสัมภาษณ์<br>
+                                               • <strong>เสนองาน</strong>: นายจ้างเสนองาน/นายจ้างเลือก<br>
+                                               • <strong>ตอบรับ</strong>: ได้งานแล้ว ผู้สมัครตอบรับงานแล้ว<br>
+                                               • <strong>ปฏิเสธ</strong>: ไม่ผ่าน/นายจ้างไม่เลือก (ต้องระบุเหตุผล)  *จะไม่สามารถสมัครงานนี้ใหม่ได้<br>
+                                               • <strong>ถอน</strong>: ผู้สมัครถอนตัว (ต้องระบุเหตุผล) *จะไม่สามารถสมัครงานนี้ใหม่ได้</div>"></i>
+                                        </label>
                                         <select name="new_status" class="form-select" id="bulkStatusSelect" required>
                                             <option value="">-- เลือกสถานะ --</option>
-                                            @foreach(['ร่าง', 'ส่งแล้ว', 'กำลังพิจารณา', 'นัดสัมภาษณ์', 'เสนองาน', 'ตอบรับ', 'ปฏิเสธ', 'ถอน'] as $status)
-                                                <option value="{{ $status }}">{{ $status }}</option>
-                                            @endforeach
+                                            <option value="ร่าง">📝 ร่าง</option>
+                                            <option value="ส่งแล้ว">📤 ส่งแล้ว</option>
+                                            <option value="กำลังพิจารณา">🔍 กำลังพิจารณา</option>
+                                            <option value="นัดสัมภาษณ์">📅 นัดสัมภาษณ์</option>
+                                            <option value="เสนองาน">💼 เสนองาน</option>
+                                            <option value="ตอบรับ">✅ ตอบรับ</option>
+                                            <option value="ปฏิเสธ">❌ ปฏิเสธ</option>
+                                            <option value="ถอน">🔙 ถอน</option>
                                         </select>
                                     </div>
                                     <div class="col-md-3" id="bulkReasonField" style="display: none;">
@@ -193,7 +214,7 @@
                                         <input type="checkbox" id="selectAll" class="form-check-input">
                                     </th>
                                     @endcan
-                                    <th>หมายเลขใบสมัคร</th>
+                                    <th>หมายเลขผู้สมัคร</th>
                                      <th class="text-center" width="80"><i class="bi bi-image me-1"></i></th>
                                     <th>ชื่อผู้สมัคร</th>
                                     <th>Passport</th>
@@ -220,7 +241,7 @@
                                     <td>
                                         <a href="{{ route('job-leads.show', $jobLead->job_lead_id) }}" 
                                            class="text-decoration-none fw-bold">
-                                            {{ $jobLead->job_lead_number }}
+                                            {{ $jobLead->lead->lead_number }}
                                         </a>
                                     </td>
                                       <td class="text-center">
@@ -353,7 +374,7 @@
                                                     @if(in_array($jobLead->job_lead_status, ['ร่าง', 'ส่งแล้ว']))
                                                     <button type="button" class="btn btn-sm btn-outline-danger" 
                                                             onclick="cancelApplication({{ $jobLead->job_lead_id }}, '{{ $jobLead->job_lead_number }}')"
-                                                            title="ยกเลิกใบสมัคร">
+                                                            title="ยกเลิกใบสมัคร *จะลบข้อมูลใบสมัครนี้ออกสามารถสมัครใหม่ได้">
                                                         <i class="bi bi-x-circle"></i>
                                                     </button>
                                                    
@@ -832,5 +853,28 @@ function showTimeline(jobLeadId, applicantName) {
         </div>
     </div>
 </div>
+
+<script>
+// Initialize Bootstrap tooltips
+document.addEventListener('DOMContentLoaded', function() {
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl, {
+            html: true
+        })
+    });
+    
+    // Add custom CSS for tooltip alignment and width
+    var style = document.createElement('style');
+    style.textContent = `
+        .tooltip-inner { 
+            text-align: left !important; 
+            max-width: 400px !important;
+            width: 400px;
+        }
+    `;
+    document.head.appendChild(style);
+});
+</script>
 
 @endsection

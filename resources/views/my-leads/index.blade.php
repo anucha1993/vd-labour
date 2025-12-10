@@ -1,4 +1,64 @@
 @extends('layouts.main')
+
+@section('styles')
+<style>
+    /* Responsive Table Styles */
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    @media screen and (max-width: 768px) {
+        .table-responsive {
+            border: 1px solid #dee2e6;
+            border-radius: 0.375rem;
+        }
+        
+        .table-responsive table {
+            min-width: 1200px;
+        }
+        
+        .table thead th {
+            white-space: nowrap;
+            font-size: 0.85rem;
+            padding: 0.75rem 0.5rem;
+        }
+        
+        .table tbody td {
+            font-size: 0.85rem;
+            padding: 0.75rem 0.5rem;
+        }
+        
+        /* Make status badges stack vertically on mobile */
+        .d-flex.flex-column.gap-1 {
+            min-width: 150px;
+        }
+        
+        /* Make action buttons stack on mobile */
+        .btn-group-vertical {
+            min-width: 200px;
+        }
+    }
+    
+    @media screen and (max-width: 576px) {
+        /* Further adjustments for very small screens */
+        .card-body {
+            padding: 1rem;
+        }
+        
+        .row.g-3 {
+            row-gap: 0.75rem !important;
+        }
+        
+        /* Make filter form inputs stack */
+        .row > .col-md-2,
+        .row > .col-md-3 {
+            margin-bottom: 0.5rem;
+        }
+    }
+</style>
+@endsection
+
 @section('content')
     @if ($message = Session::get('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -248,15 +308,44 @@
                         <tr>
                             <th class="text-center" width="80">#</th>
                             <th class="text-center" width="80"><i class="bi bi-image me-1"></i></th>
-                            <th><i class="bi bi-person me-1"></i> ชื่อ-นามสกุล</th>
-                            <th><i class="bi bi-telephone me-1"></i> โทรศัพท์</th>
-                            <th><i class="bi bi-briefcase me-1"></i> ตำแหน่ง</th>
-                            <th class="text-center"><i class="bi bi-flag me-1"></i> ประเทศ</th>
-                            <th><i class="bi bi-person-badge me-1"></i> สายแนะนำ</th>
-                            <th class="text-center"><i class="bi bi-file-text me-1"></i> สถานะใบสมัคร</th>
-                            <th class="text-center"><i class="bi bi-info-circle me-1"></i> สถานะ Lead</th>
-                            <th class="text-center"><i class="bi bi-calendar me-1"></i> วันที่สร้าง</th>
-                            <th class="text-center" width="250"><i class="bi bi-gear me-1"></i> จัดการ</th>
+                            <th> ชื่อ-นามสกุล</th>
+                            <th> โทรศัพท์</th>
+                            <th> ตำแหน่ง / ประเทศ</th>
+                            <th>สายแนะนำ</th>
+                            <th class="text-center">
+                              สถานะใบสมัคร
+                                <i class="bi bi-info-circle text-primary ms-1" 
+                                   style="cursor: help;"
+                                   data-bs-toggle="tooltip" 
+                                   data-bs-placement="top" 
+                                   data-bs-html="true"
+                                   title="<div style='text-align: left;'><strong>คำอธิบายสถานะใบสมัคร:</strong><br>
+                                   • <strong>ร่าง</strong>: ยังไม่ดำเนินการส่งใบสมัคร<br>
+                                   • <strong>ส่งแล้ว</strong>: ส่งให้นายจ้างแล้ว<br>
+                                   • <strong>กำลังพิจารณา</strong>: นายจ้างกำลังพิจารณา<br>
+                                   • <strong>นัดสัมภาษณ์</strong>: นายจ้างนัดสัมภาษณ์<br>
+                                   • <strong>เสนองาน</strong>: นายจ้างเสนองาน/นายจ้างเลือก<br>
+                                   • <strong>ตอบรับ</strong>: ได้งานแล้ว ผู้สมัครตอบรับงานแล้ว<br>
+                                   • <strong>ปฏิเสธ</strong>: ไม่ผ่าน/นายจ้างไม่เลือก (ต้องระบุเหตุผล) *จะไม่สามารถสมัครงานนี้ใหม่ได้<br>
+                                   • <strong>ถอน</strong>: ผู้สมัครถอนตัว (ต้องระบุเหตุผล) *จะไม่สามารถสมัครงานนี้ใหม่ได้</div>"></i>
+                            </th>
+                            <th class="text-center">
+                                 สถานะ Lead
+                                <i class="bi bi-info-circle text-primary ms-1" 
+                                   style="cursor: help;"
+                                   data-bs-toggle="tooltip" 
+                                   data-bs-placement="top" 
+                                   data-bs-html="true"
+                                   title="<div style='text-align: left;'><strong>คำอธิบายสถานะ Lead:</strong><br>
+                                   • <strong>ใหม่</strong>: Lead ที่เพิ่งสร้างใหม่<br>
+                                   • <strong>ติดต่อแล้ว</strong>: ได้ติดต่อ Lead แล้ว<br>
+                                   • <strong>นัดสัมภาษณ์</strong>: นัดหมายสัมภาษณ์แล้ว<br>
+                                   • <strong>ผ่านคุณสมบัติ</strong>: ผ่านการพิจารณาคุณสมบัติ<br>
+                                   • <strong>Convert แล้ว</strong>: แปลงเป็น Labour แล้ว<br>
+                                   • <strong>ไม่ผ่าน</strong>: ไม่ผ่านการพิจารณา</div>"></i>
+                            </th>
+                            <th class="text-center">วันที่สร้าง</th>
+                            <th class="text-center" width="250"> จัดการ</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -303,7 +392,8 @@
                                         <small>
                                   
                                             <span class="badge bg-{{ $badgeClass }}" style="font-size: 0.65rem;">BMI : {{ number_format($bmi, 1) }} {{ $category }}</span>
-                                        </small>
+                                        </small><br>
+                                         <small>{{$item->lead_number}}</small> 
                                     @endif
                                 </td>
                                 <td>{{ $item->lead_phone ?? '-' }}</td>
@@ -313,15 +403,15 @@
                                     @else
                                         -
                                     @endif
-
-                                    
-                                </td>
-                                <td class="text-center">
-                                    @if($item->country)
-                                        {{ $item->country->country_name_th ?? $item->country->country_name_en }}
-                                    @else
-                                        -
-                                    @endif
+                                    <br>
+                                    <small class="text-muted">
+                                        <i class="bi bi-flag me-1"></i>
+                                        @if($item->country)
+                                            {{ $item->country->country_name_th ?? $item->country->country_name_en }}
+                                        @else
+                                            -
+                                        @endif
+                                    </small>
                                 </td>
                                <td>
                                       
@@ -537,8 +627,13 @@
     document.addEventListener('DOMContentLoaded', function() {
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
         var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl);
+            return new bootstrap.Tooltip(tooltipTriggerEl, { html: true });
         });
+        
+        // Custom tooltip styling
+        var style = document.createElement('style');
+        style.textContent = `.tooltip-inner { text-align: left !important; max-width: 500px !important; width: 500px; }`;
+        document.head.appendChild(style);
 
         // Toggle icon when collapse is shown/hidden
         var jobStatsCollapse = document.getElementById('jobStatsCollapse');

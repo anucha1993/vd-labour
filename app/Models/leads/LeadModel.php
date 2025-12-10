@@ -80,8 +80,8 @@ class LeadModel extends Model
             $nextNumber = $lastNumber + 1;
         }
         
-        // Format: VD + current year + 5-digit zero-padded number
-        return 'VD' . date('Y') . str_pad($nextNumber, 5, '0', STR_PAD_LEFT);
+        // Format: VD + current year + - + 5-digit zero-padded number
+        return 'VD' . date('Y') . '-' . str_pad($nextNumber, 5, '0', STR_PAD_LEFT);
     }
     
     // Relationships

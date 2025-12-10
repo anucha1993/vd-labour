@@ -396,13 +396,29 @@
                                 <table class="table table-sm table-hover">
                                     <thead class="table-light">
                                         <tr>
-                                            <th>ใบสมัคร</th>
+                                            <th>เลขที่ผู้สมัคร</th>
                                               <th class="text-center" width="80"><i class="bi bi-image me-1"></i></th>
                                             <th>ชื่อ-สกุล</th>
                                           
                                             <th class="text-center" width="120">BMI</th>
                                               <th>ผู้แนะนำ</th>
-                                            <th>สถานะ</th>
+                                            <th>
+                                                สถานะ
+                                                <i class="bi bi-info-circle text-primary ms-1" 
+                                                   style="cursor: help;"
+                                                   data-bs-toggle="tooltip" 
+                                                   data-bs-placement="top" 
+                                                   data-bs-html="true"
+                                                   title="<div style='text-align: left;'><strong>คำอธิบายสถานะ:</strong><br>
+                                               • <strong>ร่าง</strong>: ยังไม่ดำเนินการส่งใบสมัคร<br>
+                                               • <strong>ส่งแล้ว</strong>: ส่งให้นายจ้างแล้ว<br>
+                                               • <strong>กำลังพิจารณา</strong>: นายจ้างกำลังพิจารณา<br>
+                                               • <strong>นัดสัมภาษณ์</strong>: นายจ้างนัดสัมภาษณ์<br>
+                                               • <strong>เสนองาน</strong>: นายจ้างเสนองาน/นายจ้างเลือก<br>
+                                               • <strong>ตอบรับ</strong>: ได้งานแล้ว ผู้สมัครตอบรับงานแล้ว<br>
+                                               • <strong>ปฏิเสธ</strong>: ไม่ผ่าน/นายจ้างไม่เลือก *จะไม่สามารถสมัครงานนี้ใหม่ได้<br>
+                                               • <strong>ถอน</strong>: ผู้สมัครถอนตัว *จะไม่สามารถสมัครงานนี้ใหม่ได้</div>"></i>
+                                            </th>
                                             <th>วันที่สมัคร</th>
                                             <th width="150">จัดการ</th>
                                         </tr>
@@ -412,7 +428,7 @@
                                         <tr>
                                             <td>
                                                 <a href="{{ route('job-leads.show', $jobLead->job_lead_id) }}" class="text-decoration-none fw-bold">
-                                                    {{ $jobLead->job_lead_number }}
+                                                    {{ $jobLead->lead->lead_number }}
                                                 </a>
                                                 @if($jobLead->is_locked)
                                                     <i class="bi bi-lock-fill text-warning ms-1" title="ล็อค"></i>
@@ -449,20 +465,14 @@
                                                         $category = '';
                                                         $badgeClass = 'secondary';
                                                         
-                                                        if ($bmi < 18.50) {
-                                                            $category = 'ผอม';
-                                                            $badgeClass = 'primary';
-                                                        } elseif ($bmi >= 18.50 && $bmi <= 22.90) {
-                                                            $category = 'ปกติ';
+                                                        if ($bmi < 18) {
+                                                            $category = 'ต่ำกว่าเกณฑ์';
+                                                            $badgeClass = 'danger';
+                                                        } elseif ($bmi >= 18 && $bmi <= 30) {
+                                                            $category = 'ผ่านเกณฑ์';
                                                             $badgeClass = 'success';
-                                                        } elseif ($bmi >= 23 && $bmi <= 24.90) {
-                                                            $category = 'ท้วม';
-                                                            $badgeClass = 'warning';
-                                                        } elseif ($bmi >= 25 && $bmi <= 29.90) {
-                                                            $category = 'อ้วน 1';
-                                                            $badgeClass = 'warning';
                                                         } else {
-                                                            $category = 'อ้วน 2';
+                                                            $category = 'เกินเกณฑ์';
                                                             $badgeClass = 'danger';
                                                         }
                                                     @endphp
@@ -483,9 +493,16 @@
                                     </td>
                                             
                                             <td><span class="badge bg-{{ $jobLead->status_badge_color }}">{{ $jobLead->job_lead_status }}</span></td>
+
                                             <td>{{ $jobLead->created_at->format('d/m/Y') }}</td>
                                             <td>
                                                 <div class="btn-group" role="group">
+                                                    <button type="button" class="btn btn-outline-info btn-sm" 
+                                                            onclick="showTimeline({{ $jobLead->job_lead_id }}, '{{ $jobLead->lead->getFullNameAttribute() }}')"
+                                                            title="ดูประวัติการดำเนินการ">
+                                                        <i class="bi bi-clock-history"></i>
+                                                    </button>
+                                                    
                                                     @if($jobLead->lead)
                                                     <a href="{{ route('leads.resume', $jobLead->lead->lead_id) }}" 
                                                        class="btn btn-success btn-sm" 
@@ -902,5 +919,84 @@ function cancelApplication(jobLeadId, jobLeadNumber) {
         });
     }
 }
+
+// Show timeline function
+function showTimeline(jobLeadId, applicantName) {
+    const modal = new bootstrap.Modal(document.getElementById('timelineModal'));
+    const modalTitle = document.getElementById('timelineModalLabel');
+    const modalBody = document.getElementById('timelineModalBody');
+    
+    modalTitle.textContent = `ประวัติการดำเนินการ - ${applicantName}`;
+    modalBody.innerHTML = '<div class="text-center py-5"><div class="spinner-border" role="status"></div><p class="mt-2">กำลังโหลดข้อมูล...</p></div>';
+    
+    modal.show();
+    
+    // Fetch timeline data
+    fetch(`{{ url('job-leads') }}/${jobLeadId}/timeline`, {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            modalBody.innerHTML = data.html;
+        } else {
+            modalBody.innerHTML = '<div class="alert alert-danger">ไม่สามารถโหลดข้อมูลได้</div>';
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        modalBody.innerHTML = '<div class="alert alert-danger">เกิดข้อผิดพลาด: ' + error.message + '</div>';
+    });
+}
+
+// Initialize Bootstrap tooltips
+document.addEventListener('DOMContentLoaded', function() {
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl, {
+            html: true
+        })
+    });
+    
+    // Add custom CSS for tooltip alignment and width
+    var style = document.createElement('style');
+    style.textContent = `
+        .tooltip-inner { 
+            text-align: left !important; 
+            max-width: 500px !important;
+            width: 500px;
+        }
+    `;
+    document.head.appendChild(style);
+});
 </script>
+
+<!-- Timeline Modal -->
+<div class="modal fade" id="timelineModal" tabindex="-1" aria-labelledby="timelineModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title" id="timelineModalLabel">
+                    <i class="bi bi-clock-history"></i> ประวัติการดำเนินการ
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="timelineModalBody">
+                <div class="text-center py-5">
+                    <div class="spinner-border" role="status"></div>
+                    <p class="mt-2">กำลังโหลดข้อมูล...</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
