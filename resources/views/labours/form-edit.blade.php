@@ -11,6 +11,13 @@
                 <strong>{{ $message }}</strong>
             </div>
         @endif
+        
+        {{-- @if ($debug = Session::get('upload_debug'))
+            <div class="alert alert-info">
+                <strong>Upload Debug Info:</strong>
+                <pre>{{ json_encode($debug, JSON_PRETTY_PRINT) }}</pre>
+            </div>
+        @endif --}}
 
     </div>
 
@@ -661,11 +668,12 @@
                                                         class="fas fa-cloud-upload-alt fa-3x text-secondary"></i></div>
                                                 <div class="mb-2 text-muted">
                                                     </b>{{ $item->labour_file_note }}-({{ $item->labour_file_name }}</div>
-                                                <input type="file" name="files[]"
-                                                    class="form-control form-control-sm mb-2" multiple>
-                                                <input type="hidden" name="labour_file_name[]"
+                                                <input type="file" name="file_{{ $key }}"
+                                                    class="form-control form-control-sm mb-2"
+                                                    data-index="{{ $key }}">
+                                                <input type="hidden" name="labour_file_name_{{ $key }}"
                                                     value="{{ $item->labour_file_name }}">
-                                                <input type="hidden" name="labour_file_id[]"
+                                                <input type="hidden" name="labour_file_id_{{ $key }}"
                                                     value="{{ $item->labour_file_id }}">
 
                                                 <div class="small text-muted">เลือกไฟล์เพื่ออัปโหลด</div>

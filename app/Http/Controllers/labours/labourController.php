@@ -158,8 +158,6 @@ class labourController extends Controller
 
     public function update(labourModel $labourModel, Request $request)
     {
-
-        //dd($request->all());
         
         // ตรวจสอบ Passport ซ้ำ
         if ($request->has('labour_passport_number') && !empty($request->labour_passport_number)) {
@@ -169,11 +167,14 @@ class labourController extends Controller
             $duplicateInLabour = labourModel::where('labour_passport_number', $passportNumber)
                 ->where('labour_id', '!=', $labourModel->labour_id)
                 ->first();
+                //dd($duplicateInLabour);
             
             // ตรวจสอบใน leads table (ยกเว้น lead ที่เป็นต้นทางของ labour นี้)
             $duplicateInLead = LeadModel::where('lead_passport_number', $passportNumber)
                 ->where('lead_id', '!=', $labourModel->lead_id) // ยกเว้น lead ที่ถูก convert มา
+                 // ยกเว้น lead ที่ถูก convert มา
                 ->first();
+                  //  dd($request);
             
             if ($duplicateInLabour) {
                 return back()->withErrors([
@@ -187,6 +188,7 @@ class labourController extends Controller
                 ])->withInput();
             }
         }
+       
         
         // ตรวจสอบชื่อ-นามสกุล ซ้ำ (ยกเว้นตัวเอง)
         if ($request->has('labour_firstname') && $request->has('labour_lastname')) {
@@ -217,6 +219,8 @@ class labourController extends Controller
                 ])->withInput();
             }
         }
+
+        
         
         $data = $request->all();
         $data['updated_by'] = auth()->id();
@@ -256,38 +260,80 @@ class labourController extends Controller
                 'updated_by' => auth()->id()
             ]);
         }
+     
         
         labourFileModel::where('labour_id', $labourModel->labour_id)->update([
             'labour_passport_number' => $labourModel->labour_passport_number,
             'updated_by' => auth()->id()
         ]);
-        $files = $request->file('files');
+        
+        // Upload ไฟล์ที่ใช้ index แยกกัน (file_0, file_1, file_2, ...)
         $fullPath = 'LABOURS/' . $labourModel->labour_path;
-        if ($files) {
-            foreach ($files as $key => $file) {
-                // สร้างชื่อไฟล์ที่ไม่ซ้ำกัน
-                $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME); // ชื่อไฟล์เดิมโดยไม่มีนามสกุล
-                $extension = $file->getClientOriginalExtension(); // นามสกุลไฟล์
-                $uniqueName = $request->labour_file_name[$key] . '_' . $labourModel->labour_firstname . '_' . $labourModel->labour_lastname . '.' . $extension; // แก้ไขให้ใช้ $labourModel->id แทน $labourModel
-
-                 //สร้าง Forlder
-                 if (!Storage::disk('public')->exists($fullPath)) {
-                    Storage::disk('public')->makeDirectory($fullPath);
-                }
-
-                // อัปโหลดไฟล์ไปยัง disk ที่กำหนด
-                $path = $file->storeAs($fullPath, $uniqueName, 'public');
-
-                // ตรวจสอบผลลัพธ์ของการอัปโหลด
-                if ($path) {
-                    labourFileModel::where('labour_file_id', $request->labour_file_id[$key])->update([
-                        'labour_file_path' => $uniqueName,
-                        'updated_by' => auth()->id()
-                    ]);
-                } else {
-                    // อัปโหลดไม่สำเร็จ
+        $debugInfo = ['loop_count' => 0, 'found_files' => []];
+        
+        foreach ($request->all() as $key => $value) {
+            // ตรวจสอบว่าเป็น file input หรือไม่ (file_0, file_1, file_2, ...)
+            if (strpos($key, 'file_') === 0) {
+                $debugInfo['found_files'][$key] = [
+                    'hasFile' => $request->hasFile($key),
+                    'strpos' => strpos($key, 'file_')
+                ];
+            }
+            
+            if (strpos($key, 'file_') === 0 && $request->hasFile($key)) {
+                $debugInfo['loop_count']++;
+                $index = str_replace('file_', '', $key); // ดึง index (0, 1, 2, ...)
+                $file = $request->file($key);
+                
+                // ดึงข้อมูล labour_file_name และ labour_file_id จาก index นั้นๆ
+                $fileNameKey = 'labour_file_name_' . $index;
+                $fileIdKey = 'labour_file_id_' . $index;
+                
+                $debugInfo['processing'][$key] = [
+                    'index' => $index,
+                    'fileNameKey' => $fileNameKey,
+                    'fileIdKey' => $fileIdKey,
+                    'has_name' => $request->has($fileNameKey),
+                    'has_id' => $request->has($fileIdKey)
+                ];
+                
+                if ($request->has($fileNameKey) && $request->has($fileIdKey)) {
+                    $labourFileName = $request->input($fileNameKey);
+                    $labourFileId = $request->input($fileIdKey);
+                    
+                    // สร้างชื่อไฟล์ใหม่
+                    $extension = $file->getClientOriginalExtension();
+                    $uniqueName = $labourFileName . '_' . $labourModel->labour_firstname . '_' . $labourModel->labour_lastname . '.' . $extension;
+                    
+                    // สร้าง Folder ถ้ายังไม่มี
+                    if (!Storage::disk('public')->exists($fullPath)) {
+                        Storage::disk('public')->makeDirectory($fullPath);
+                    }
+                    
+                    // อัปโหลดไฟล์
+                    $path = $file->storeAs($fullPath, $uniqueName, 'public');
+                    
+                    $debugInfo['uploaded'][$key] = [
+                        'path' => $path,
+                        'uniqueName' => $uniqueName,
+                        'labourFileId' => $labourFileId
+                    ];
+                    
+                    // อัปเดต database
+                    if ($path) {
+                        $updated = labourFileModel::where('labour_file_id', $labourFileId)->update([
+                            'labour_file_path' => $uniqueName,
+                            'updated_by' => auth()->id()
+                        ]);
+                        $debugInfo['uploaded'][$key]['db_updated'] = $updated;
+                    }
                 }
             }
+        }
+        
+        // แสดง debug ถ้ามีการ process ไฟล์
+        if ($debugInfo['loop_count'] > 0 || !empty($debugInfo['found_files'])) {
+            session()->flash('upload_debug', $debugInfo);
         }
 
         //CID Upload 
