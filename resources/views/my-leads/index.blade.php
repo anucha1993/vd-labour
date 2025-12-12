@@ -651,6 +651,8 @@
             });
         }
     });
+
+    // Timeline functionality (existing)
 </script>
 
 @endsection

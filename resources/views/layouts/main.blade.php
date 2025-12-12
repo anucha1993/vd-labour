@@ -79,6 +79,28 @@
     .dropdown-icon.rotate {
       transform: rotate(90deg);
     }
+    .dropdown-menu-custom {
+      padding-left: 0;
+    }
+    .dropdown-menu-custom a {
+      display: block;
+      padding: 8px 15px 8px 35px;
+      font-size: 0.9em;
+      color: #cbd5e0;
+      text-decoration: none;
+      border-left: 3px solid transparent;
+      transition: all 0.3s;
+    }
+    .dropdown-menu-custom a:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-left-color: #48bb78;
+      color: #fff;
+    }
+    .dropdown-menu-custom a.active {
+      background: rgba(72, 187, 120, 0.2);
+      border-left-color: #48bb78;
+      color: #fff;
+    }
     .text-purple {
       color: #9c27b0 !important;
     }
@@ -160,6 +182,7 @@
  <a href="{{ route('my-leads.index') }}"
      class="{{ Request::routeIs('my-leads.*') ? 'active' : '' }}">
      <i class="bi bi-people-fill me-2"></i> ผู้สมัครของเรา</a>
+
   <a href="{{ route('dashboards.index') }}"
      class="{{ Request::routeIs('dashboards.index') ? 'active' : '' }}">
      <i class="bi bi-house-fill me-2"></i> Dashboard</a>
@@ -219,9 +242,22 @@
   </div>
   @endcanany
 
-  <a href="{{ route('export.form.labour') }}"
-     class="{{ Request::routeIs('export.form.labour') ? 'active' : '' }}">
-     <i class="bi bi-clipboard-data-fill me-2"></i> รายงาน</a>
+  <!-- Reports Dropdown Menu -->
+  <div class="sidebar-dropdown">
+    <a class="{{ Request::routeIs('export.form.labour', 'reports.job-applications.*') ? 'active' : '' }}">
+      <span><i class="bi bi-clipboard-data-fill me-2"></i> รายงาน</span>
+      <i class="bi bi-chevron-right dropdown-icon"></i>
+    </a>
+    <div class="sidebar-dropdown-menu {{ Request::routeIs('export.form.labour', 'reports.job-applications.*') ? 'show' : '' }}">
+      <a href="{{ route('export.form.labour') }}"
+         class="{{ Request::routeIs('export.form.labour') ? 'active' : '' }}">
+         <i class="bi bi-file-earmark-spreadsheet me-2"></i> รายงานคนงาน</a>
+      
+      <a href="{{ route('reports.job-applications.index') }}"
+         class="{{ Request::routeIs('reports.job-applications.*') ? 'active' : '' }}">
+         <i class="bi bi-file-earmark-excel me-2"></i> รายงานใบสมัคร</a>
+    </div>
+  </div>
 
   <a href="{{ route('customer.index') }}"
      class="{{ Request::routeIs('customer.index') ? 'active' : '' }}">

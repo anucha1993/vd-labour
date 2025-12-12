@@ -180,4 +180,119 @@ class MyLeadsController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Show export form
+     */
+    public function exportForm()
+    {
+        return view('my-leads.export-form');
+    }
+
+    /**
+     * Export job applications to Excel with filters
+     */
+    public function exportJobApplications(Request $request)
+    {
+        try {
+            // Get staff_id that is linked to current user
+            $userStaff = \App\Models\staff\staffModel::where('user_id', auth()->id())->first();
+            
+            if (!$userStaff) {
+                return redirect()->back()->with('error', 'ไม่พบข้อมูลเจ้าหน้าที่ที่เชื่อมกับบัญชีของคุณ');
+            }
+
+            // Prepare filters
+            $filters = [];
+
+            // Get job_lead_ids from request (selected checkboxes)
+            if ($request->filled('job_lead_ids')) {
+                $filters['job_lead_ids'] = is_array($request->job_lead_ids) 
+                    ? $request->job_lead_ids 
+                    : explode(',', $request->job_lead_ids);
+            }
+
+            // Get statuses filter (multiple selection)
+            if ($request->filled('statuses')) {
+                $filters['statuses'] = is_array($request->statuses) 
+                    ? $request->statuses 
+                    : [$request->statuses];
+            }
+
+            // Get staff_ids filter (multiple selection)
+            if ($request->filled('staff_ids')) {
+                $filters['staff_ids'] = is_array($request->staff_ids) 
+                    ? $request->staff_ids 
+                    : [$request->staff_ids];
+            }
+
+            // Get recommender staff_ids filter (multiple selection)
+            if ($request->filled('recommender_staff_ids')) {
+                $filters['recommender_staff_ids'] = is_array($request->recommender_staff_ids) 
+                    ? $request->recommender_staff_ids 
+                    : [$request->recommender_staff_ids];
+            }
+
+            // If no specific filters, export only user's leads
+            if (empty($filters)) {
+                $filters['staff_ids'] = [$userStaff->staff_id];
+            }
+
+            $filename = 'รายงานใบสมัครงาน_' . now()->format('Ymd_His') . '.xlsx';
+
+            return \Excel::download(new \App\Exports\JobApplicationsExport($filters), $filename);
+
+        } catch (\Exception $e) {
+            \Log::error('Export Job Applications Error: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'เกิดข้อผิดพลาดในการ Export: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Get job leads list for export selection
+     */
+    public function getJobLeadsList()
+    {
+        try {
+            // Get staff_id that is linked to current user
+            $userStaff = \App\Models\staff\staffModel::where('user_id', auth()->id())->first();
+            
+            if (!$userStaff) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'ไม่พบข้อมูลเจ้าหน้าที่'
+                ]);
+            }
+
+            // Get all job leads for user's leads
+            $jobLeads = \App\Models\jobs\JobLeadModel::with(['lead', 'job'])
+                ->whereHas('lead', function($q) use ($userStaff) {
+                    $q->where('staff_id', $userStaff->staff_id);
+                })
+                ->orderBy('created_at', 'desc')
+                ->limit(100) // Limit to latest 100 for performance
+                ->get()
+                ->map(function($jobLead) {
+                    return [
+                        'job_lead_id' => $jobLead->job_lead_id,
+                        'job_lead_number' => $jobLead->job_lead_number ?? 'N/A',
+                        'lead_name' => ($jobLead->lead->lead_firstname ?? '') . ' ' . ($jobLead->lead->lead_lastname ?? ''),
+                        'job_name' => $jobLead->job->job_name ?? 'N/A',
+                        'status' => $jobLead->job_lead_status ?? 'N/A'
+                    ];
+                });
+
+            return response()->json([
+                'success' => true,
+                'jobLeads' => $jobLeads
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Get Job Leads List Error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'เกิดข้อผิดพลาด: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }

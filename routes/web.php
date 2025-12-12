@@ -155,6 +155,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/my-leads', [\App\Http\Controllers\leads\MyLeadsController::class, 'index'])->name('my-leads.index');
     Route::get('/my-leads/{lead}/timeline', [\App\Http\Controllers\leads\MyLeadsController::class, 'timeline'])->name('my-leads.timeline');
     
+    // Reports Routes
+    Route::get('/reports/job-applications', [\App\Http\Controllers\reports\JobApplicationReportController::class, 'index'])->name('reports.job-applications.index');
+    Route::get('/reports/job-applications/list', [\App\Http\Controllers\reports\JobApplicationReportController::class, 'getJobLeadsList'])->name('reports.job-applications.list');
+    Route::post('/reports/job-applications/export', [\App\Http\Controllers\reports\JobApplicationReportController::class, 'export'])->name('reports.job-applications.export');
+    
     // Manual Routes
     Route::get('/manual', [\App\Http\Controllers\ManualController::class, 'index'])->name('manual.index');
 
