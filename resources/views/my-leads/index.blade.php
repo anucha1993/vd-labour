@@ -94,7 +94,7 @@
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
                                     <h6 class="text-muted mb-1">จำนวนผู้สมัครทั้งหมด</h6>
-                                    <h3 class="mb-0 text-primary">{{ number_format($totalLeads) }}</h3>
+                                    <h3 class="mb-0 text-primary">{{ number_format($totalLeads ?? 0) }}</h3>
                                 </div>
                                 <div class="bg-primary bg-opacity-10 rounded-circle p-3">
                                     <i class="bi bi-people-fill text-primary fs-3"></i>
@@ -111,7 +111,7 @@
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
                                     <h6 class="text-muted mb-1">Convert แล้ว</h6>
-                                    <h3 class="mb-0 text-success">{{ number_format($convertedLeads) }}</h3>
+                                    <h3 class="mb-0 text-success">{{ number_format($convertedLeads?? 0) }}</h3>
                                 </div>
                                 <div class="bg-success bg-opacity-10 rounded-circle p-3">
                                     <i class="bi bi-check-circle-fill text-success fs-3"></i>
@@ -128,7 +128,7 @@
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
                                     <h6 class="text-muted mb-1" style="font-size: 0.85rem;">บินแล้ว</h6>
-                                    <h3 class="mb-0 text-info">{{ number_format($labourStats['flying']) }}</h3>
+                                    <h3 class="mb-0 text-info">{{ number_format($labourStats['flying'] ?? 0) }}</h3>
                                 </div>
                                 <div class="bg-info bg-opacity-10 rounded-circle p-2">
                                     <i class="bi bi-airplane-fill text-info fs-4"></i>
@@ -145,7 +145,7 @@
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
                                     <h6 class="text-muted mb-1" style="font-size: 0.85rem;">กำลังดำเนินการ</h6>
-                                    <h3 class="mb-0 text-warning">{{ number_format($labourStats['processing']) }}</h3>
+                                    <h3 class="mb-0 text-warning">{{ number_format($labourStats['processing'] ?? 0) }}</h3>
                                 </div>
                                 <div class="bg-warning bg-opacity-10 rounded-circle p-2">
                                     <i class="bi bi-hourglass-split text-warning fs-4"></i>
@@ -162,7 +162,7 @@
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
                                     <h6 class="text-muted mb-1" style="font-size: 0.85rem;">ยกเลิก</h6>
-                                    <h3 class="mb-0 text-danger">{{ number_format($labourStats['cancelled']) }}</h3>
+                                    <h3 class="mb-0 text-danger">{{ number_format($labourStats['cancelled'] ?? 0) }}</h3>
                                 </div>
                                 <div class="bg-danger bg-opacity-10 rounded-circle p-2">
                                     <i class="bi bi-x-circle-fill text-danger fs-4"></i>
@@ -187,7 +187,7 @@
                                     <i class="bi bi-bar-chart-fill me-2"></i>สถิติใบสมัครงาน
                                 </h6>
                                 <span class="badge bg-white bg-opacity-25 ms-2">
-                                    รวม: {{ number_format(array_sum($jobLeadStats)) }} ใบสมัคร
+                                    รวม: {{ number_format(array_sum($jobLeadStats ?? [])) }} ใบสมัคร
                                 </span>
                             </div>
                             <div class="d-block">
@@ -209,56 +209,56 @@
                                         <i class="bi bi-file-earmark text-secondary fs-5"></i>
                                     </td>
                                     <td><strong>ร่าง</strong></td>
-                                    <td class="text-end"><span class="badge bg-secondary">{{ number_format($jobLeadStats['draft']) }}</span></td>
+                                    <td class="text-end"><span class="badge bg-secondary">{{ number_format($jobLeadStats['draft'] ?? 0) }}</span></td>
                                 </tr>
                                 <tr>
                                     <td class="text-center">
                                         <i class="bi bi-send text-info fs-5"></i>
                                     </td>
                                     <td><strong>ส่งแล้ว</strong></td>
-                                    <td class="text-end"><span class="badge bg-info">{{ number_format($jobLeadStats['sent']) }}</span></td>
+                                    <td class="text-end"><span class="badge bg-info">{{ number_format($jobLeadStats['sent'] ?? 0) }}</span></td>
                                 </tr>
                                 <tr>
                                     <td class="text-center">
                                         <i class="bi bi-hourglass-split text-primary fs-5"></i>
                                     </td>
                                     <td><strong>กำลังพิจารณา</strong></td>
-                                    <td class="text-end"><span class="badge bg-primary">{{ number_format($jobLeadStats['considering']) }}</span></td>
+                                    <td class="text-end"><span class="badge bg-primary">{{ number_format($jobLeadStats['considering'] ?? 0) }}</span></td>
                                 </tr>
                                 <tr>
                                     <td class="text-center">
                                         <i class="bi bi-calendar-event text-warning fs-5"></i>
                                     </td>
                                     <td><strong>นัดสัมภาษณ์</strong></td>
-                                    <td class="text-end"><span class="badge bg-warning">{{ number_format($jobLeadStats['interview']) }}</span></td>
+                                    <td class="text-end"><span class="badge bg-warning">{{ number_format($jobLeadStats['interview'] ?? 0) }}</span></td>
                                 </tr>
                                 <tr>
                                     <td class="text-center">
                                         <i class="bi bi-briefcase text-info fs-5"></i>
                                     </td>
                                     <td><strong>เสนองาน</strong></td>
-                                    <td class="text-end"><span class="badge bg-info">{{ number_format($jobLeadStats['offer']) }}</span></td>
+                                    <td class="text-end"><span class="badge bg-info">{{ number_format($jobLeadStats['offer'] ?? 0) }}</span></td>
                                 </tr>
                                 <tr>
                                     <td class="text-center">
                                         <i class="bi bi-check-circle-fill text-success fs-5"></i>
                                     </td>
                                     <td><strong>ตอบรับ</strong></td>
-                                    <td class="text-end"><span class="badge bg-success">{{ number_format($jobLeadStats['accepted']) }}</span></td>
+                                    <td class="text-end"><span class="badge bg-success">{{ number_format($jobLeadStats['accepted'] ?? 0) }}</span></td>
                                 </tr>
                                 <tr>
                                     <td class="text-center">
                                         <i class="bi bi-x-circle text-danger fs-5"></i>
                                     </td>
                                     <td><strong>ปฏิเสธ</strong></td>
-                                    <td class="text-end"><span class="badge bg-danger">{{ number_format($jobLeadStats['rejected']) }}</span></td>
+                                    <td class="text-end"><span class="badge bg-danger">{{ number_format($jobLeadStats['rejected'] ?? 0) }}</span></td>
                                 </tr>
                                 <tr>
                                     <td class="text-center">
                                         <i class="bi bi-arrow-return-left text-dark fs-5"></i>
                                     </td>
                                     <td><strong>ถอน</strong></td>
-                                    <td class="text-end"><span class="badge bg-dark">{{ number_format($jobLeadStats['withdrawn']) }}</span></td>
+                                    <td class="text-end"><span class="badge bg-dark">{{ number_format($jobLeadStats['withdrawn'] ?? 0) }}</span></td>
                                 </tr>
                             </tbody>
                         </table>
