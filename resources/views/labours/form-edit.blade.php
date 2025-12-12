@@ -271,7 +271,7 @@
                                             </a>
 
                                             <a href="{{ route('labour.cidfile.delete', $labourModel->labour_id) }}"
-                                                @cannot('delete labour file') disabled @endcannot
+                                                @cannot('delete labour file file') disabled @endcannot
                                                 onclick="return confirm('คุณแน่ใจว่าต้องการลบไฟล์นี้?')"
                                                 class="btn btn-sm btn-danger">
                                                 ลบไฟล์
@@ -641,7 +641,7 @@
                                                             class="btn btn-sm btn-outline-primary" target="_blank"><i
                                                                 class="fas fa-eye"></i> ดู</a>
 
-                                                                 {{-- @can('delete labour')
+                                                                 {{-- @can('delete labour file')
                                                         <a href="" data-file-id="{{ $item->labour_file_id }}"
                                                             data-labour-id="{{ $labourModel->labour_id }}"
                                                             data-path="{{ $labourModel->labour_path . '/' . $item->labour_file_path }}"
@@ -650,7 +650,7 @@
                                                     @endcan --}}
 
                                                          
-                                                         @can('delete labour')
+                                                         @can('delete labour file')
                                                             <a href="#" data-file-id="{{ $item->labour_file_id }}"
                                                                 data-labour-id="{{ $labourModel->labour_id }}"
                                                                 data-path="{{ $filePath }}"
@@ -752,7 +752,7 @@
                                         target="_blank" class="btn btn-sm btn-primary">
                                         <i class="fas fa-eye"></i> ดูไฟล์
                                     </a>
-                                    @can('delete labour')
+                                    @can('delete labour file file')
                                         <a href="{{ route('labour.visafile.delete', $labourModel->labour_id) }}"
                                             onclick="return confirm('คุณแน่ใจว่าต้องการลบไฟล์นี้?')"
                                             class="btn btn-sm btn-danger">
