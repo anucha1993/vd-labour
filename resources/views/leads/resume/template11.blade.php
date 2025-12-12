@@ -61,8 +61,8 @@
         }
         .photo-side {
             width: 30%;
-            padding: 20px 15px;
-            margin: 15px;
+            padding: 15px 15px;
+            margin: 20px;
             position: relative;
             background-color: var(--primary-color);
             display: flex;
@@ -70,8 +70,8 @@
             justify-content: center;
         }
         .profile-pic {
-            width: 90%;
-            max-width: 160px;
+            width: 100%;
+            max-width: 200px;
             height: auto;
             display: block;
             position: relative;
@@ -186,8 +186,8 @@
             min-width: 20px;
         }
         .profile-details ul {
-            list-style-type: none;
-            padding: 0;
+            list-style-type: disc;
+            padding-left: 20px;
             margin: 0;
             font-size: 0.85em;
         }
@@ -197,7 +197,7 @@
         }
         .profile-details strong {
             display: inline-block;
-            width: 60px; /* Aligning labels */
+            width: 95px; /* Aligning labels */
         }
 
 
@@ -227,10 +227,19 @@
         .footer-note {
             position: absolute;
             bottom: 5px;
-            left: 40px;
+            right: 40px;
             font-size: 0.8em;
             color: #777;
             z-index: 3;
+        }
+        
+        .company-logo {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 80px;
+            height: auto;
+            z-index: 10;
         }
         
         /* Template Selector Styles */
@@ -300,6 +309,10 @@
     </script>
     
     <div class="container">
+        
+        <!-- Company Logo -->
+        <img src="{{ asset('logo/V dragon-02.png') }}" alt="Company Logo" class="company-logo">
+        
         <div class="top-section">
             <div class="photo-side">
                 @if($lead->lead_photo)
@@ -353,6 +366,9 @@
                     <h3>CONTACT</h3>
                     <div class="contact-details">
                         <div><i class="fas fa-phone"></i> {{ $lead->lead_phone ?? 'N/A' }}</div>
+                        @if($lead->lead_email)
+                        <div><i class="fas fa-envelope"></i> {{ $lead->lead_email }}</div>
+                        @endif
                         <div><i class="fas fa-map-marker-alt"></i> {{ $lead->lead_address ?? 'N/A' }}</div>
                     </div>
                 </div>
@@ -364,11 +380,11 @@
                             <li><strong>Date of Birth:</strong> {{ $lead->lead_birthday ? $lead->lead_birthday->format('d M Y') : 'N/A' }}</li>
                             <li><strong>AGE:</strong> {{ $lead->lead_age ?? 'N/A' }} Years</li>
                             <li><strong>STATUS:</strong> {{ $lead->lead_marital_status ?? 'N/A' }}</li>
-                            <li><strong>Height:</strong> {{ $lead->lead_height ?? 'N/A' }}</li>
-                            <li><strong>Weight:</strong> {{ $lead->lead_weight ?? 'N/A' }}</li>
+                            <li><strong>Height:</strong> {{ $lead->lead_height ?? 'N/A' }} cm</li>
+                            <li><strong>Weight:</strong> {{ $lead->lead_weight ?? 'N/A' }} kg</li>
                             <li><strong>Shirt size:</strong> {{ $lead->lead_shirt_size ?? 'N/A' }}</li>
-                            <li><strong>Pants size:</strong> {{ $lead->lead_pants_size ?? 'N/A' }}</li>
-                            <li><strong>Shoe size:</strong> {{ $lead->lead_shoe_size ?? 'N/A' }}</li>
+                            <li><strong>Pants size:</strong> {{ $lead->lead_pant_size ?? 'N/A' }}</li>
+                            <li><strong>Shoe size:</strong> {{ $lead->lead_shoes_size ?? 'N/A' }}</li>
                         </ul>
                     </div>
                 </div>
@@ -395,7 +411,7 @@
         </div>
         
         <div class="footer-note">
-            {{ $lead->staff->staff_name ?? 'N/A' }}
+            {{ $lead->staff->staff_name ?? 'N/A' }} /  {{ $lead->recommenderStaff->staff_sub_name ?? 'N/A' }}
         </div>
     </div>
 </body>

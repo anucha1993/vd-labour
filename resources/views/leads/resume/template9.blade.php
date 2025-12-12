@@ -582,7 +582,7 @@
         <!-- Orange Bottom Bar with Staff Name -->
         <div class="bottom-bar">
             @if($lead->staff)
-                {{ $lead->staff->staff_name }}
+                {{ $lead->staff->staff_name }}/{{ $lead->recommenderStaff->staff_sub_name ?? 'N/A' }}
             @endif
         </div>
     </div>

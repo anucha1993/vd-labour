@@ -252,6 +252,15 @@
             z-index: 10;
         }
         
+        .company-logo {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 80px;
+            height: auto;
+            z-index: 10;
+        }
+        
         /* Template Selector Styles */
         .template-selector {
             position: fixed;
@@ -344,6 +353,9 @@
     </script>
     
     <div class="container">
+        
+        <!-- Company Logo -->
+        <img src="{{ asset('logo/V dragon-02.png') }}" alt="Company Logo" class="company-logo">
         
         <div class="profile-wrapper">
             <div class="profile-oval">
@@ -494,7 +506,7 @@
         
         <div class="footer-note">
             @if($lead->staff)
-                {{ $lead->staff->staff_name }}
+                {{ $lead->staff->staff_name }}/{{ $lead->recommenderStaff->staff_sub_name ?? 'N/A' }}
             @endif
         </div>
     </div>

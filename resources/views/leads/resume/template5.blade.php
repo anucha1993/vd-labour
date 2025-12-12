@@ -531,7 +531,7 @@
             @endif
         </div>
         
-        <div class="footer-credit">{{ $lead->staff->staff_name ?? 'VD Labour' }}</div>
+        <div class="footer-credit">{{ $lead->staff->staff_name ?? 'VD Labour' }}/ {{ $lead->recommenderStaff->staff_sub_name ?? 'N/A' }}</div>
     </div>
 
     <script>
