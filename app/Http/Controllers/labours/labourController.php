@@ -269,7 +269,7 @@ class labourController extends Controller
         
         // Upload ไฟล์ที่ใช้ index แยกกัน (file_0, file_1, file_2, ...)
         $fullPath = 'LABOURS/' . $labourModel->labour_path;
-        $debugInfo = ['loop_count' => 0, 'found_files' => []];
+        $debugInfo = ['loop_count' => 0, 'found_files' => [], 'new_files' => []];
         
         foreach ($request->all() as $key => $value) {
             // ตรวจสอบว่าเป็น file input หรือไม่ (file_0, file_1, file_2, ...)
@@ -280,7 +280,8 @@ class labourController extends Controller
                 ];
             }
             
-            if (strpos($key, 'file_') === 0 && $request->hasFile($key)) {
+            // Upload ไฟล์เอกสารที่มีอยู่แล้ว (file_0, file_1, ...)
+            if (strpos($key, 'file_') === 0 && $request->hasFile($key) && strpos($key, 'file_new_') === false) {
                 $debugInfo['loop_count']++;
                 $index = str_replace('file_', '', $key); // ดึง index (0, 1, 2, ...)
                 $file = $request->file($key);
@@ -329,10 +330,61 @@ class labourController extends Controller
                     }
                 }
             }
+            
+            // Upload ไฟล์เอกสารใหม่ที่เพิ่มเข้ามา (file_new_0, file_new_1, ...)
+            if (strpos($key, 'file_new_') === 0 && $request->hasFile($key)) {
+                $debugInfo['new_files']['count'] = isset($debugInfo['new_files']['count']) ? $debugInfo['new_files']['count'] + 1 : 1;
+                $index = str_replace('file_new_', '', $key);
+                $file = $request->file($key);
+                
+                // ดึงข้อมูลเอกสารใหม่
+                $fileNameKey = 'labour_file_name_new_' . $index;
+                $listFileIdKey = 'list_file_id_new_' . $index;
+                
+                if ($request->has($fileNameKey) && $request->has($listFileIdKey)) {
+                    $labourFileName = $request->input($fileNameKey);
+                    $listFileId = $request->input($listFileIdKey);
+                    
+                    // ดึงข้อมูล list_file_note จาก listFileModel
+                    $listFile = listFileModel::find($listFileId);
+                    
+                    // สร้างชื่อไฟล์ใหม่
+                    $extension = $file->getClientOriginalExtension();
+                    $uniqueName = $labourFileName . '_' . $labourModel->labour_firstname . '_' . $labourModel->labour_lastname . '.' . $extension;
+                    
+                    // สร้าง Folder ถ้ายังไม่มี
+                    if (!Storage::disk('public')->exists($fullPath)) {
+                        Storage::disk('public')->makeDirectory($fullPath);
+                    }
+                    
+                    // อัปโหลดไฟล์
+                    $path = $file->storeAs($fullPath, $uniqueName, 'public');
+                    
+                    if ($path) {
+                        // สร้างรายการเอกสารใหม่ใน labourFileModel
+                        $newLabourFile = labourFileModel::create([
+                            'labour_file_name' => $labourFileName,
+                            'labour_file_note' => $listFile ? $listFile->list_file_note : '',
+                            'labour_file_path' => $uniqueName,
+                            'list_file_id' => $listFileId,
+                            'labour_id' => $labourModel->labour_id,
+                            'labour_passport_number' => $labourModel->labour_passport_number,
+                            'created_by' => auth()->id(),
+                            'updated_by' => auth()->id(),
+                        ]);
+                        
+                        $debugInfo['new_files']['uploaded'][$key] = [
+                            'path' => $path,
+                            'uniqueName' => $uniqueName,
+                            'newLabourFileId' => $newLabourFile->labour_file_id
+                        ];
+                    }
+                }
+            }
         }
         
         // แสดง debug ถ้ามีการ process ไฟล์
-        if ($debugInfo['loop_count'] > 0 || !empty($debugInfo['found_files'])) {
+        if ($debugInfo['loop_count'] > 0 || !empty($debugInfo['found_files']) || !empty($debugInfo['new_files'])) {
             session()->flash('upload_debug', $debugInfo);
         }
 

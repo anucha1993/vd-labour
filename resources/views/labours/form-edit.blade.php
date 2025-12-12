@@ -1,5 +1,21 @@
 @extends('layouts.main')
 @section('content')
+    <style>
+        /* เอกสารใหม่ที่เพิ่มเข้ามา */
+        .card.border-warning {
+            animation: pulse-warning 2s infinite;
+        }
+        
+        @keyframes pulse-warning {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.4);
+            }
+            50% {
+                box-shadow: 0 0 0 10px rgba(255, 193, 7, 0);
+            }
+        }
+    </style>
+
     <div class="row">
         @if ($message = Session::get('success'))
             <div class="alert alert-success">
@@ -681,19 +697,38 @@
                                         </div>
                                     @endif
                                 @endforeach
-                                {{-- @foreach ($listFiles as $itemNew)
-                                    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                                        <div class="card shadow-sm h-100 border-0 d-flex flex-column align-items-center justify-content-center p-3">
-                                            <div class="text-muted small mb-2">{{ $itemNew->list_file_note }}</div>
-                                            <div class="mb-2"><i class="fas fa-file-upload fa-2x text-secondary"></i></div>
-                                            <input type="hidden" name="labour_file_name[]" value="{{ $itemNew->labour_file_name }}">
-                                            <input type="hidden" name="labour_file_id[]" value="{{ $itemNew->labour_file_id }}">
-                                            <input type="file" name="filesNew[]" class="form-control form-control-sm mb-2">
-                                            <button type="submit" class="btn btn-sm btn-success"><i class="fa fa-upload"></i> อัปโหลด</button>
-                                            <div class="mt-2 text-center small" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:110px;">{{ $itemNew->list_file_name }}</div>
-                                        </div>
+
+                                {{-- แสดงรายการเอกสารใหม่ที่เพิ่มเข้ามาหลังจากสร้าง Labour --}}
+                                @if($listFiles->count() > 0)
+                                    <div class="col-12">
+                                        <hr class="my-3">
+                                        <h6 class="text-primary mb-3">
+                                            <i class="bi bi-plus-circle me-2"></i>เอกสารใหม่ที่เพิ่มเข้ามา ({{ $listFiles->count() }} รายการ)
+                                        </h6>
                                     </div>
-                                @endforeach --}}
+                                    @foreach ($listFiles as $key => $itemNew)
+                                        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                                            <div class="card shadow-sm h-100 border-warning border-2 d-flex flex-column align-items-center justify-content-center p-3">
+                                                <div class="badge bg-warning text-dark mb-2">เอกสารใหม่</div>
+                                                <div class="mb-2"><i class="fas fa-file-upload fa-3x text-warning"></i></div>
+                                                <div class="text-center fw-bold mb-2">{{ $itemNew->list_file_note }}</div>
+                                                <div class="text-muted small mb-3">{{ $itemNew->list_file_name }}</div>
+                                                
+                                                <input type="file" name="file_new_{{ $key }}" 
+                                                    class="form-control form-control-sm mb-2" 
+                                                    data-index-new="{{ $key }}"
+                                                    @cannot('update labour') disabled @endcannot>
+                                                
+                                                <input type="hidden" name="labour_file_name_new_{{ $key }}" 
+                                                    value="{{ $itemNew->list_file_name }}">
+                                                <input type="hidden" name="list_file_id_new_{{ $key }}" 
+                                                    value="{{ $itemNew->list_file_id }}">
+                                                
+                                                <small class="text-muted text-center">กรุณาเลือกไฟล์แล้วกดบันทึก</small>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                @endif
                             </div>
                             {{-- labour File  --}}
                         </div>
