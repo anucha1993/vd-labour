@@ -34,7 +34,7 @@
         body {
             font-family: Arial, sans-serif;
             line-height: 1.5;
-            margin: 0;
+            margin: -10px;
             padding: 0;
             background-color: #f7f7f7;
         }
@@ -46,6 +46,8 @@
             box-shadow: none;
             position: relative;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
 
         /* Define the primary color for this template (Dark Blue/Grey) */
@@ -60,6 +62,7 @@
             display: flex;
             background-color: white;
             padding-bottom: 0;
+            flex: 1;
         }
 
         /* Left Column: Photo and Profile Text */
@@ -121,7 +124,23 @@
             text-transform: uppercase;
         }
         
-       
+        /* Logos/Top Icons */
+        .logo-vd {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 50px; /* Placeholder size */
+            height: 50px;
+            background-color: var(--tertiary-color); /* Yellow background */
+            border-radius: 5px;
+            z-index: 3;
+            text-align: center;
+            line-height: 50px;
+            font-size: 0.8em;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
         /* Contact Bar (Bottom of Page) */
         .contact-bar {
             background-color: var(--tertiary-color);
@@ -133,7 +152,6 @@
             align-items: center;
             position: relative;
             z-index: 4;
-            margin-top: -10px; /* Pull up to cover the slight gap */
         }
         .contact-bar span {
             display: flex;
@@ -343,9 +361,9 @@
             </div>
 
             <div class="right-column">
-                
+               
                 <div class="name-header">
-                    <h1 style="color:white; font-family:serif;">{{ strtoupper($lead->lead_prefix ?? '') }}{{ strtoupper($lead->lead_firstname ?? 'N/A') }}</h1>
+                    <h1 style="color:white; font-family:serif;">{{ strtoupper($lead->lead_prefix ?? '') }}.{{ strtoupper($lead->lead_firstname ?? 'N/A') }}</h1>
                     <h1 style="color:white; font-family:serif;">{{ strtoupper($lead->lead_lastname ?? '') }}</h1>
                     <h2>{{ strtoupper($lead->position->position_name ?? 'N/A') }}</h2>
                 </div>
