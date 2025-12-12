@@ -251,9 +251,98 @@
             color: var(--text-color);
             z-index: 10;
         }
+        
+        /* Template Selector Styles */
+        .template-selector {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .template-selector select {
+            padding: 8px 12px;
+            border: 2px solid #6B7552;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            background-color: white;
+            color: #333;
+        }
+        .template-selector select:focus {
+            outline: none;
+            border-color: #8B4513;
+        }
+        .template-selector .print-btn {
+            padding: 8px 16px;
+            background-color: #6B7552;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .template-selector .print-btn:hover {
+            background-color: #8B4513;
+        }
+        
+        /* Print Styles */
+        @media print {
+            body {
+                background-color: white;
+                padding: 0;
+            }
+            .template-selector {
+                display: none !important;
+            }
+            .container {
+                box-shadow: none;
+                margin: 0;
+                width: 100%;
+                min-height: auto;
+            }
+            .container::before {
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+            }
+            @page {
+                size: A4;
+                margin: 0;
+            }
+        }
     </style>
 </head>
 <body>
+    <!-- Template Selector -->
+    <div class="template-selector">
+        <select id="templateSelect" onchange="changeTemplate(this.value)">
+            @for($i = 1; $i <= 14; $i++)
+                <option value="{{ $i }}" {{ $template == $i ? 'selected' : '' }}>Template {{ $i }}</option>
+            @endfor
+        </select>
+        <button class="print-btn" onclick="window.print()">
+            <i class="fas fa-print"></i> Print
+        </button>
+    </div>
+
+    <script>
+        function changeTemplate(templateNumber) {
+            const currentUrl = new URL(window.location.href);
+            currentUrl.searchParams.set('template', templateNumber);
+            window.location.href = currentUrl.toString();
+        }
+    </script>
+    
     <div class="container">
         
         <div class="profile-wrapper">

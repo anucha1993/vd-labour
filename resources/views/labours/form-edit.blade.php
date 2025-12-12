@@ -271,7 +271,7 @@
                                             </a>
 
                                             <a href="{{ route('labour.cidfile.delete', $labourModel->labour_id) }}"
-                                                @cannot('delete labour') disabled @endcannot
+                                                @cannot('delete labour file') disabled @endcannot
                                                 onclick="return confirm('คุณแน่ใจว่าต้องการลบไฟล์นี้?')"
                                                 class="btn btn-sm btn-danger">
                                                 ลบไฟล์
