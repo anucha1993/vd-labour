@@ -58,7 +58,7 @@
                         </div>
 
                         <div class="row mb-3">
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <label class="form-label">เบอร์โทรศัพท์</label>
                                 <input type="text" 
                                        class="form-control @error('staff_sub_phone') is-invalid @enderror" 
@@ -66,17 +66,6 @@
                                        value="{{ old('staff_sub_phone', $staffSub->staff_sub_phone) }}" 
                                        placeholder="เบอร์โทรศัพท์">
                                 @error('staff_sub_phone')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">ชื่อเจ้าหน้าที่</label>
-                                <input type="text" 
-                                       class="form-control @error('staff_sub_staff') is-invalid @enderror" 
-                                       name="staff_sub_staff" 
-                                       value="{{ old('staff_sub_staff', $staffSub->staff_sub_staff) }}" 
-                                       placeholder="ชื่อเจ้าหน้าที่">
-                                @error('staff_sub_staff')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>

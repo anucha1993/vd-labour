@@ -113,13 +113,11 @@ class StaffSubController extends Controller
         $request->validate([
             'staff_sub_name' => 'required|string|max:255',
             'staff_sub_phone' => 'nullable|string|max:20',
-            'staff_sub_staff' => 'nullable|string|max:255',
             'staff_sub_status' => 'required|in:active,inactive',
         ], [
             'staff_sub_name.required' => 'กรุณากรอกชื่อสายหางาน',
             'staff_sub_name.max' => 'ชื่อสายหางานต้องไม่เกิน 255 ตัวอักษร',
             'staff_sub_phone.max' => 'เบอร์โทรศัพท์ต้องไม่เกิน 20 ตัวอักษร',
-            'staff_sub_staff.max' => 'ชื่อเจ้าหน้าที่ต้องไม่เกิน 255 ตัวอักษร',
             'staff_sub_status.required' => 'กรุณาเลือกสถานะ',
             'staff_sub_status.in' => 'สถานะไม่ถูกต้อง',
         ]);

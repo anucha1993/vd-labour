@@ -71,7 +71,7 @@
                                 <th style="width: 80px;">#</th>
                                 <th>ชื่อสายหางาน</th>
                                 <th>เบอร์โทรศัพท์</th>
-                                <th>ชื่อเจ้าหน้าที่</th>
+             
                                 <th style="width: 100px;">สถานะ</th>
                                 <th style="width: 150px;">การจัดการ</th>
                             </tr>
@@ -90,13 +90,7 @@
                                             <span class="text-muted">-</span>
                                         @endif
                                     </td>
-                                    <td>
-                                        @if($staffSub->staff_sub_staff)
-                                            <i class="bi bi-person me-1"></i>{{ $staffSub->staff_sub_staff }}
-                                        @else
-                                            <span class="text-muted">-</span>
-                                        @endif
-                                    </td>
+                                    
                                     <td>
                                         @if($staffSub->staff_sub_status == 'active')
                                             <span class="badge bg-success">
@@ -176,41 +170,67 @@
     </div>
 </div>
 
-@push('scripts')
 <script>
     let deleteId = null;
     
     function confirmDelete(id, name) {
         deleteId = id;
         document.getElementById('deleteName').textContent = name;
-        new bootstrap.Modal(document.getElementById('deleteModal')).show();
+        const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+        modal.show();
     }
     
     document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
         if (deleteId) {
+            const modal = bootstrap.Modal.getInstance(document.getElementById('deleteModal'));
+            
+            // Disable button while processing
+            this.disabled = true;
+            this.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>กำลังลบ...';
+            
             fetch(`/staff-sub/${deleteId}`, {
                 method: 'DELETE',
                 headers: {
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
                     'Content-Type': 'application/json',
+                    'Accept': 'application/json',
                 },
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
             .then(data => {
                 if (data.success) {
-                    location.reload();
+                    modal.hide();
+                    // Show success message
+                    const alertDiv = document.createElement('div');
+                    alertDiv.className = 'alert alert-success alert-dismissible fade show';
+                    alertDiv.innerHTML = `
+                        <i class="bi bi-check-circle me-2"></i>${data.message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    `;
+                    document.querySelector('.container-fluid').insertBefore(alertDiv, document.querySelector('.container-fluid').firstChild);
+                    
+                    // Reload after short delay
+                    setTimeout(() => location.reload(), 1000);
                 } else {
+                    modal.hide();
                     alert('เกิดข้อผิดพลาด: ' + data.message);
+                    this.disabled = false;
+                    this.innerHTML = '<i class="bi bi-trash me-2"></i>ลบ';
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('เกิดข้อผิดพลาดในการลบ');
+                modal.hide();
+                alert('เกิดข้อผิดพลาดในการลบ กรุณาลองใหม่อีกครั้ง');
+                this.disabled = false;
+                this.innerHTML = '<i class="bi bi-trash me-2"></i>ลบ';
             });
         }
-        
-        bootstrap.Modal.getInstance(document.getElementById('deleteModal')).hide();
     });
 </script>
-@endpush
 @endsection
