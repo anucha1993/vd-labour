@@ -73,7 +73,7 @@
                     @can('view lead')
                     <div class="btn-group">
                         <a href="{{ route('pdf.leads.list', request()->query()) }}" class="btn btn-success" target="_blank">
-                            <i class="bi bi-file-pdf"></i> Preview PDF
+                            <i class="bi bi-file-pdf"></i> Preview CV
                         </a>
                         <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown">
                             <span class="visually-hidden">Toggle Dropdown</span>
@@ -326,7 +326,7 @@
                                             </li>
                                             <li>
                                                 <a class="dropdown-item" href="{{ route('leads.resume', $item->lead_id) }}" target="_blank">
-                                                    <i class="bi bi-file-person text-secondary"></i> Resume/CV
+                                                    <i class="bi bi-file-person text-secondary"></i> Preview Resume
                                                 </a>
                                             </li>
                                             @can('view lead')
@@ -337,7 +337,7 @@
                                             </li>
                                             <li>
                                                 <a class="dropdown-item" href="{{ route('pdf.cv.form', $item->lead_id) }}" target="_blank">
-                                                    <i class="bi bi-file-pdf-fill text-success"></i> Preview PDF
+                                                    <i class="bi bi-file-pdf-fill text-success"></i> Preview CV
                                                 </a>
                                             </li>
                                             @endcan
