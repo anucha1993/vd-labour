@@ -373,7 +373,7 @@
                 
 
                 @if($lead->jobHistory && $lead->jobHistory->count() > 0)
-                    @foreach($lead->jobHistory as $job)
+                    @foreach($lead->jobHistory->sortByDesc('start_date') as $job)
                         <div class="experience-item">
                             <h4>{{ $job->company_name }}</h4>
                             <p class="duration">{{ $job->position ?? '' }} | {{ $job->start_date ? \Carbon\Carbon::parse($job->start_date)->format('Y') : 'N/A' }} - {{ $job->end_date ? \Carbon\Carbon::parse($job->end_date)->format('Y') : 'Present' }}</p>

@@ -411,7 +411,7 @@
                 <h3 class="section-title" style="color:#333; font-size:1.5em; border-bottom: none;">Work Experience</h3>
 
                 @if($lead->jobHistory && $lead->jobHistory->count() > 0)
-                    @foreach($lead->jobHistory as $job)
+                    @foreach($lead->jobHistory->sortByDesc('start_date') as $job)
                         <div class="experience-item">
                             <p class="duration-role">{{ $job->start_date ? \Carbon\Carbon::parse($job->start_date)->format('Y') : 'N/A' }} - {{ $job->end_date ? \Carbon\Carbon::parse($job->end_date)->format('Y') : 'Present' }}</p>
                             <p class="company">{{ $job->company_name }}</p>

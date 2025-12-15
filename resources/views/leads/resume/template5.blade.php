@@ -487,7 +487,7 @@
             <div class="experience-header">EXPERIENCE</div>
             
             @if($lead->jobHistory && count($lead->jobHistory) > 0)
-                @foreach($lead->jobHistory as $job)
+                @foreach($lead->jobHistory->sortByDesc('start_date') as $job)
                 <div class="timeline-item">
                     <div class="job-details-container">
                         <div class="job-info">

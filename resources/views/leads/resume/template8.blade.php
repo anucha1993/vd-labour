@@ -525,7 +525,7 @@
                 <h3 class="experience-title">Experience</h3>
 
                 @if($lead->jobHistory && $lead->jobHistory->count() > 0)
-                    @foreach($lead->jobHistory as $job)
+                    @foreach($lead->jobHistory->sortByDesc('start_date') as $job)
                     <div class="experience-item">
                         <div class="experience-header">
                             <div>

@@ -503,7 +503,7 @@
             
             <div class="experience-wrapper">
                 @if($lead->jobHistory && $lead->jobHistory->count() > 0)
-                    @foreach($lead->jobHistory as $job)
+                    @foreach($lead->jobHistory->sortByDesc('start_date') as $job)
                     <div class="job-item">
                         <div class="job-location-date">
                              @if($job->company_name)

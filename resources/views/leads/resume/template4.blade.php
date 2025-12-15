@@ -373,7 +373,7 @@
             <div class="main-section-title">Experience</div>
             
             @if($lead->jobHistory && $lead->jobHistory->count() > 0)
-                @foreach($lead->jobHistory as $job)
+                @foreach($lead->jobHistory->sortByDesc('start_date') as $job)
                     <div class="job-item">
                         <div class="job-info">
                             <strong>{{ $job->company_name ?? 'N/A' }}</strong>

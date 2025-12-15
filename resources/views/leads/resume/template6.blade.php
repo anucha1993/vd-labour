@@ -490,7 +490,7 @@
                 <div class="experience-header">Experience </div>
                 
                 @if($lead->jobHistory && $lead->jobHistory->count() > 0)
-                    @foreach($lead->jobHistory as $job)
+                    @foreach($lead->jobHistory->sortByDesc('start_date') as $job)
                     <div class="job-item">
                         <div class="job-dates">
                             @if($job->start_date && $job->end_date)

@@ -454,7 +454,7 @@
                 <div class="section-header-pill">WORK EXPERIENCE</div>
 
                 @if($lead->jobHistory && $lead->jobHistory->count() > 0)
-                    @foreach($lead->jobHistory as $job)
+                    @foreach($lead->jobHistory->sortByDesc('start_date') as $job)
                         <div class="timeline-item">
                             <div class="timeline-left">
                                 @if($job->start_date && $job->end_date)
