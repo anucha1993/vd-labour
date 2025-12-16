@@ -463,8 +463,8 @@
                     </div>
 
 
-                    <!-- Tab 4: เอกสาร -->
-                    <div class="tab-pane fade" id="docs" role="tabpanel">
+                    <!-- Tab 4: การเงินบัญชี -->
+                    <div class="tab-pane fade" id="status" role="tabpanel">
                         <div class="row g-3">
 
                             <div class="col-md-3 mt-3">
@@ -558,7 +558,7 @@
 
                     </div>
 
-                    <div class="tab-pane fade" id="status" role="tabpanel">
+                    <div class="tab-pane fade" id="docs" role="tabpanel">
                         <div class="row g-3">
 
                             <h4 class=" mt-3">จัดเก็บเอกสาร</h4>
