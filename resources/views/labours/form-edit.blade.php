@@ -17,6 +17,18 @@
     </style>
 
     <div class="row">
+        @if ($errors->any())
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <h6 class="alert-heading"><i class="bi bi-exclamation-triangle-fill me-2"></i>กรุณาแก้ไขข้อผิดพลาดต่อไปนี้:</h6>
+                <ul class="mb-0">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+        
         @if ($message = Session::get('success'))
             <div class="alert alert-success">
                 <strong>{{ $message }}</strong>
@@ -40,7 +52,7 @@
     <!-- ส่วนหัวของฟอร์ม -->
     <div class="card card-custom shadow-sm mb-4">
         <form action="{{ route('labour.update', $labourModel->labour_id) }}" enctype="multipart/form-data" method="post"
-            id="form-create">
+            id="form-create" novalidate>
             @csrf
             @method('put')
 
@@ -118,7 +130,7 @@
                             <div class="row g-3 align-items-end">
 
                                 <div class="col-md-1">
-                                    <label class="form-label">Prefix</label>
+                                    <label class="form-label">Prefix <span class="text-danger">*</span></label>
                                     <select name="labour_prefix" class="form-select" required
                                         @cannot('update labour') disabled @endcannot>
                                         <option @if ($labourModel->labour_prefix === 'MR') selected @endif value="MR">MR.
@@ -128,25 +140,29 @@
                                         <option @if ($labourModel->labour_prefix === 'MRS') selected @endif value="MRS">MRS.
                                         </option>
                                     </select>
+                                    <div class="invalid-feedback">กรุณาเลือก Prefix</div>
                                 </div>
                                 <div class="col-md-3">
-                                    <label class="form-label">Name</label>
+                                    <label class="form-label">Name <span class="text-danger">*</span></label>
                                     <input type="text" class="form-control" name="labour_firstname"
                                         placeholder="Firstname" @cannot('update labour') disabled @endcannot
                                         value="{{ $labourModel->labour_firstname }}" required>
+                                    <div class="invalid-feedback">กรุณากรอกชื่อ</div>
                                 </div>
                                 <div class="col-md-3">
-                                    <label class="form-label">Lastname</label>
+                                    <label class="form-label">Lastname <span class="text-danger">*</span></label>
                                     <input type="text" class="form-control" name="labour_lastname" placeholder="Lastname"
                                         @cannot('update labour') disabled @endcannot
                                         value="{{ $labourModel->labour_lastname }}" required>
+                                    <div class="invalid-feedback">กรุณากรอกนามสกุล</div>
                                 </div>
                                 <div class="col-md-2">
-                                    <label class="form-label">Birthday <span id="age_result"
+                                    <label class="form-label">Birthday <span class="text-danger">*</span> <span id="age_result"
                                             class="text-info"></span></label>
                                     <input type="date" class="form-control" name="labour_birthday"
                                         placeholder="birthday" @cannot('update labour') disabled @endcannot
                                         id="labour_birthday" value="{{ $labourModel->labour_birthday }}" required>
+                                    <div class="invalid-feedback">กรุณาเลือกวันเกิด</div>
                                 </div>
                                 <div class="col-md-2">
                                     <label class="form-label">Phone</label>
@@ -339,7 +355,7 @@
                             </div>
 
                             <div class="col-md-4">
-                                <label>Country</label>
+                                <label>Country <span class="text-danger">*</span></label>
                                 <select name="labour_country" class="form-select country" required
                                     @cannot('update labour') disabled @endcannot>
                                     <option value="">Select a Country</option>
@@ -352,9 +368,10 @@
                                     @endforelse
 
                                 </select>
+                                <div class="invalid-feedback">กรุณาเลือกประเทศ</div>
                             </div>
                             <div class="col-md-4">
-                                <label>Job Group</label>
+                                <label>Job Group <span class="text-danger">*</span></label>
                                 <select name="labour_job_group" class="form-select job-group"
                                     @cannot('update labour') disabled @endcannot required>
                                     <option value="">Select a Job Group</option>
@@ -367,9 +384,10 @@
                                     @endforelse
 
                                 </select>
+                                <div class="invalid-feedback">กรุณาเลือก Job Group</div>
                             </div>
                             <div class="col-md-4">
-                                <label>Position</label>
+                                <label>Position <span class="text-danger">*</span></label>
                                 <select name="labour_position" class="form-select" id="position" required
                                     @cannot('update labour') disabled @endcannot>
                                     <option value="">Select a Position</option>
@@ -384,6 +402,7 @@
                                         </option>
                                     @endforelse
                                 </select>
+                                <div class="invalid-feedback">กรุณาเลือก Position</div>
                             </div>
 
                             {{-- <div class="col-md-4">
@@ -851,6 +870,52 @@
 
 
     <script>
+        // Form Validation
+        $(document).ready(function() {
+            $('#form-create').on('submit', function(e) {
+                const form = this;
+                
+                // Check if form is valid using HTML5 validation
+                if (!form.checkValidity()) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    // Add Bootstrap validation classes
+                    $(form).addClass('was-validated');
+                    
+                    // Find first invalid field and scroll to it
+                    const firstInvalid = $(form).find(':invalid').first();
+                    if (firstInvalid.length) {
+                        // Find which tab contains the invalid field
+                        const tabPane = firstInvalid.closest('.tab-pane');
+                        if (tabPane.length) {
+                            const tabId = tabPane.attr('id');
+                            // Switch to the tab containing the invalid field
+                            $(`button[data-bs-target="#${tabId}"]`).tab('show');
+                        }
+                        
+                        // Scroll to the invalid field
+                        $('html, body').animate({
+                            scrollTop: firstInvalid.offset().top - 100
+                        }, 500);
+                        
+                        // Focus on the field
+                        firstInvalid.focus();
+                    }
+                    
+                    // Show error message
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'กรุณากรอกข้อมูลให้ครบถ้วน',
+                        text: 'มีฟิลด์บางฟิลด์ที่จำเป็นต้องกรอก กรุณาตรวจสอบและกรอกข้อมูลให้ครบถ้วน',
+                        confirmButtonText: 'ตกลง'
+                    });
+                    
+                    return false;
+                }
+            });
+        });
+
         $(document).ready(function() {
             // ฟังก์ชันคำนวณอายุ
             function calculateAge() {
