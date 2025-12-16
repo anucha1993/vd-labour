@@ -5,8 +5,19 @@
     <div class="card">
         <div class="card-body">
 
+            @if ($errors->any())
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <h6 class="alert-heading"><i class="bi bi-exclamation-triangle-fill me-2"></i>กรุณาแก้ไขข้อผิดพลาดต่อไปนี้:</h6>
+                    <ul class="mb-0">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
             
-            <form action="{{ route('labour.store') }}" method="post" id="form-create">
+            <form action="{{ route('labour.store') }}" method="post" id="form-create" novalidate>
                 @csrf
 
                   <div class="row float-end mb-4">
@@ -41,13 +52,13 @@
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="tab-status" data-bs-toggle="tab" data-bs-target="#status" type="button" role="tab">
-                            <i class="bi bi-wallet2 me-1"></i> การเงิน บัญชี
+                        <button class="nav-link" id="tab-docs" data-bs-toggle="tab" data-bs-target="#docs" type="button" role="tab">
+                            <i class="bi bi-folder2-open me-1"></i> เอกสาร
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="tab-docs" data-bs-toggle="tab" data-bs-target="#docs" type="button" role="tab">
-                            <i class="bi bi-folder2-open me-1"></i> เอกสาร
+                        <button class="nav-link" id="tab-status" data-bs-toggle="tab" data-bs-target="#status" type="button" role="tab">
+                            <i class="bi bi-wallet2 me-1"></i> การเงิน บัญชี
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
@@ -63,24 +74,28 @@
                     <div class="tab-pane fade show active" id="basic" role="tabpanel">
                         <div class="row g-3 align-items-end">
                             <div class="col-md-1">
-                                <label>Prefix</label>
+                                <label>Prefix <span class="text-danger">*</span></label>
                                 <select name="labour_prefix" class="form-select" required>
                                     <option value="MR">MR.</option>
                                     <option value="MS">MS.</option>
                                     <option value="MRS">MRS.</option>
                                 </select>
+                                <div class="invalid-feedback">กรุณาเลือก Prefix</div>
                             </div>
                             <div class="col-md-2">
-                                <label>Name</label>
+                                <label>Name <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" name="labour_firstname" placeholder="Firstname" required>
+                                <div class="invalid-feedback">กรุณากรอกชื่อ</div>
                             </div>
                             <div class="col-md-2">
-                                <label>Lastname</label>
+                                <label>Lastname <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" name="labour_lastname" placeholder="Lastname " required>
+                                <div class="invalid-feedback">กรุณากรอกนามสกุล</div>
                             </div>
                             <div class="col-md-2">
-                                <label>Birthday <span id="age_result"></span></label>
+                                <label>Birthday <span class="text-danger">*</span> <span id="age_result"></span></label>
                                 <input type="date" class="form-control" name="labour_birthday" placeholder="birthday" id="labour_birthday" required>
+                                <div class="invalid-feedback">กรุณาเลือกวันเกิด</div>
                             </div>
                             <div class="col-md-2">
                                 <label>Phone.</label>
@@ -189,7 +204,7 @@
                                 </select>
                             </div>
                             <div class="col-md-3">
-                                <label>Country</label>
+                                <label>Country <span class="text-danger">*</span></label>
                                 <select name="labour_country" class="form-select country" required >
                                     <option value="">Select a Country</option>
                                     @forelse ($country as $item)
@@ -198,9 +213,10 @@
                                         No date
                                     @endforelse
                                 </select>
+                                <div class="invalid-feedback">กรุณาเลือกประเทศ</div>
                             </div>
                             <div class="col-md-3">
-                                <label>Job Group</label>
+                                <label>Job Group <span class="text-danger">*</span></label>
                                 <select name="labour_job_group" class="form-select job-group" required>
                                     <option value="">Select a Job Group</option>
                                     @forelse ($jobGroup as $item)
@@ -208,9 +224,10 @@
                                     @empty
                                     @endforelse
                                 </select>
+                                <div class="invalid-feedback">กรุณาเลือก Job Group</div>
                             </div>
                             <div class="col-md-3">
-                                <label>Position</label>
+                                <label>Position <span class="text-danger">*</span></label>
                                 <select name="labour_position" class="form-select" id="position" required>
                                     <option value="">Select a Position</option>
                                     @forelse ($positions as $pos)
@@ -219,34 +236,11 @@
                                         <!-- ไม่มี position จะโหลดจาก AJAX เมื่อเลือก job group -->
                                     @endforelse
                                 </select>
+                                <div class="invalid-feedback">กรุณาเลือก Position</div>
                             </div>
-                            {{-- <div class="col-md-3">
-                                <label>lacation Test</label>
-                                <select name="labour_location_test" class="form-select" required>
-                                    <option value="">Select a Localtion Test</option>
-                                    @forelse ($locationtest as $item)
-                                        <option value="{{$item->location_test_id}}">{{$item->location_test_name}}</option>
-                                    @empty
-                                    @endforelse
-                                </select>
-                            </div> --}}
+
                             <div class="col-md-3">
-                                <label>Docs. Type. (Path จัดเก็บเอกสาร)</label>
-                                <select name="labour_location_doc" class="form-select" required>
-                                    <option value="">Select a File Manage</option>
-                                    @forelse ($fileManage as $item)
-                                        <option value="{{$item->file_manage_id}}">{{$item->file_manage_name}}</option>
-                                    @empty
-                                    @endforelse
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Tab 4: สถานะ/การเงิน -->
-                    <div class="tab-pane fade" id="status" role="tabpanel">
-                        <div class="row g-3 mt-2">
-                            <div class="col-md-3">
-                                <label>Staff</label>
+                                <label>Staff <span class="text-danger">*</span></label>
                                 <select name="labour_staff" class="form-select" required>
                                     <option value="">Select a Staff</option>
                                     @forelse ($staffs as $item)
@@ -254,9 +248,10 @@
                                     @empty
                                     @endforelse
                                 </select>
+                                <div class="invalid-feedback">กรุณาเลือก Staff</div>
                             </div>
                             <div class="col-md-3">
-                                <label>สายหาคน</label>
+                                <label>สายหาคน <span class="text-danger">*</span></label>
                                 <select name="labour_staff_sub" class="form-select" required>
                                     <option value="no-sub">Null</option>
                                     @forelse ($staffSub as $item)
@@ -264,12 +259,36 @@
                                     @empty
                                     @endforelse
                                 </select>
+                                <div class="invalid-feedback">กรุณาเลือกสายหาคน</div>
                             </div>
-                           
+                        </div>
+                     
+                    </div>
+                    <!-- Tab 4: เอกสาร -->
+                    <div class="tab-pane fade" id="docs" role="tabpanel">
+                        <div class="row g-3 mt-2">
+                            <div class="col-md-3">
+                                <label>Docs. Type. (Path จัดเก็บเอกสาร) <span class="text-danger">*</span></label>
+                                <select name="labour_location_doc" class="form-select" required>
+                                    <option value="">Select a File Manage</option>
+                                    @forelse ($fileManage as $item)
+                                        <option value="{{$item->file_manage_id}}">{{$item->file_manage_name}}</option>
+                                    @empty
+                                    @endforelse
+                                </select>
+                                <div class="invalid-feedback">กรุณาเลือก Docs Type</div>
+                            </div>
+                            <div class="col-md-12">
+                                <label>ไฟล์เอกสาร</label>
+                                <div>No Data File</div>
+                            </div>
                         </div>
                     </div>
-                    <!-- Tab 5: การเงิน/บัญชี & เอกสาร -->
-                    <div class="tab-pane fade" id="docs" role="tabpanel">
+                    <!-- Tab 5: การเงิน/บัญชี -->
+                    <div class="tab-pane fade" id="status" role="tabpanel">
+                        
+                        <hr class="my-4">
+                        <h5 class="mb-3">ข้อมูลการเงิน</h5>
                         <div class="row g-3 mt-2">
                             <div class="col-md-3 mt-3">
                                 <label>วันที่ วางเงินประกัน </label>
@@ -311,12 +330,6 @@
                                 <label>จำนวนเงินคืนวางเงินประกัน</label>
                                 <input type="number" name="labour_refund_deposit_total" class="form-control" step="0.01" placeholder="0.00">
                             </div>
-                        </div>
-                     
-                        <hr>
-                        <div class="row">
-                            ไฟล์เอกสาร
-                            <div>No Data File</div>
                         </div>
                     </div>
 
@@ -376,6 +389,52 @@
 
 
     <script>
+        // Form Validation
+        $(document).ready(function() {
+            $('#form-create').on('submit', function(e) {
+                const form = this;
+                
+                // Check if form is valid using HTML5 validation
+                if (!form.checkValidity()) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    // Add Bootstrap validation classes
+                    $(form).addClass('was-validated');
+                    
+                    // Find first invalid field and scroll to it
+                    const firstInvalid = $(form).find(':invalid').first();
+                    if (firstInvalid.length) {
+                        // Find which tab contains the invalid field
+                        const tabPane = firstInvalid.closest('.tab-pane');
+                        if (tabPane.length) {
+                            const tabId = tabPane.attr('id');
+                            // Switch to the tab containing the invalid field
+                            $(`button[data-bs-target="#${tabId}"]`).tab('show');
+                        }
+                        
+                        // Scroll to the invalid field
+                        $('html, body').animate({
+                            scrollTop: firstInvalid.offset().top - 100
+                        }, 500);
+                        
+                        // Focus on the field
+                        firstInvalid.focus();
+                    }
+                    
+                    // Show error message
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'กรุณากรอกข้อมูลให้ครบถ้วน',
+                        text: 'มีฟิลด์บางฟิลด์ที่จำเป็นต้องกรอก กรุณาตรวจสอบและกรอกข้อมูลให้ครบถ้วน',
+                        confirmButtonText: 'ตกลง'
+                    });
+                    
+                    return false;
+                }
+            });
+        });
+
         // VISA Status Management for Create Form
         $(document).ready(function() {
             function toggleVisaFieldsCreate() {

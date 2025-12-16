@@ -89,15 +89,15 @@
                             </button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="tab-status" data-bs-toggle="tab" data-bs-target="#status"
-                                type="button" role="tab">
-                                <i class="bi bi-wallet2 me-1"></i> การเงิน บัญชี
-                            </button>
-                        </li>
-                        <li class="nav-item" role="presentation">
                             <button class="nav-link" id="tab-docs" data-bs-toggle="tab" data-bs-target="#docs"
                                 type="button" role="tab">
                                 <i class="bi bi-folder2-open me-1"></i> เอกสาร
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="tab-status" data-bs-toggle="tab" data-bs-target="#status"
+                                type="button" role="tab">
+                                <i class="bi bi-wallet2 me-1"></i> การเงิน บัญชี
                             </button>
                         </li>
                         <li class="nav-item" role="presentation">
@@ -444,8 +444,8 @@
                     </div>
 
 
-                    <!-- Tab 4: สถานะ/การเงิน -->
-                    <div class="tab-pane fade" id="status" role="tabpanel">
+                    <!-- Tab 4: เอกสาร -->
+                    <div class="tab-pane fade" id="docs" role="tabpanel">
                         <div class="row g-3">
 
                             <div class="col-md-3 mt-3">
@@ -539,7 +539,7 @@
 
                     </div>
 
-                    <div class="tab-pane fade" id="docs" role="tabpanel">
+                    <div class="tab-pane fade" id="status" role="tabpanel">
                         <div class="row g-3">
 
                             <h4 class=" mt-3">จัดเก็บเอกสาร</h4>
