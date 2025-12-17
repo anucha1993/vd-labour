@@ -195,7 +195,7 @@
                                                name="lead_passport_number" id="lead_passport_number" 
                                                maxlength="9" pattern="[0-9]{9}" 
                                                value="{{ old('lead_passport_number', $lead->lead_passport_number) }}"
-                                               placeholder="กรอกตัวเลข 6 หลักเท่านั้น">
+                                               placeholder="กรอกตัวเลข 9 หลักเท่านั้น">
                                         <div class="invalid-feedback" id="passport_error">
                                             กรุณากรอกตัวเลข 6 หลักเท่านั้น
                                         </div>
