@@ -176,7 +176,7 @@
                                                value="{{ old('lead_passport_number') }}"
                                                placeholder="กรอกตัวเลข 9 หลักเท่านั้น">
                                         <div class="invalid-feedback" id="passport_error">
-                                            กรุณากรอกตัวเลข 6 หลักเท่านั้น
+                                            กรุณากรอกตัวเลข 9 หลักเท่านั้น
                                         </div>
                                         @error('lead_passport_number')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
@@ -1038,7 +1038,7 @@
             e.target.value = value.replace(/[^0-9]/g, '');
             
             // Check length
-            if (e.target.value.length > 0 && e.target.value.length !== 6) {
+            if (e.target.value.length > 0 && e.target.value.length !== 9) {
                 passportField.classList.add('is-invalid');
                 passportField.classList.remove('is-valid');
             } else if (e.target.value.length === 6) {
@@ -2001,7 +2001,7 @@
                 e.preventDefault();
                 passportField.classList.add('is-invalid');
                 passportField.focus();
-                alert('กรุณากรอก Passport/ID Card No. ให้ครบ 6 หลัก');
+                alert('กรุณากรอก Passport/ID Card No. ให้ครบ 9 หลัก');
                 return false;
             }
             
