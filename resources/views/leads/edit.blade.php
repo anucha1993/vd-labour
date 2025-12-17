@@ -1,4 +1,32 @@
 @extends('layouts.main')
+
+
+<style>
+    /* Fix Select2 height to match Bootstrap 5 form-select */
+    .select2-container--default .select2-selection--single {
+        height: 38px !important;
+        padding: 6px 12px !important;
+        border: 1px solid #ced4da !important;
+        border-radius: 0.375rem !important;
+    }
+    
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: 24px !important;
+        padding-left: 0 !important;
+    }
+    
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 36px !important;
+    }
+    
+    /* Match focus state */
+    .select2-container--default.select2-container--focus .select2-selection--single {
+        border-color: #86b7fe !important;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25) !important;
+    }
+</style>
+
+
 @section('content')
     <div class="card card-custom mb-4">
         <div class="card-body">
@@ -373,7 +401,7 @@
                         <div class="row mb-3">
                             <div class="col-md-4">
                                 <label class="form-label">Position 1:</label>
-                                <select class="form-select" name="position_id">
+                                <select class="form-control select2-position1" name="position_id">
                                     <option value="">-- เลือกตำแหน่ง --</option>
                                     @foreach($positions as $position)
                                         <option value="{{ $position->position_id }}" {{ old('position_id', $lead->position_id) == $position->position_id ? 'selected' : '' }}>
@@ -384,7 +412,7 @@
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label">Position 2:</label>
-                                <select class="form-select" name="position_id_2">
+                                <select class="form-control select2-position2" name="position_id_2">
                                     <option value="">-- เลือกตำแหน่ง --</option>
                                     @foreach($positions as $position)
                                         <option value="{{ $position->position_id }}" {{ old('position_id_2', $lead->position_id_2) == $position->position_id ? 'selected' : '' }}>
@@ -395,7 +423,7 @@
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label">Position 3:</label>
-                                <select class="form-select" name="position_id_3">
+                                <select class="form-control select2-position3" name="position_id_3">
                                     <option value="">-- เลือกตำแหน่ง --</option>
                                     @foreach($positions as $position)
                                         <option value="{{ $position->position_id }}" {{ old('position_id_3', $lead->position_id_3) == $position->position_id ? 'selected' : '' }}>
@@ -612,7 +640,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Recommender (ผู้แนะนำ/สาย) *ว่างไว้หากไม่มี </label>
-                                <select class="form-select" name="lead_recommender_staff_sub_id">
+                                <select class="form-control select2-recommender" name="lead_recommender_staff_sub_id">
                                     <option value="">-- เลือกผู้แนะนำ --</option>
                                     @foreach($staffSubs as $staffSub)
                                         <option value="{{ $staffSub->staff_sub_id }}" 
@@ -647,7 +675,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">เจ้าหน้าที่ผู้รับผิดชอบ (พนักงาน วีดี)</label>
-                                <select class="form-select" name="staff_id">
+                                <select class="form-control select2-staff" name="staff_id">
                                     <option value="">-- เลือกเจ้าหน้าที่ --</option>
                                     @foreach($staffs as $staff)
                                         <option value="{{ $staff->staff_id }}" {{ old('staff_id', $lead->staff_id) == $staff->staff_id ? 'selected' : '' }}>
@@ -2143,6 +2171,84 @@
                 alert('กรุณาแก้ไขช่วงเวลาทำงานที่ซ้ำซ้อนกันก่อนบันทึกข้อมูล');
                 return false;
             }
+        });
+
+        // Initialize Select2 for searchable dropdowns
+        $(document).ready(function() {
+            // Position 1
+            $('.select2-position1').select2({
+                placeholder: '-- เลือกตำแหน่ง --',
+                allowClear: true,
+                width: '100%',
+                language: {
+                    noResults: function() {
+                        return "ไม่พบข้อมูล";
+                    },
+                    searching: function() {
+                        return "กำลังค้นหา...";
+                    }
+                }
+            });
+
+            // Position 2
+            $('.select2-position2').select2({
+                placeholder: '-- เลือกตำแหน่ง --',
+                allowClear: true,
+                width: '100%',
+                language: {
+                    noResults: function() {
+                        return "ไม่พบข้อมูล";
+                    },
+                    searching: function() {
+                        return "กำลังค้นหา...";
+                    }
+                }
+            });
+
+            // Position 3
+            $('.select2-position3').select2({
+                placeholder: '-- เลือกตำแหน่ง --',
+                allowClear: true,
+                width: '100%',
+                language: {
+                    noResults: function() {
+                        return "ไม่พบข้อมูล";
+                    },
+                    searching: function() {
+                        return "กำลังค้นหา...";
+                    }
+                }
+            });
+
+            // Recommender (ผู้แนะนำ)
+            $('.select2-recommender').select2({
+                placeholder: '-- เลือกผู้แนะนำ --',
+                allowClear: true,
+                width: '100%',
+                language: {
+                    noResults: function() {
+                        return "ไม่พบข้อมูล";
+                    },
+                    searching: function() {
+                        return "กำลังค้นหา...";
+                    }
+                }
+            });
+
+            // Staff (เจ้าหน้าที่ผู้รับผิดชอบ)
+            $('.select2-staff').select2({
+                placeholder: '-- เลือกเจ้าหน้าที่ --',
+                allowClear: true,
+                width: '100%',
+                language: {
+                    noResults: function() {
+                        return "ไม่พบข้อมูล";
+                    },
+                    searching: function() {
+                        return "กำลังค้นหา...";
+                    }
+                }
+            });
         });
     </script>
 @endsection

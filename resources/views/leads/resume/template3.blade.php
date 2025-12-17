@@ -440,7 +440,7 @@
             @endif
         </div>
         
-        <div class="footer-credit">{{ $lead->staff->staff_name ?? 'VD Labour' }}/ {{ $lead->recommenderStaff->staff_sub_name ?? 'N/A' }}</div>
+        <div class="footer-credit">{{ $lead->staff->staff_nickname ?? 'VD Labour' }}/ {{ $lead->recommenderStaff->staff_sub_name ?? '' }}</div>
         <div class="bottom-arrows">
             ^<br>^<br>^
         </div>

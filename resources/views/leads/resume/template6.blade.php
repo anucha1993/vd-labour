@@ -526,7 +526,7 @@
         
         <div class="footer-credit">
             @if($lead->staff)
-                {{ $lead->staff->staff_name }}/{{ $lead->recommenderStaff->staff_sub_name ?? 'N/A' }}
+                {{ $lead->staff->staff_nickname }}/{{ $lead->recommenderStaff->staff_sub_name ?? '' }}
             @endif
         </div>
     </div>

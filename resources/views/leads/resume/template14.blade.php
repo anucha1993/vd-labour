@@ -356,7 +356,7 @@
                 </div>
                 
                 <div class="footer-note">
-                    {{ $lead->staff->staff_name ?? 'N/A' }} / {{ $lead->recommenderStaff->staff_sub_name ?? 'N/A' }}
+                    {{ $lead->staff->staff_nickname ?? 'N/A' }} / {{ $lead->recommenderStaff->staff_sub_name ?? '' }}
                 </div>
             </div>
 
