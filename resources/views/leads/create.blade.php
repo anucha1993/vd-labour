@@ -1,30 +1,6 @@
 @extends('layouts.main')
 
 
-<style>
-    /* Fix Select2 height to match Bootstrap 5 form-select */
-    .select2-container--default .select2-selection--single {
-        height: 38px !important;
-        padding: 6px 12px !important;
-        border: 1px solid #ced4da !important;
-        border-radius: 0.375rem !important;
-    }
-    
-    .select2-container--default .select2-selection--single .select2-selection__rendered {
-        line-height: 24px !important;
-        padding-left: 0 !important;
-    }
-    
-    .select2-container--default .select2-selection--single .select2-selection__arrow {
-        height: 36px !important;
-    }
-    
-    /* Match focus state */
-    .select2-container--default.select2-container--focus .select2-selection--single {
-        border-color: #86b7fe !important;
-        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25) !important;
-    }
-</style>
 
 
 @section('content')
@@ -196,9 +172,9 @@
                                         <label class="form-label">Passport/ID Card No.</label>
                                         <input type="text" class="form-control @error('lead_passport_number') is-invalid @enderror" 
                                                name="lead_passport_number" id="lead_passport_number" 
-                                               maxlength="6" pattern="[0-9]{6}" 
+                                               maxlength="9" pattern="[0-9]{9}" 
                                                value="{{ old('lead_passport_number') }}"
-                                               placeholder="กรอกตัวเลข 6 หลักเท่านั้น">
+                                               placeholder="กรอกตัวเลข 9 หลักเท่านั้น">
                                         <div class="invalid-feedback" id="passport_error">
                                             กรุณากรอกตัวเลข 6 หลักเท่านั้น
                                         </div>
@@ -933,6 +909,31 @@
             </div>
         </div>
     </div>
+    <style>
+    /* Fix Select2 height to match Bootstrap 5 form-select */
+    .select2-container--default .select2-selection--single {
+        height: 38px !important;
+        padding: 6px 12px !important;
+        border: 1px solid #ced4da !important;
+        border-radius: 0.375rem !important;
+    }
+    
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: 24px !important;
+        padding-left: 0 !important;
+    }
+    
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 36px !important;
+    }
+    
+    /* Match focus state */
+    .select2-container--default.select2-container--focus .select2-selection--single {
+        border-color: #86b7fe !important;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25) !important;
+    }
+</style>
+
 
     <script>
         let jobHistoryCount = 0;
