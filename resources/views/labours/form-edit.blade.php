@@ -5,11 +5,14 @@
         .card.border-warning {
             animation: pulse-warning 2s infinite;
         }
-        
+
         @keyframes pulse-warning {
-            0%, 100% {
+
+            0%,
+            100% {
                 box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.4);
             }
+
             50% {
                 box-shadow: 0 0 0 10px rgba(255, 193, 7, 0);
             }
@@ -19,7 +22,8 @@
     <div class="row">
         @if ($errors->any())
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <h6 class="alert-heading"><i class="bi bi-exclamation-triangle-fill me-2"></i>กรุณาแก้ไขข้อผิดพลาดต่อไปนี้:</h6>
+                <h6 class="alert-heading"><i class="bi bi-exclamation-triangle-fill me-2"></i>กรุณาแก้ไขข้อผิดพลาดต่อไปนี้:
+                </h6>
                 <ul class="mb-0">
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
@@ -28,7 +32,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @endif
-        
+
         @if ($message = Session::get('success'))
             <div class="alert alert-success">
                 <strong>{{ $message }}</strong>
@@ -39,7 +43,7 @@
                 <strong>{{ $message }}</strong>
             </div>
         @endif
-        
+
         {{-- @if ($debug = Session::get('upload_debug'))
             <div class="alert alert-info">
                 <strong>Upload Debug Info:</strong>
@@ -151,14 +155,14 @@
                                 </div>
                                 <div class="col-md-3">
                                     <label class="form-label">Lastname <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" name="labour_lastname" placeholder="Lastname"
-                                        @cannot('update labour') disabled @endcannot
+                                    <input type="text" class="form-control" name="labour_lastname"
+                                        placeholder="Lastname" @cannot('update labour') disabled @endcannot
                                         value="{{ $labourModel->labour_lastname }}" required>
                                     <div class="invalid-feedback">กรุณากรอกนามสกุล</div>
                                 </div>
                                 <div class="col-md-2">
-                                    <label class="form-label">Birthday <span class="text-danger">*</span> <span id="age_result"
-                                            class="text-info"></span></label>
+                                    <label class="form-label">Birthday <span class="text-danger">*</span> <span
+                                            id="age_result" class="text-info"></span></label>
                                     <input type="date" class="form-control" name="labour_birthday"
                                         placeholder="birthday" @cannot('update labour') disabled @endcannot
                                         id="labour_birthday" value="{{ $labourModel->labour_birthday }}" required>
@@ -238,7 +242,8 @@
                                         <option @if ($labourModel->labour_disease_status == 0) selected @endif value="0">
                                             รอตรวจผลโรค
                                         </option>
-                                        <option @if ($labourModel->labour_disease_status == 1) selected @endif value="1">ผลโรคผ่าน
+                                        <option @if ($labourModel->labour_disease_status == 1) selected @endif value="1">
+                                            ผลโรคผ่าน
                                         </option>
                                         <option @if ($labourModel->labour_disease_status == 2) selected @endif value="2">
                                             รอตรวจผลโรคซ้ำ</option>
@@ -344,7 +349,8 @@
                                 <select name="labour_examination" class="form-select"
                                     @cannot('update labour') disabled @endcannot>
                                     <option selected value="{{ $labourModel->labour_examination }}">
-                                        {{ date('d-m-Y', strtotime($labourModel->labour_examination)) }}-{{ $item->examination_round_note }} </option>
+                                        {{ date('d-m-Y', strtotime($labourModel->labour_examination)) }}-{{ $item->examination_round_note }}
+                                    </option>
                                     @forelse ($examinationRound as $item)
                                         <option value="{{ $item->examination_round_name }}">
                                             {{ date('d-m-Y', strtotime($item->examination_round_name)) }}-{{ $item->examination_round_note }}
@@ -562,28 +568,31 @@
                         <div class="row g-3">
 
                             <h4 class=" mt-3">จัดเก็บเอกสาร</h4>
-                            
-                            @if($labourModel->lead_id)
+
+                            @if ($labourModel->lead_id)
                                 <div class="col-md-12">
                                     <div class="alert alert-info">
-                                        <i class="bi bi-info-circle-fill"></i> <strong>แปลงมาจาก Lead</strong> - สามารถเปลี่ยน Docs. Type ได้ (เฉพาะครั้งแรกเท่านั้น หากยังไม่มีการตั้งค่า)
+                                        <i class="bi bi-info-circle-fill"></i> <strong>แปลงมาจาก Lead</strong> -
+                                        สามารถเปลี่ยน Docs. Type ได้ (เฉพาะครั้งแรกเท่านั้น หากยังไม่มีการตั้งค่า)
                                     </div>
                                 </div>
                             @endif
 
                             <div class="col-md-3">
                                 <label>Docs. Type. (Path จัดเก็บเอกสาร)</label>
-                                @if(!empty($labourModel->labour_location_doc) && empty($labourModel->lead_id))
+                                @if (!empty($labourModel->labour_location_doc) && empty($labourModel->lead_id))
                                     {{-- ถ้ามีค่าแล้วและไม่ได้มาจาก Lead ให้ล็อก --}}
                                     <select class="form-select" disabled>
                                         <option value="">Select a File Manage</option>
                                         @forelse ($fileManage as $item)
                                             <option @if ($item->file_manage_id === $labourModel->labour_location_doc) selected @endif
-                                                value="{{ $item->file_manage_id }}">{{ $item->file_manage_name }}</option>
+                                                value="{{ $item->file_manage_id }}">{{ $item->file_manage_name }}
+                                            </option>
                                         @empty
-                                        @endforelse 
+                                        @endforelse
                                     </select>
-                                    <input type="hidden" name="labour_location_doc" value="{{ $labourModel->labour_location_doc }}">
+                                    <input type="hidden" name="labour_location_doc"
+                                        value="{{ $labourModel->labour_location_doc }}">
                                     <small class="text-warning">
                                         <i class="bi bi-lock-fill"></i> ล็อกแล้ว - ไม่สามารถเปลี่ยนได้หลังจากตั้งค่าแล้ว
                                     </small>
@@ -593,9 +602,10 @@
                                         <option value="">Select a File Manage</option>
                                         @forelse ($fileManage as $item)
                                             <option @if ($item->file_manage_id === $labourModel->labour_location_doc) selected @endif
-                                                value="{{ $item->file_manage_id }}">{{ $item->file_manage_name }}</option>
+                                                value="{{ $item->file_manage_id }}">{{ $item->file_manage_name }}
+                                            </option>
                                         @empty
-                                        @endforelse 
+                                        @endforelse
                                     </select>
                                     <small class="text-info">
                                         <i class="bi bi-info-circle-fill"></i> แปลงมาจาก Lead - มี Docs Type อยู่แล้ว
@@ -606,9 +616,10 @@
                                         <option value="">Select a File Manage</option>
                                         @forelse ($fileManage as $item)
                                             <option @if ($item->file_manage_id === $labourModel->labour_location_doc) selected @endif
-                                                value="{{ $item->file_manage_id }}">{{ $item->file_manage_name }}</option>
+                                                value="{{ $item->file_manage_id }}">{{ $item->file_manage_name }}
+                                            </option>
                                         @empty
-                                        @endforelse 
+                                        @endforelse
                                     </select>
                                     <small class="text-success">
                                         <i class="bi bi-unlock-fill"></i> ยังไม่มีการตั้งค่า - สามารถเลือกได้
@@ -629,16 +640,17 @@
                             <div class="row g-3">
 
                                 @foreach ($labourfiles as $key => $item)
-    @php
-        $filePath = asset(
-            'storage/LABOURS/' .
-                str_replace('\\', '/', $labourModel->labour_path) .
-                '/' .
-                str_replace('\\', '/', $item->labour_file_path)
-        );
-        $timestamp = $item->updated_at ? $item->updated_at->timestamp : time();
-        $ext = strtolower(pathinfo($item->labour_file_path, PATHINFO_EXTENSION));
-    @endphp
+                                {{-- {{$item->list_file_id}} --}}
+                                    @php
+                                        $filePath = asset(
+                                            'storage/LABOURS/' .
+                                                str_replace('\\', '/', $labourModel->labour_path) .
+                                                '/' .
+                                                str_replace('\\', '/', $item->labour_file_path),
+                                        );
+                                        $timestamp = $item->updated_at ? $item->updated_at->timestamp : time();
+                                        $ext = strtolower(pathinfo($item->labour_file_path, PATHINFO_EXTENSION));
+                                    @endphp
                                     @if (!empty($item->labour_file_path))
                                         <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                                             <div class="card shadow-sm h-100 border-0">
@@ -676,7 +688,7 @@
                                                             class="btn btn-sm btn-outline-primary" target="_blank"><i
                                                                 class="fas fa-eye"></i> ดู</a>
 
-                                                                 {{-- @can('delete labour file')
+                                                        {{-- @can('delete labour file')
                                                         <a href="" data-file-id="{{ $item->labour_file_id }}"
                                                             data-labour-id="{{ $labourModel->labour_id }}"
                                                             data-path="{{ $labourModel->labour_path . '/' . $item->labour_file_path }}"
@@ -684,13 +696,13 @@
                                                             Delete</a>
                                                     @endcan --}}
 
-                                                         
-                                                         @can('delete labour file')
+
+                                                        @can('delete labour file')
                                                             <a href="#" data-file-id="{{ $item->labour_file_id }}"
                                                                 data-labour-id="{{ $labourModel->labour_id }}"
                                                                 data-path="{{ $filePath }}"
                                                                 class="delete-file btn btn-sm btn-outline-danger">ลบ</a>
-                                                        @endcan 
+                                                        @endcan
                                                     </div>
                                                 </div>
                                             </div>
@@ -718,31 +730,35 @@
                                 @endforeach
 
                                 {{-- แสดงรายการเอกสารใหม่ที่เพิ่มเข้ามาหลังจากสร้าง Labour --}}
-                                @if($listFiles->count() > 0)
+                                @if ($listFiles->count() > 0)
                                     <div class="col-12">
                                         <hr class="my-3">
                                         <h6 class="text-primary mb-3">
-                                            <i class="bi bi-plus-circle me-2"></i>เอกสารใหม่ที่เพิ่มเข้ามา ({{ $listFiles->count() }} รายการ)
+                                            <i class="bi bi-plus-circle me-2"></i>เอกสารใหม่ที่เพิ่มเข้ามา
+                                            ({{ $listFiles->count() }} รายการ)
                                         </h6>
                                     </div>
                                     @foreach ($listFiles as $key => $itemNew)
+                                    {{-- {{ $itemNew->list_file_id }} --}}
                                         <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                                            <div class="card shadow-sm h-100 border-warning border-2 d-flex flex-column align-items-center justify-content-center p-3">
+                                            <div
+                                                class="card shadow-sm h-100 border-warning border-2 d-flex flex-column align-items-center justify-content-center p-3">
                                                 <div class="badge bg-warning text-dark mb-2">เอกสารใหม่</div>
-                                                <div class="mb-2"><i class="fas fa-file-upload fa-3x text-warning"></i></div>
+                                                <div class="mb-2"><i class="fas fa-file-upload fa-3x text-warning"></i>
+                                                </div>
                                                 <div class="text-center fw-bold mb-2">{{ $itemNew->list_file_note }}</div>
                                                 <div class="text-muted small mb-3">{{ $itemNew->list_file_name }}</div>
-                                                
-                                                <input type="file" name="file_new_{{ $key }}" 
-                                                    class="form-control form-control-sm mb-2" 
+
+                                                <input type="file" name="file_new_{{ $key }}"
+                                                    class="form-control form-control-sm mb-2"
                                                     data-index-new="{{ $key }}"
                                                     @cannot('update labour') disabled @endcannot>
-                                                
-                                                <input type="hidden" name="labour_file_name_new_{{ $key }}" 
+
+                                                <input type="hidden" name="labour_file_name_new_{{ $key }}"
                                                     value="{{ $itemNew->list_file_name }}">
-                                                <input type="hidden" name="list_file_id_new_{{ $key }}" 
+                                                <input type="hidden" name="list_file_id_new_{{ $key }}"
                                                     value="{{ $itemNew->list_file_id }}">
-                                                
+
                                                 <small class="text-muted text-center">กรุณาเลือกไฟล์แล้วกดบันทึก</small>
                                             </div>
                                         </div>
@@ -762,39 +778,42 @@
                     <div class="row g-3 mt-2">
                         <div class="col-md-3">
                             <label class="form-label">วันที่ยืนวีซ่า</label>
-                            <input type="date" name="labour_visa_submit_date" class="form-control" 
+                            <input type="date" name="labour_visa_submit_date" class="form-control"
                                 value="{{ $labourModel->labour_visa_submit_date }}"
                                 @cannot('update labour') disabled @endcannot>
                         </div>
                         <div class="col-md-3">
                             <label class="form-label">วันที่ Approved VISA</label>
-                            <input type="date" name="labour_visa_approved_date" class="form-control" 
+                            <input type="date" name="labour_visa_approved_date" class="form-control"
                                 value="{{ $labourModel->labour_visa_approved_date }}"
                                 @cannot('update labour') disabled @endcannot>
                         </div>
                         <div class="col-md-3">
                             <label class="form-label">Status VISA</label>
-                            <select name="labour_visa_status" class="form-select" id="visa_status" @cannot('update labour') disabled @endcannot>
-                                <option value="none" @if($labourModel->labour_visa_status === 'none' || $labourModel->labour_visa_status === null) selected @endif>None</option>
-                                <option value="approved" @if($labourModel->labour_visa_status === 'approved') selected @endif>Approved</option>
-                                <option value="rejected" @if($labourModel->labour_visa_status === 'rejected') selected @endif>Rejected</option>
+                            <select name="labour_visa_status" class="form-select" id="visa_status"
+                                @cannot('update labour') disabled @endcannot>
+                                <option value="none" @if ($labourModel->labour_visa_status === 'none' || $labourModel->labour_visa_status === null) selected @endif>None</option>
+                                <option value="approved" @if ($labourModel->labour_visa_status === 'approved') selected @endif>Approved
+                                </option>
+                                <option value="rejected" @if ($labourModel->labour_visa_status === 'rejected') selected @endif>Rejected
+                                </option>
                             </select>
                         </div>
                         <div class="col-md-3">
                             <label class="form-label">วันที่ Reject VISA</label>
-                            <input type="date" name="labour_visa_reject_date" class="form-control" 
+                            <input type="date" name="labour_visa_reject_date" class="form-control"
                                 value="{{ $labourModel->labour_visa_reject_date }}" id="visa_reject_date"
                                 @cannot('update labour') disabled @endcannot>
                         </div>
                         <div class="col-md-3">
                             <label class="form-label">วันที่ออก VISA หรือ วันที่เริ่มต้น VISA</label>
-                            <input type="date" name="labour_visa_start_date" class="form-control" 
+                            <input type="date" name="labour_visa_start_date" class="form-control"
                                 value="{{ $labourModel->labour_visa_start_date }}"
                                 @cannot('update labour') disabled @endcannot>
                         </div>
                         <div class="col-md-12">
                             <label class="form-label">Visa Note (กรณี VISA มี Status rejected)</label>
-                            <textarea name="labour_visa_note" class="form-control" rows="3" id="visa_note" 
+                            <textarea name="labour_visa_note" class="form-control" rows="3" id="visa_note"
                                 placeholder="กรอกหมายเหตุกรณี VISA ถูกปฏิเสธ" @cannot('update labour') disabled @endcannot>{{ $labourModel->labour_visa_note }}</textarea>
                         </div>
                         <div class="col-md-6">
@@ -815,8 +834,8 @@
                                     @endcan
                                 </div>
                             @else
-                                <input type="file" name="visa_file" class="form-control" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
-                                    @cannot('update labour') disabled @endcannot>
+                                <input type="file" name="visa_file" class="form-control"
+                                    accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" @cannot('update labour') disabled @endcannot>
                                 <small class="text-muted">รองรับไฟล์: PDF, JPG, PNG, DOC, DOCX</small>
                             @endif
                         </div>
@@ -874,15 +893,15 @@
         $(document).ready(function() {
             $('#form-create').on('submit', function(e) {
                 const form = this;
-                
+
                 // Check if form is valid using HTML5 validation
                 if (!form.checkValidity()) {
                     e.preventDefault();
                     e.stopPropagation();
-                    
+
                     // Add Bootstrap validation classes
                     $(form).addClass('was-validated');
-                    
+
                     // Find first invalid field and scroll to it
                     const firstInvalid = $(form).find(':invalid').first();
                     if (firstInvalid.length) {
@@ -893,16 +912,16 @@
                             // Switch to the tab containing the invalid field
                             $(`button[data-bs-target="#${tabId}"]`).tab('show');
                         }
-                        
+
                         // Scroll to the invalid field
                         $('html, body').animate({
                             scrollTop: firstInvalid.offset().top - 100
                         }, 500);
-                        
+
                         // Focus on the field
                         firstInvalid.focus();
                     }
-                    
+
                     // Show error message
                     Swal.fire({
                         icon: 'error',
@@ -910,7 +929,7 @@
                         text: 'มีฟิลด์บางฟิลด์ที่จำเป็นต้องกรอก กรุณาตรวจสอบและกรอกข้อมูลให้ครบถ้วน',
                         confirmButtonText: 'ตกลง'
                     });
-                    
+
                     return false;
                 }
             });
@@ -1113,7 +1132,7 @@
                 const status = $('#visa_status').val();
                 const rejectDate = $('#visa_reject_date');
                 const visaNote = $('#visa_note');
-                
+
                 if (status === 'rejected') {
                     rejectDate.prop('disabled', false).prop('required', true);
                     visaNote.prop('disabled', false).prop('required', true);
@@ -1125,7 +1144,7 @@
 
             // Initialize on page load
             toggleVisaFields();
-            
+
             // Handle status change
             $('#visa_status').on('change', toggleVisaFields);
         });

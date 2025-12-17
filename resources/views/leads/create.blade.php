@@ -1025,7 +1025,7 @@
             const passportField = document.getElementById('lead_passport_number');
             const passportValue = passportField.value;
             
-            if (passportValue.length > 0 && passportValue.length !== 6) {
+            if (passportValue.length > 0 && passportValue.length !== 9) {
                 e.preventDefault();
                 passportField.classList.add('is-invalid');
                 passportField.focus();
@@ -1968,7 +1968,7 @@
             const passportField = document.getElementById('lead_passport_number');
             const passportValue = passportField.value;
             
-            if (passportValue.length > 0 && passportValue.length !== 6) {
+            if (passportValue.length > 0 && passportValue.length !== 9) {
                 e.preventDefault();
                 passportField.classList.add('is-invalid');
                 passportField.focus();
