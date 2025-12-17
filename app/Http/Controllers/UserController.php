@@ -16,6 +16,10 @@ class UserController extends Controller
      */
     public function index()
     {
+        if (!auth()->user()->can('view users')) {
+            abort(403, 'ไม่มีสิทธิ์เข้าถึงหน้านี้');
+        }
+
         $users = User::with('roles')->get();
         $roles = Role::all();
         return view('users.index', compact('users', 'roles'));
@@ -26,6 +30,10 @@ class UserController extends Controller
      */
     public function create()
     {
+        if (!auth()->user()->can('create user')) {
+            abort(403, 'ไม่มีสิทธิ์สร้างผู้ใช้');
+        }
+
         $roles = Role::all();
         return view('users.create', compact('roles'));
     }
@@ -35,6 +43,10 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        if (!auth()->user()->can('create user')) {
+            abort(403, 'ไม่มีสิทธิ์สร้างผู้ใช้');
+        }
+
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
@@ -77,6 +89,10 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
+        if (!auth()->user()->can('edit user')) {
+            abort(403, 'ไม่มีสิทธิ์แก้ไขผู้ใช้');
+        }
+
         $roles = Role::all();
         $user->load('roles');
         return view('users.edit', compact('user', 'roles'));
@@ -87,6 +103,10 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
+        if (!auth()->user()->can('edit user')) {
+            abort(403, 'ไม่มีสิทธิ์แก้ไขผู้ใช้');
+        }
+
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => [
@@ -135,6 +155,10 @@ class UserController extends Controller
      */
     public function resetPassword(Request $request, User $user)
     {
+        if (!auth()->user()->can('edit user')) {
+            abort(403, 'ไม่มีสิทธิ์รีเซ็ตรหัสผ่าน');
+        }
+
         $validator = Validator::make($request->all(), [
             'new_password' => 'required|string|min:8|confirmed',
         ]);
@@ -179,6 +203,10 @@ class UserController extends Controller
      */
     public function assignRole(Request $request)
     {
+        if (!auth()->user()->can('edit user')) {
+            abort(403, 'ไม่มีสิทธิ์จัดการบทบาทผู้ใช้');
+        }
+
         $validator = Validator::make($request->all(), [
             'user_id' => 'required|exists:users,id',
             'roles' => 'array|exists:roles,name',
@@ -209,6 +237,10 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
+        if (!auth()->user()->can('delete user')) {
+            abort(403, 'ไม่มีสิทธิ์ลบผู้ใช้');
+        }
+
         // Prevent deleting own account
         if ($user->id === auth()->id()) {
             return redirect()->route('users.index')->with('error', 'ไม่สามารถลบบัญชีของตัวเองได้!');

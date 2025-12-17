@@ -20,9 +20,11 @@
     <div class="card-body">
       <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
         <h4 class="mb-0"><i class="bi bi-people-fill me-2 text-primary"></i>จัดการผู้ใช้งานระบบ</h4>
+        @can('create user')
         <a href="{{ route('users.create') }}" class="btn btn-primary">
             <i class="bi bi-plus-circle-fill"></i> เพิ่มผู้ใช้ใหม่
         </a>
+        @endcan
       </div>
       <!-- ตารางแสดง Users ทั้งหมด -->
       <table class="table table-striped table-hover table-bordered align-middle datatable" id="users-table">
@@ -54,6 +56,7 @@
                   </td>
                   <td class="text-center">
                       <div class="btn-group" role="group">
+                          @can('edit user')
                           <a href="{{ route('users.edit', $user->id) }}" class="btn btn-sm btn-outline-warning" title="แก้ไขข้อมูล">
                               <i class="bi bi-pencil-fill"></i>
                           </a>
@@ -63,6 +66,8 @@
                           <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editRoleModal-{{ $user->id }}" title="จัดการบทบาท">
                               <i class="bi bi-person-gear"></i>
                           </button>
+                          @endcan
+                          @can('delete user')
                           @if($user->id !== auth()->id())
                           <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="d-inline" 
                                 onsubmit="return confirm('คุณแน่ใจหรือไม่ว่าต้องการลบผู้ใช้นี้?');">
@@ -73,6 +78,7 @@
                               </button>
                           </form>
                           @endif
+                          @endcan
                       </div>
                   </td>
               </tr>
