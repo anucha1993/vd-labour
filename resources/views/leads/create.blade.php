@@ -172,11 +172,11 @@
                                         <label class="form-label">Passport/ID Card No.</label>
                                         <input type="text" class="form-control @error('lead_passport_number') is-invalid @enderror" 
                                                name="lead_passport_number" id="lead_passport_number" 
-                                               maxlength="9" pattern="[0-9]{9}" 
+                                               maxlength="9" pattern="[A-Za-z0-9]{9}" 
                                                value="{{ old('lead_passport_number') }}"
-                                               placeholder="กรอกตัวเลข 9 หลักเท่านั้น">
+                                               placeholder="กรอกตัวอักษร A-Z หรือตัวเลข 0-9 (9 หลัก)">
                                         <div class="invalid-feedback" id="passport_error">
-                                            กรุณากรอกตัวเลข 9 หลักเท่านั้น
+                                            กรุณากรอกตัวอักษร A-Z หรือตัวเลข 0-9 (9 หลัก)
                                         </div>
                                         @error('lead_passport_number')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
@@ -1029,19 +1029,19 @@
             }
         }
 
-        // Validate Passport Number (must be exactly 6 digits)
+        // Validate Passport Number (must be exactly 9 alphanumeric characters)
         document.getElementById('lead_passport_number').addEventListener('input', function(e) {
             const value = e.target.value;
             const passportField = e.target;
             
-            // Allow only numbers
-            e.target.value = value.replace(/[^0-9]/g, '');
+            // Allow only letters A-Z and numbers 0-9
+            e.target.value = value.replace(/[^A-Za-z0-9]/g, '').toUpperCase();
             
             // Check length
             if (e.target.value.length > 0 && e.target.value.length !== 9) {
                 passportField.classList.add('is-invalid');
                 passportField.classList.remove('is-valid');
-            } else if (e.target.value.length === 6) {
+            } else if (e.target.value.length === 9) {
                 passportField.classList.remove('is-invalid');
                 passportField.classList.add('is-valid');
             } else {
@@ -1058,7 +1058,7 @@
                 e.preventDefault();
                 passportField.classList.add('is-invalid');
                 passportField.focus();
-                alert('กรุณากรอก Passport/ID Card No. ให้ครบ 6 หลัก');
+                alert('กรุณากรอก Passport/ID Card No. ให้ครบ 9 หลัก (A-Z หรือ 0-9)');
                 return false;
             }
             
