@@ -303,6 +303,17 @@
         .template-selector .print-btn:hover {
             background-color: #A36B79;
         }
+         /* Footer credit - แสดงทุกหน้า */
+            .footer-note {
+                position: fixed;
+                bottom: 10px;
+                left: 30px;
+                font-size: 12px;
+                color: #333 !important;
+                font-weight: 500;
+            }
+
+
     </style>
 </head>
 <body>

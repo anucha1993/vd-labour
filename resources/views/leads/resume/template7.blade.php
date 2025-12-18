@@ -48,7 +48,7 @@
         /* VD Logo */
         .logo-vd {
             position: absolute;
-            top: 15px;
+            top: 5px;
             right: 15px;
             width: 60px;
             height: auto;
@@ -180,6 +180,7 @@
 
         /* ชื่อหลัก */
         .main-header {
+            margin-top: 20px;
             margin-bottom: 20px;
             padding-bottom: 5px;
             border-bottom: 1px solid var(--border-light);
@@ -364,6 +365,15 @@
         .template-selector .print-btn:hover {
             background-color: #1a1a1a;
         }
+         /* Footer credit - แสดงทุกหน้า */
+            .footer-credit {
+                position: fixed;
+                bottom: 10px;
+                left: 30px;
+                font-size: 12px;
+                color: #333 !important;
+                font-weight: 500;
+            }
 
         @media print {
             .template-selector {
@@ -389,10 +399,19 @@
                 print-color-adjust: exact;
                 -webkit-print-color-adjust: exact;
             }
+             /* Footer credit - แสดงทุกหน้า */
+            .footer-credit {
+                position: fixed;
+                bottom: 10px;
+                left: 30px;
+                font-size: 12px;
+                color: #333 !important;
+                font-weight: 500;
+            }
             
             @page {
                 size: A4;
-                margin: 0;
+                margin: 20px;
             }
         }
     </style>
@@ -484,8 +503,10 @@
                 @endif
             </ul>
         </div>
+   
+   
 
-        <div class="right-col">
+        <div class="right-col ">
             <header class="main-header">
                 <h1 class="main-name">{{ strtoupper($lead->fullName) }}</h1>
                 @if($lead->position)

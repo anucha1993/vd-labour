@@ -364,10 +364,19 @@
                 print-color-adjust: exact;
                 -webkit-print-color-adjust: exact;
             }
+             /* Footer credit - แสดงทุกหน้า */
+            .footer-credit {
+                position: fixed;
+                bottom: 10px;
+                left: 30px;
+                font-size: 12px;
+                color: #333 !important;
+                font-weight: 500;
+            }
             
             @page {
                 size: A4;
-                margin: 0;
+                margin: 20px;
             }
         }
     </style>

@@ -36,10 +36,11 @@
 
         .company-logo {
             position: absolute;
-            top: 30px;
+            top: 10px;
             right: 30px;
             width: 80px;
             height: auto;
+            margin: 5px;
             z-index: 1000;
         }
 
@@ -297,7 +298,7 @@
         
         /* เครดิตผู้ออกแบบ */
         .footer-credit {
-            position: absolute;
+            position: fixed;
             bottom: 10px;
             right: 30px;
             font-size: 12px;
@@ -340,7 +341,7 @@
             ^<br>^<br>^
         </div>
         
-        <div class="main-header" style="position: absolute; top: 70px; left: 35%; padding-left: 30px;">
+        <div class="main-header" style="position: absolute; top: 85px; left: 35%; padding-left: 30px;">
             <h1 class="main-name">{{ strtoupper($lead->getFullNameAttribute()) }}</h1>
         </div>
         
@@ -467,16 +468,190 @@
 
     <style>
         @media print {
-            body {
-                padding: 0;
-                background: white;
+            /* ซ่อนปุ่มและ selector */
+            .template-selector, .no-print, div[style*="position: fixed"] {
+                display: none !important;
             }
-            .resume-container {
-                box-shadow: none;
+            
+            @page {
+                size: A4;
                 margin: 0;
             }
-            div[style*="position: fixed"] {
-                display: none !important;
+            
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            
+            body {
+                padding: 0;
+                margin: 0;
+                background: white;
+                width: 210mm;
+                height: 297mm;
+            }
+            
+            .resume-container {
+                width: 210mm;
+                min-height: 297mm;
+                box-shadow: none;
+                margin: 0;
+                padding-top: 50px;
+                page-break-after: auto;
+                display: flex;
+                position: relative;
+            }
+            
+            /* คงค่าโลโก้และตกแต่ง */
+            .company-logo {
+                position: absolute;
+                top: 10px;
+                right: 30px;
+                width: 80px;
+                height: auto;
+                z-index: 1000;
+            }
+            
+            .logo-vd {
+                position: absolute;
+                top: 20px;
+                right: 30px;
+                font-size: 10px;
+                color: #d66428 !important;
+                font-weight: bold;
+            }
+            
+            .top-arrows, .bottom-arrows {
+                color: #ccc !important;
+                opacity: 0.5;
+            }
+            
+            /* คอลัมน์ซ้าย */
+            .left-col {
+                width: 35%;
+                padding: 0 20px 30px 30px;
+                border-right: 1px solid #eee !important;
+            }
+            
+            /* คอลัมน์ขวา */
+            .right-col {
+                width: 65%;
+                padding: 0 30px 30px 20px;
+            }
+            
+            /* รูปโปรไฟล์ */
+            .photo-frame {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+            
+            .profile-img {
+                width: 100%;
+                height: auto;
+                border-radius: 5px;
+                object-fit: cover;
+            }
+            
+            /* หัวข้อ section */
+            .section-title {
+                background-color: #008cba !important;
+                color: white !important;
+                padding: 8px 15px;
+                font-weight: 700;
+                font-size: 16px;
+                text-transform: uppercase;
+                margin-bottom: 15px;
+                margin-top: 20px;
+            }
+            
+            .section-title i {
+                color: white !important;
+                margin-right: 10px;
+            }
+            
+            /* ข้อมูล Profile */
+            .info-row {
+                font-size: 13px;
+                line-height: 1.8;
+                margin-bottom: 8px;
+            }
+            
+            .info-label {
+                font-weight: 700;
+                color: #333 !important;
+                min-width: 110px;
+            }
+            
+            /* ส่วนหัวชื่อขวา */
+            .name-header h1 {
+                font-size: 42px;
+                color: #008cba !important;
+                font-weight: 700;
+                text-transform: uppercase;
+                line-height: 1.1;
+                margin-bottom: 10px;
+            }
+            
+            .name-header .subtitle {
+                color: #666 !important;
+                font-size: 16px;
+                font-weight: 300;
+                margin-bottom: 30px;
+            }
+            
+            /* Summary box */
+            .summary-box {
+                background-color: #f8f8f8 !important;
+                border-left: 4px solid #008cba !important;
+                padding: 15px 20px;
+                margin-bottom: 30px;
+                font-size: 14px;
+                line-height: 1.6;
+                color: #555 !important;
+            }
+            
+            /* Work Experience */
+            .job-item {
+                margin-bottom: 25px;
+                page-break-inside: avoid;
+            }
+            
+            .job-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: baseline;
+                margin-bottom: 8px;
+            }
+            
+            .job-title {
+                font-weight: 700;
+                color: #008cba !important;
+                font-size: 16px;
+            }
+            
+            .job-period {
+                font-size: 13px;
+                color: #666 !important;
+                font-style: italic;
+            }
+            
+            .company-name {
+                color: #555 !important;
+                font-weight: 500;
+                margin-bottom: 8px;
+                font-size: 14px;
+            }
+            
+            .job-desc {
+                font-size: 13px;
+                color: #666 !important;
+                line-height: 1.6;
+                padding-left: 15px;
+            }
+            
+            /* ป้องกันการแบ่งหน้า */
+            .info-row, .contact-item {
+                page-break-inside: avoid;
             }
         }
     </style>

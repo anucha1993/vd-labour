@@ -253,6 +253,7 @@
         }
 
         .experience-item {
+        
             margin-bottom: 25px;
             position: relative;
             padding-left: 25px;
@@ -262,7 +263,7 @@
             content: '';
             position: absolute;
             left: 0;
-            top: 6px;
+            top: px;
             width: 12px;
             height: 12px;
             background-color: #000;
@@ -275,6 +276,7 @@
             justify-content: space-between;
             align-items: flex-start;
             margin-bottom: 8px;
+            margin-top: 8px;
         }
 
         .experience-item h4 {
@@ -289,6 +291,7 @@
             color: #000;
             font-weight: 500;
             margin-bottom: 8px;
+       
         }
 
         .experience-item .duration {
@@ -296,6 +299,8 @@
             color: #000;
             font-weight: 700;
             white-space: nowrap;
+             margin-bottom: 8px;
+            
         }
 
         .experience-item ul {
@@ -375,6 +380,15 @@
         .template-selector .print-btn:hover {
             background-color: #357ABD;
         }
+         /* Footer credit - แสดงทุกหน้า */
+            .footer-credit {
+                position: fixed;
+                bottom: 10px;
+                left: 30px;
+                font-size: 12px;
+                color: #333 !important;
+                font-weight: 500;
+            }
 
         /* Print Styles */
         @media print {

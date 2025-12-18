@@ -512,16 +512,182 @@
 
     <style>
         @media print {
+            /* ซ่อนปุ่มและ selector */
+            .template-selector, .no-print, div[style*="position: fixed"] {
+                display: none !important;
+            }
+            
+            @page {
+                size: A4;
+                margin: 20px;
+            }
+            
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            
+            /* ตั้งค่าพื้นหลังและขนาดหน้ากระดาษ */
             body {
                 padding: 0;
+                margin: 0;
                 background: white;
+                width: 210mm;
+                height: 297mm;
             }
+            
+            /* ปรับ container ให้เต็มหน้ากระดาษ */
             .resume-container {
+                width: 210mm;
+                min-height: 297mm;
                 box-shadow: none;
                 margin: 0;
+                page-break-after: auto;
+                display: flex;
+                overflow: visible;
             }
-            div[style*="position: fixed"] {
-                display: none !important;
+            
+            /* คงค่า logo */
+            .company-logo {
+                position: absolute;
+                top: 30px;
+                right: 30px;
+                width: 80px;
+                height: auto;
+                z-index: 1000;
+            }
+            
+            /* บังคับให้สีพื้นหลังพิมพ์ออกมา */
+            .left-col {
+                width: 35%;
+                background-color: #fcd55a !important;
+                padding: 30px 20px;
+            }
+            
+            .photo-frame {
+                background-color: #3b2a24 !important;
+                padding: 10px;
+                border-radius: 20px;
+            }
+            
+            .profile-img {
+                width: 100%;
+                height: auto;
+                border-radius: 10px;
+            }
+            
+            .sub-name-badge {
+                background-color: #3b2a24 !important;
+                color: white !important;
+                padding: 10px;
+                border-radius: 0 0 20px 20px;
+                margin-top: -10px;
+                margin-bottom: 30px;
+                font-size: 18px;
+            }
+            
+            .sidebar-header {
+                background-color: #3b2a24 !important;
+                color: white !important;
+                padding: 8px 0;
+                border-radius: 20px;
+                font-size: 18px;
+                margin-bottom: 20px;
+            }
+            
+            .sidebar-header::before,
+            .sidebar-header::after {
+                background-color: #fcd55a !important;
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+            }
+            
+            .footer-credit {
+                position: fixed;
+                bottom: 30px;
+                left: 30px;
+                font-size: 16px;
+                font-weight: bold;
+                opacity: 0.7;
+            }
+            
+            /* คอลัมน์ขวา */
+            .right-col {
+                width: 65%;
+                padding: 40px 30px;
+            }
+            
+            .main-title h1 {
+                font-size: 52px;
+                color: #3b2a24 !important;
+                font-weight: 700;
+                text-transform: uppercase;
+                margin-bottom: 10px;
+            }
+            
+            .main-title::after {
+                background-color: #fcd55a !important;
+                height: 4px;
+                width: 80px;
+                margin-top: 10px;
+            }
+            
+            .section-title {
+                font-size: 26px;
+                color: #3b2a24 !important;
+                font-weight: 700;
+                text-transform: uppercase;
+                margin-top: 30px;
+                margin-bottom: 15px;
+            }
+            
+            .job-year {
+                background-color: #fcd55a !important;
+                color: #3b2a24 !important;
+                padding: 5px 15px;
+                border-radius: 20px;
+                font-weight: 700;
+            }
+            
+            .job-position {
+                color: #5d4037 !important;
+                font-weight: 700;
+                font-size: 18px;
+            }
+            
+            .job-company {
+                color: #8d6e63 !important;
+                font-style: italic;
+                font-size: 14px;
+            }
+            
+            .job-desc {
+                color: #555;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+            
+            /* ป้องกันการแบ่งหน้าในที่ไม่เหมาะสม */
+            .work-item {
+                page-break-inside: avoid;
+            }
+            
+            .profile-line, .contact-line {
+                page-break-inside: avoid;
+            }
+            
+            .sidebar-content {
+                font-size: 14px;
+                line-height: 1.5;
+            }
+            
+            .profile-list {
+                font-size: 14px;
+            }
+            
+            .profile-list li {
+                margin-bottom: 8px;
             }
         }
     </style>

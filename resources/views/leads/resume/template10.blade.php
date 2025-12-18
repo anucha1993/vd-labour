@@ -19,9 +19,10 @@
             }
             .container {
                 width: 210mm;
-                height: 297mm;
+                min-height: 297mm;
                 margin: 0;
                 box-shadow: none;
+                page-break-after: auto;
             }
         }
         body {
@@ -33,12 +34,11 @@
         }
         .container {
             width: 210mm;
-            height: 297mm;
+            min-height: 297mm;
             margin: 20px auto;
             background: white;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             position: relative;
-            overflow: hidden;
             padding: 40px;
             box-sizing: border-box;
         }
@@ -304,6 +304,7 @@
         .template-selector .print-btn:hover {
             background-color: #8B4513;
         }
+         
         
         /* Print Styles */
         @media print {
@@ -315,7 +316,7 @@
                 display: none !important;
             }
             .container {
-                box-shadow: none;
+                box-shadow: none !important;
                 margin: 0;
                 width: 100%;
                 min-height: auto;
@@ -324,9 +325,20 @@
                 print-color-adjust: exact;
                 -webkit-print-color-adjust: exact;
             }
+            .footer-note {
+                position: fixed;
+                bottom: 20px;
+                left: 40px;
+                font-size: 14px;
+                color: #333 !important;
+                z-index: 10;
+            }
+            .profile-oval {
+                box-shadow: none !important;
+            }
             @page {
                 size: A4;
-                margin: 0;
+                margin: 20px;
             }
         }
     </style>
@@ -504,11 +516,11 @@
             </div>
         </div>
         
-        <div class="footer-note">
+        <footer class="footer-note">
             @if($lead->staff)
                 {{ $lead->staff->staff_nickname }}/{{ $lead->recommenderStaff->staff_sub_name ?? '' }}
             @endif
-        </div>
+        </footer>
     </div>
 </body>
 </html>

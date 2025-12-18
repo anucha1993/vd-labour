@@ -185,7 +185,7 @@
                         <div class="row g-3 mt-2">
                             <div class="col-md-3">
                                 <label>Customer (นายจ้าง)</label>
-                                <select name="labour_customer" class="form-select">
+                                <select name="labour_customer" class="form-select select2-customer">
                                     <option value="">Select a Customer</option>
                                     @forelse ($customers as $item)
                                         <option value="{{$item->customer_id}}">{{$item->customer_name}}</option>
@@ -195,7 +195,7 @@
                             </div>
                             <div class="col-md-3">
                                 <label>Examination round (รอบสอบ)</label>
-                                <select name="labour_examination" class="form-select" >
+                                <select name="labour_examination" class="form-select select2-examination" >
                                     <option value="">Select a Examination round</option>
                                     @forelse ($examinationRound as $item)
                                         <option value="{{$item->examination_round_name}}">{{date('d-m-Y',strtotime($item->examination_round_name))}}-{{$item->examination_round_note}}</option>
@@ -228,7 +228,7 @@
                             </div>
                             <div class="col-md-3">
                                 <label>Position <span class="text-danger">*</span></label>
-                                <select name="labour_position" class="form-select" id="position" required>
+                                <select name="labour_position" class="form-select select2-position" id="position" required>
                                     <option value="">Select a Position</option>
                                     @forelse ($positions as $pos)
                                         <option value="{{ $pos->position_id }}">{{ $pos->position_name }}</option>
@@ -241,7 +241,7 @@
 
                             <div class="col-md-3">
                                 <label>Staff <span class="text-danger">*</span></label>
-                                <select name="labour_staff" class="form-select" required>
+                                <select name="labour_staff" class="form-select select2-staff" required>
                                     <option value="">Select a Staff</option>
                                     @forelse ($staffs as $item)
                                         <option value="{{$item->staff_id}}">{{$item->staff_name}}({{$item->staff_nickname}}) {{$item->staff_phone }}</option>
@@ -252,7 +252,7 @@
                             </div>
                             <div class="col-md-3">
                                 <label>สายหาคน <span class="text-danger">*</span></label>
-                                <select name="labour_staff_sub" class="form-select" required>
+                                <select name="labour_staff_sub" class="form-select select2-staff-sub" required>
                                     <option value="no-sub">Null</option>
                                     @forelse ($staffSub as $item)
                                         <option value="{{$item->staff_sub_id}}">{{$item->staff_sub_name}} {{ $item->staff_sub_phone }}</option>
@@ -618,5 +618,38 @@ function passportExpiry() {
 $('#labour_passport_expiry').on('change', function() {
         passportExpiry();
     });
+
+// Initialize Select2
+$(document).ready(function() {
+    $('.select2-customer').select2({
+        placeholder: 'Select a Customer',
+        allowClear: true,
+        width: '100%'
+    });
+    
+    $('.select2-examination').select2({
+        placeholder: 'Select a Examination round',
+        allowClear: true,
+        width: '100%'
+    });
+    
+    $('.select2-position').select2({
+        placeholder: 'Select a Position',
+        allowClear: true,
+        width: '100%'
+    });
+    
+    $('.select2-staff').select2({
+        placeholder: 'Select a Staff',
+        allowClear: true,
+        width: '100%'
+    });
+    
+    $('.select2-staff-sub').select2({
+        placeholder: 'Select สายหาคน',
+        allowClear: true,
+        width: '100%'
+    });
+});
     </script>
 @endsection

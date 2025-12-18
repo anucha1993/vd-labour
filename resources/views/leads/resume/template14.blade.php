@@ -289,6 +289,27 @@
         .template-selector .print-btn:hover {
             background-color: #A9A9A9;
         }
+        
+        @media print {
+            .template-selector {
+                display: none !important;
+            }
+            .container {
+                box-shadow: none !important;
+            }
+            .footer-note {
+                position: fixed;
+                bottom: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                font-size: 0.8em;
+                color: #333 !important;
+                text-align: center;
+                border: none;
+                background: transparent;
+            }
+        }
+
 
     </style>
 </head>
@@ -355,9 +376,9 @@
                     </ul>
                 </div>
                 
-                <div class="footer-note">
+                <footer class="footer-note">
                     {{ $lead->staff->staff_nickname ?? 'N/A' }} / {{ $lead->recommenderStaff->staff_sub_name ?? '' }}
-                </div>
+                </footer>
             </div>
 
             <div class="right-column">

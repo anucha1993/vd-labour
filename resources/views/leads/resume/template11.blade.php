@@ -8,7 +8,7 @@
     <style>
         @page {
             size: A4;
-            margin: 0;
+            margin: 20px;
         }
         @media print {
             body {
@@ -285,6 +285,34 @@
         .template-selector .print-btn:hover {
             background-color: #FFA500;
         }
+         /* Footer credit - แสดงทุกหน้า */
+            .footer-note {
+                position: fixed;
+                bottom: 10px;
+                left: 30px;
+                font-size: 12px;
+                color: #333 !important;
+                font-weight: 500;
+            }
+
+
+        @media print { 
+            .template-selector {
+                display: none !important;
+            }
+            .container {
+                box-shadow: none !important;
+                page-break-after: auto;
+            }
+            .footer-note {
+                position: fixed;
+                bottom: 10px;
+                right: 40px;
+                font-size: 0.8em;
+                color: #333 !important;
+                z-index: 3;
+            }
+        }
     </style>
 </head>
 <body>
@@ -410,9 +438,9 @@
             </div>
         </div>
         
-        <div class="footer-note">
+        <footer class="footer-note">
             {{ $lead->staff->staff_nickname ?? 'N/A' }} /  {{ $lead->recommenderStaff->staff_sub_name ?? '' }}
-        </div>
+        </footer>
     </div>
 </body>
 </html>

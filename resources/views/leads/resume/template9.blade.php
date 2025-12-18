@@ -299,7 +299,7 @@
             color: #D2691E;
             font-weight: 700;
             float: right;
-            margin-top: -35px;
+            margin-top: -20px;
         }
 
         .experience-item ul {
@@ -380,6 +380,16 @@
         .template-selector .print-btn:hover {
             background-color: #E65100;
         }
+        /* Footer credit - แสดงทุกหน้า */
+            .footer-credit {
+                position: fixed;
+                bottom: 10px;
+                left: 30px;
+                font-size: 12px;
+                color: #333 !important;
+                font-weight: 500;
+            }
+
 
         /* Print Styles */
         @media print {

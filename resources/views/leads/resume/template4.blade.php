@@ -404,7 +404,7 @@
             @endif
         </div>
         
-        <div class="footer-credit">{{ $lead->staff->staff_nickname ?? 'VD Labour' }}/ {{ $lead->recommenderStaff->staff_sub_name ?? '' }}</div>
+        <footer class="footer-credit">{{ $lead->staff->staff_nickname ?? 'VD Labour' }}/ {{ $lead->recommenderStaff->staff_sub_name ?? '' }}</footer>
     </div>
 
     <!-- Template Selector & Print Button -->
@@ -428,16 +428,211 @@
 
     <style>
         @media print {
+            /* ซ่อนปุ่มและ selector */
+            .template-selector, .no-print, div[style*="position: fixed"] {
+                display: none !important;
+            }
+            
+            @page {
+                size: A4;
+                margin: 20px;
+            }
+            
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            
             body {
                 padding: 0;
+                margin: 0;
                 background: white;
+                width: 210mm;
+                height: 297mm;
             }
+            
             .resume-container {
+                width: 210mm;
+                min-height: 297mm;
                 box-shadow: none;
                 margin: 0;
+                page-break-after: auto;
+                display: flex;
+                position: relative;
             }
-            div[style*="position: fixed"] {
-                display: none !important;
+            
+            /* คงค่าโลโก้และตกแต่ง */
+            .company-logo {
+                position: absolute;
+                top: 10px;
+                right: 30px;
+                width: 60px;
+                height: auto;
+                z-index: 1000;
+            }
+            
+            .logo-vd {
+                position: absolute;
+                top: 10px;
+                right: 15px;
+                font-size: 14px;
+                color: #d66428 !important;
+                font-weight: bold;
+            }
+            
+            /* คอลัมน์ซ้าย */
+            .left-col {
+                width: 38%;
+                padding: 30px 20px 30px 30px;
+                border-right: 1px solid #ddd !important;
+            }
+            
+            /* คอลัมน์ขวา */
+            .right-col {
+                width: 62%;
+                padding: 30px 30px 30px 25px;
+            }
+            
+            /* รูปโปรไฟล์ */
+            .photo-frame {
+                width: 100%;
+                margin-bottom: 25px;
+            }
+            
+            .profile-img {
+                width: 100%;
+                max-width: 200px;
+                height: auto;
+                border-radius: 50%;
+                border: 4px solid #8B4513 !important;
+                object-fit: cover;
+            }
+            
+            /* หัวข้อ section */
+            .section-title {
+                background-color: #8B4513 !important;
+                color: white !important;
+                padding: 10px 15px;
+                font-weight: 700;
+                font-size: 16px;
+                text-transform: uppercase;
+                margin-bottom: 15px;
+                margin-top: 25px;
+            }
+            
+            .section-title i {
+                color: white !important;
+                margin-right: 10px;
+            }
+            
+            /* ข้อมูล Profile */
+            .info-row {
+                font-size: 13px;
+                line-height: 1.8;
+                margin-bottom: 8px;
+            }
+            
+            .info-label {
+                font-weight: 700;
+                color: #5D4037 !important;
+                min-width: 120px;
+            }
+            
+            /* ส่วนหัวชื่อขวา */
+            .name-header h1 {
+                font-size: 42px;
+                color: #8B4513 !important;
+                font-weight: 700;
+                text-transform: uppercase;
+                line-height: 1.1;
+                margin-bottom: 10px;
+            }
+            
+            .name-header .subtitle {
+                color: #6D4C41 !important;
+                font-size: 16px;
+                font-weight: 400;
+                margin-bottom: 30px;
+            }
+            
+            /* Summary box */
+            .summary-box {
+                background-color: #f5f5f5 !important;
+                border-left: 4px solid #8B4513 !important;
+                padding: 15px 20px;
+                margin-bottom: 30px;
+                font-size: 14px;
+                line-height: 1.6;
+                color: #6D4C41 !important;
+            }
+            
+            /* Work Experience */
+            .job-item {
+                background-color: #f5f5f5 !important;
+                padding: 15px 20px;
+                margin-bottom: 15px;
+                border-left: 4px solid #8B4513 !important;
+                page-break-inside: avoid;
+            }
+            
+            .job-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: baseline;
+                margin-bottom: 8px;
+            }
+            
+            .job-title {
+                font-weight: 700;
+                color: #8B4513 !important;
+                font-size: 16px;
+            }
+            
+            .job-period {
+                font-size: 13px;
+                color: #6D4C41 !important;
+                font-style: italic;
+            }
+            
+            .company-name {
+                color: #6D4C41 !important;
+                font-weight: 500;
+                margin-bottom: 8px;
+                font-size: 14px;
+            }
+            
+            .job-desc {
+                font-size: 13px;
+                color: #6D4C41 !important;
+                line-height: 1.6;
+                padding-left: 15px;
+            }
+            
+            /* Contact items */
+            .contact-item {
+                font-size: 13px;
+                margin-bottom: 10px;
+                page-break-inside: avoid;
+            }
+            
+            .contact-item i {
+                color: #8B4513 !important;
+                margin-right: 10px;
+                width: 20px;
+            }
+            
+            /* ป้องกันการแบ่งหน้า */
+            .info-row, .contact-item {
+                page-break-inside: avoid;
+            }
+            
+            /* Footer credit */
+            .footer-credit {
+                position: fixed;
+                bottom: 15px;
+                right: 30px;
+                font-size: 12px;
+                color: #555 !important;
             }
         }
     </style>

@@ -68,19 +68,19 @@
         /* ================= คอลัมน์ซ้าย (ข้อมูลส่วนตัว & Contact) ================= */
         .left-col {
             width: 50%;
-            padding: 30px;
+            padding: 20px 25px;
             color: var(--text-grey);
             position: relative;
         }
 
         /* ชื่อหลัก */
         .main-name-container {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .main-name {
             font-family: 'Oswald', sans-serif;
-            font-size: 32px;
+            font-size: 28px;
             color: var(--theme-brown);
             text-transform: uppercase;
             font-weight: 700;
@@ -96,24 +96,24 @@
             font-size: 13px;
             font-weight: 500;
             color: var(--theme-brown);
-            margin-top: 10px;
-            margin-bottom: 25px;
+            margin-top: 8px;
+            margin-bottom: 15px;
         }
 
         /* About Me Header */
         .about-header {
             font-family: 'Oswald', sans-serif;
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 700;
             color: var(--theme-brown);
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
 
         /* About Me Text */
         .about-text {
             font-size: 13px;
-            line-height: 1.5;
-            margin-bottom: 20px;
+            line-height: 1.4;
+            margin-bottom: 15px;
             text-align: justify;
         }
 
@@ -121,8 +121,8 @@
         .profile-list {
             list-style: none;
             padding-left: 0;
-            font-size: 13px;
-            line-height: 1.6;
+            font-size: 12px;
+            line-height: 1.5;
         }
 
         .profile-list li {
@@ -149,21 +149,21 @@
         /* Contact Header */
         .contact-header {
             font-family: 'Oswald', sans-serif;
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 700;
             color: var(--theme-brown);
-            margin-top: 30px;
-            margin-bottom: 15px;
+            margin-top: 20px;
+            margin-bottom: 10px;
         }
 
         /* Contact List */
         .contact-list {
             list-style: none;
-            font-size: 13px;
+            font-size: 12px;
         }
 
         .contact-list li {
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             display: flex;
             align-items: flex-start;
         }
@@ -185,7 +185,7 @@
         /* ================= คอลัมน์ขวา (รูปภาพ & ประสบการณ์) ================= */
         .right-col {
             width: 50%;
-            padding: 30px 30px 30px 10px;
+            padding: 20px 25px 20px 10px;
             color: var(--text-grey);
             position: relative;
         }
@@ -193,10 +193,10 @@
         /* กรอบรูป */
         .photo-frame {
             position: absolute;
-            top: 20px;
+            top: 10px;
             left: -30px; /* ให้รูปทับขอบซ้ายเข้ามา แต่ไม่มากเกินไป */
-            width: 200px; /* ควบคุมขนาด */
-            height: 200px;
+            width: 170px; /* ควบคุมขนาด */
+            height: 170px;
             overflow: hidden;
             z-index: 10;
         }
@@ -213,18 +213,18 @@
         /* Header Experience */
         .experience-header {
             font-family: 'Oswald', sans-serif;
-            font-size: 28px;
+            font-size: 24px;
             font-weight: 700;
             color: var(--theme-brown);
             text-transform: uppercase;
-            margin-top: 240px; /* เว้นที่ให้รูปภาพด้านบน (เพิ่มขึ้นเพราะรูปเลื่อนลง) */
-            margin-bottom: 25px;
+            margin-top: 200px; /* เว้นที่ให้รูปภาพด้านบน (เพิ่มขึ้นเพราะรูปเลื่อนลง) */
+            margin-bottom: 20px;
         }
         
         /* Timeline Layout */
         .timeline-item {
             display: flex;
-            margin-bottom: 25px;
+            margin-bottom: 18px;
             position: relative;
         }
 
@@ -352,14 +352,27 @@
         }
         
         @media print {
-            .template-selector {
-                display: none;
+            /* ซ่อนปุ่มและ selector */
+            .template-selector, .no-print, div[style*="position: fixed"] {
+                display: none !important;
+            }
+            
+            @page {
+                size: A4;
+                margin: 0;
+            }
+            
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
             }
             
             body {
-                background-color: white;
                 padding: 0;
                 margin: 0;
+                background: white;
+                width: 210mm;
+                height: 297mm;
             }
             
             .resume-container {
@@ -367,23 +380,145 @@
                 min-height: 297mm;
                 box-shadow: none;
                 margin: 0;
-                padding: 0;
+                page-break-after: auto;
+                display: flex;
+                position: relative;
             }
             
-            /* ให้แน่ใจว่าเส้น Timeline แสดงตอนพิมพ์ */
+            /* คงค่าโลโก้ */
+            .logo-vd {
+                position: absolute;
+                top: 20px;
+                right: 30px;
+                z-index: 100;
+            }
+            
+            .logo-vd img {
+                width: 60px;
+                height: auto;
+            }
+            
+            /* คอลัมน์ซ้าย */
+            .left-col {
+                width: 50%;
+                padding: 20px 25px;
+            }
+            
+            /* คอลัมน์ขวา */
+            .right-col {
+                width: 50%;
+                padding: 20px 25px 20px 10px;
+            }
+            
+            /* รูปโปรไฟล์ */
+            .photo-frame {
+                position: absolute;
+                top: 10px;
+                left: -30px;
+                width: 170px;
+                height: 170px;
+            }
+            
+            .profile-img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                border-radius: 50%;
+                border: 5px solid white !important;
+                box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            }
+            
+            /* ชื่อหลัก */
+            .main-name {
+                font-family: 'Oswald', sans-serif;
+                font-size: 32px;
+                color: #33201a !important;
+                text-transform: uppercase;
+                font-weight: 700;
+                line-height: 1.1;
+            }
+            
+            /* Badge */
+            .supermarket-badge {
+                display: inline-block;
+                padding: 5px 20px;
+                border: 2px solid #33201a !important;
+                border-radius: 20px;
+                color: #33201a !important;
+            }
+            
+            /* Section Headers */
+            .about-header, .contact-header, .experience-header {
+                font-family: 'Oswald', sans-serif;
+                color: #33201a !important;
+                font-weight: 700;
+            }
+            
+            /* Timeline */
             .timeline-item::before {
-                print-color-adjust: exact;
-                -webkit-print-color-adjust: exact;
+                content: '';
+                position: absolute;
+                left: 0;
+                top: 20px;
+                bottom: -30px;
+                width: 1px;
+                background-color: #d66428 !important;
+            }
+            
+            .timeline-item:first-child::before {
+                top: 5px;
+            }
+            
+            .timeline-item:last-child::before {
+                display: none;
             }
             
             .job-details-container::before {
-                print-color-adjust: exact;
-                -webkit-print-color-adjust: exact;
+                content: '';
+                position: absolute;
+                left: -3px;
+                top: 7px;
+                width: 8px;
+                height: 8px;
+                background-color: #d66428 !important;
+                border-radius: 50%;
+                z-index: 2;
             }
             
-            @page {
-                size: A4;
-                margin: 0;
+            /* Job Info */
+            .job-title {
+                color: #33201a !important;
+                font-weight: 500;
+            }
+            
+            .job-date {
+                color: #d66428 !important;
+                font-weight: 500;
+            }
+            
+            /* Bullets */
+            .profile-list li::before,
+            .contact-list i {
+                color: #d66428 !important;
+            }
+            
+            /* Work Experience */
+            .job-item {
+                page-break-inside: avoid;
+            }
+            
+            .timeline-item {
+                page-break-inside: avoid;
+            }
+            
+            /* Footer credit - แสดงทุกหน้า */
+            .footer-credit {
+                position: fixed;
+                bottom: 10px;
+                left: 30px;
+                font-size: 12px;
+                color: #333 !important;
+                font-weight: 500;
             }
         }
     </style>
@@ -531,7 +666,7 @@
             @endif
         </div>
         
-        <div class="footer-credit">{{ $lead->staff->staff_nickname ?? 'VD Labour' }}/ {{ $lead->recommenderStaff->staff_sub_name ?? '' }}</div>
+        <footer class="footer-credit">{{ $lead->staff->staff_nickname ?? 'VD Labour' }}/ {{ $lead->recommenderStaff->staff_sub_name ?? '' }}</footer>
     </div>
 
     <script>

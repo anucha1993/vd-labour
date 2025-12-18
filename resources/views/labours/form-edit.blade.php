@@ -329,7 +329,7 @@
                         <div class="row g-3">
                             <div class="col-md-4">
                                 <label>Customer (นายจ้าง)</label>
-                                <select name="labour_customer" class="form-select"
+                                <select name="labour_customer" class="form-select select2-customer"
                                     @cannot('update labour') disabled @endcannot>
                                     <option value="">Select a Customer</option>
                                     @forelse ($customers as $item)
@@ -346,7 +346,7 @@
 
                             <div class="col-md-4">
                                 <label>Examination round (รอบสอบ)</label>
-                                <select name="labour_examination" class="form-select"
+                                <select name="labour_examination" class="form-select select2-examination"
                                     @cannot('update labour') disabled @endcannot>
                                     <option selected value="{{ $labourModel->labour_examination }}">
                                         {{ date('d-m-Y', strtotime($labourModel->labour_examination)) }}-{{ $item->examination_round_note }}
@@ -394,7 +394,7 @@
                             </div>
                             <div class="col-md-4">
                                 <label>Position <span class="text-danger">*</span></label>
-                                <select name="labour_position" class="form-select" id="position" required
+                                <select name="labour_position" class="form-select select2-position" id="position" required
                                     @cannot('update labour') disabled @endcannot>
                                     <option value="">Select a Position</option>
                                     @forelse ($positions as $pos)
@@ -428,7 +428,7 @@
 
                             <div class="col-md-4">
                                 <label>สายหาคน</label>
-                                <select name="labour_staff_sub" class="form-select" required
+                                <select name="labour_staff_sub" class="form-select select2-staff-sub" required
                                     @cannot('update labour staff') disabled @endcannot>
                                     <option @if ($labourModel->labour_staff_sub === 'no-sub') selected @endif value="no-sub">ไม่ระบุ
                                     </option>
@@ -449,7 +449,7 @@
 
                             <div class="col-md-4">
                                 <label>Staff</label>
-                                <select name="labour_staff" class="form-select"
+                                <select name="labour_staff" class="form-select select2-staff"
                                     @cannot('update labour staff') disabled @endcannot>
                                     <option value="">Select a Staff</option>
                                     @forelse ($staffs as $item)
@@ -1217,6 +1217,37 @@
                     const target = event.target.getAttribute("data-bs-target");
                     history.replaceState(null, null, target); // เปลี่ยน hash
                 });
+            });
+            
+            // Initialize Select2
+            $('.select2-customer').select2({
+                placeholder: 'Select a Customer',
+                allowClear: true,
+                width: '100%'
+            });
+            
+            $('.select2-examination').select2({
+                placeholder: 'Select a Examination round',
+                allowClear: true,
+                width: '100%'
+            });
+            
+            $('.select2-position').select2({
+                placeholder: 'Select a Position',
+                allowClear: true,
+                width: '100%'
+            });
+            
+            $('.select2-staff').select2({
+                placeholder: 'Select a Staff',
+                allowClear: true,
+                width: '100%'
+            });
+            
+            $('.select2-staff-sub').select2({
+                placeholder: 'Select สายหาคน',
+                allowClear: true,
+                width: '100%'
             });
         });
     </script>
