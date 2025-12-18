@@ -381,7 +381,7 @@
 
         <div class="header">
             <p class="position-subtitle">{{ $lead->position->position_name ?? 'Position' }}</p>
-            <h1>{{ strtoupper($lead->lead_prefix ?? 'MR') }}.{{ strtoupper($lead->fullName ?? 'NAME') }}</h1>
+            <h1>{{ strtoupper($lead->fullName ?? 'NAME') }}</h1>
         </div>
 
         <div class="main-content">

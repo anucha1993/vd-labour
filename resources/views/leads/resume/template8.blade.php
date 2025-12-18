@@ -465,7 +465,7 @@
 
         <!-- Header with Name -->
         <div class="header">
-            <h1>MR.{{ strtoupper($lead->fullName ?? 'NAME') }}</h1>
+            <h1>{{ strtoupper($lead->fullName ?? 'NAME') }}</h1>
             @if($lead->position)
                 <h2>{{ strtoupper($lead->position->position_name) }}</h2>
             @endif
