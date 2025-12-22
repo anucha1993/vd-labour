@@ -117,11 +117,11 @@
                                         </a>
                                         @endcan
                                         
-                                        @can('print demand')
+                                        {{-- @can('print demand')
                                         <a href="{{ route('demands.pdf', $demand->dm_id) }}" class="btn btn-secondary btn-sm" title="พิมพ์ PDF" target="_blank">
                                             <i class="bi bi-printer-fill"></i>
                                         </a>
-                                        @endcan
+                                        @endcan --}}
                                         
                                         @can('delete demand')
                                         <form method="POST" action="{{ route('demands.destroy', $demand->dm_id) }}" style="display:inline;" 

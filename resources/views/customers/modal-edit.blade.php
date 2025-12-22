@@ -9,8 +9,18 @@
                     @csrf
                     @method('PUT')
                   <div class="form-group">
-                    <label for="recipient-name" class="col-form-label">ชื่อนายจ้าง</label>
-                    <input type="text" name="customer_name" class="form-control" id="recipient-name" placeholder="ชื่อนายจ้าง" value="{{$customerModel->customer_name}}">
+                    <label for="recipient-name" class="col-form-label">ชื่อนายจ้าง <span class="text-danger">*</span></label>
+                    <input type="text" name="customer_name" class="form-control" id="recipient-name" placeholder="ชื่อนายจ้าง" value="{{$customerModel->customer_name}}" required>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="customer-address" class="col-form-label">ที่อยู่บริษัท (Company Address) <span class="text-danger">*</span></label>
+                    <textarea name="customer_address" class="form-control" id="customer-address" rows="3" placeholder="ที่อยู่บริษัท" required>{{$customerModel->customer_address}}</textarea>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="customer-reg-no" class="col-form-label">หมายเลขทะเบียน (Registration No.) <span class="text-danger">*</span></label>
+                    <input type="text" name="customer_registration_no" class="form-control" id="customer-reg-no" placeholder="หมายเลขทะเบียน" value="{{$customerModel->customer_registration_no}}" required>
                   </div>
 
                   <div class="form-gorup">

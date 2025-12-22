@@ -41,10 +41,25 @@
                                         @foreach($jobs as $jobOption)
                                             <option value="{{ $jobOption->job_id }}" 
                                                     {{ old('job_id', $job?->job_id) == $jobOption->job_id ? 'selected' : '' }}
+                                                    data-job-number="{{ $jobOption->job_number }}"
+                                                    data-job-name="{{ $jobOption->job_name }}"
+                                                    data-job-status="{{ $jobOption->job_status }}"
                                                     data-country="{{ $jobOption->country->country_name_th ?? '' }}"
+                                                    data-country-code="{{ $jobOption->country->country_code ?? '' }}"
+                                                    data-customer="{{ $jobOption->customer->customer_name ?? '' }}"
                                                     data-company="{{ $jobOption->demand->dm_com_name ?? '' }}"
+                                                    data-job-group="{{ $jobOption->jobGroup ? $jobOption->jobGroup->job_group_name . ' (' . $jobOption->jobGroup->job_group_name_th . ')' : '' }}"
+                                                    data-position="{{ $jobOption->position ? $jobOption->position->position_name . ' (' . $jobOption->position->position_name_th . ')' : '' }}"
+                                                    data-start-date="{{ $jobOption->job_start_date ? $jobOption->job_start_date->format('d/m/Y') : '' }}"
+                                                    data-end-date="{{ $jobOption->job_end_date ? $jobOption->job_end_date->format('d/m/Y') : 'รับสมัครต่อเนื่อง' }}"
                                                     data-total="{{ $jobOption->job_total }}"
-                                                    data-remaining="{{ $jobOption->remaining_positions }}">
+                                                    data-remaining="{{ $jobOption->remaining_positions }}"
+                                                    data-demand-id="{{ $jobOption->demand->dm_id ?? '' }}"
+                                                    data-demand-no="{{ $jobOption->demand->dm_let_no ?? '' }}"
+                                                    data-demand-job="{{ $jobOption->demand->dm_job ?? '' }}"
+                                                    data-demand-salary="{{ $jobOption->demand->dm_sa ?? '' }}"
+                                                    data-demand-time="{{ $jobOption->demand->dm_time_work ?? '' }}"
+                                                    data-demand-benefits="{{ $jobOption->demand->dm_exp ? json_encode($jobOption->demand->dm_exp) : '[]' }}">
                                                 {{ $jobOption->job_number }} - {{ $jobOption->job_name }}
                                                 (เหลือ {{ $jobOption->remaining_positions }} คน)
                                             </option>
@@ -58,25 +73,141 @@
                         </div>
 
                         <!-- Job Info Display -->
-                        <div id="jobInfo" class="card bg-light mb-4" style="{{ old('job_id', $job?->job_id) ? '' : 'display: none;' }}">
+                        <div id="jobInfo" class="card mb-4" style="{{ old('job_id', $job?->job_id) ? '' : 'display: none;' }}">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0"><i class="bi bi-briefcase me-2"></i>ข้อมูลงาน</h5>
+                            </div>
                             <div class="card-body">
-                                <h6 class="card-title text-primary">ข้อมูลงาน</h6>
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label class="text-muted small">หมายเลขงาน</label>
+                                        <div><span class="badge bg-primary fs-6" id="jobNumber">{{ $job->job_number ?? '' }}</span></div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="text-muted small">สถานะงาน</label>
+                                        <div><span class="badge bg-success fs-6" id="jobStatus">{{ $job->job_status ?? '' }}</span></div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="text-muted small">ชื่องาน</label>
+                                    <div class="fs-5 fw-bold" id="jobName">{{ $job->job_name ?? '' }}</div>
+                                </div>
+
                                 <div class="row">
-                                    <div class="col-md-3">
-                                        <strong>ประเทศ:</strong><br>
-                                        <span id="jobCountry">{{ $job->country->country_name_th ?? '' }}</span>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="text-muted small">ประเทศ</label>
+                                            <div id="jobCountry">{{ $job->country->country_name_th ?? '' }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="text-muted small">บริษัทนายจ้าง</label>
+                                            <div id="jobCustomer">{{ $job->customer->customer_name ?? '' }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="text-muted small">ประเภทงาน (Job Group)</label>
+                                            <div id="jobGroup">{{ $job->jobGroup ? $job->jobGroup->job_group_name . ' (' . $job->jobGroup->job_group_name_th . ')' : '-' }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="text-muted small">ตำแหน่ง (Position)</label>
+                                            <div id="jobPosition">{{ $job->position ? $job->position->position_name . ' (' . $job->position->position_name_th . ')' : '-' }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="text-muted small">วันเริ่มรับสมัคร</label>
+                                            <div id="jobStartDate">
+                                                <i class="bi bi-calendar-check text-success"></i>
+                                                {{ $job->job_start_date ? $job->job_start_date->format('d/m/Y') : '-' }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="text-muted small">วันปิดรับสมัคร</label>
+                                            <div id="jobEndDate">
+                                                @if($job?->job_end_date)
+                                                    <i class="bi bi-calendar-x text-danger"></i>
+                                                    {{ $job->job_end_date->format('d/m/Y') }}
+                                                @else
+                                                    <span class="badge bg-info">รับสมัครต่อเนื่อง</span>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label class="text-muted small">จำนวนรับทั้งหมด</label>
+                                            <div class="fs-5 fw-bold text-primary" id="jobTotal">{{ $job->job_total ?? '' }}</div>
+                                        </div>
                                     </div>
                                     <div class="col-md-4">
-                                        <strong>บริษัท:</strong><br>
-                                        <span id="jobCompany">{{ $job->demand->dm_com_name ?? '' }}</span>
+                                        <div class="mb-3">
+                                            <label class="text-muted small">ตำแหน่งที่เหลือ</label>
+                                            <div class="fs-5 fw-bold text-success" id="jobRemaining">{{ $job->remaining_positions ?? '' }}</div>
+                                        </div>
                                     </div>
-                                    <div class="col-md-2">
-                                        <strong>จำนวนรับ:</strong><br>
-                                        <span id="jobTotal">{{ $job->job_total ?? '' }}</span> คน
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label class="text-muted small">บริษัทจาก Demand</label>
+                                            <div id="jobCompany">{{ $job->demand->dm_com_name ?? '' }}</div>
+                                        </div>
                                     </div>
-                                    <div class="col-md-3">
-                                        <strong>ตำแหน่งที่เหลือ:</strong><br>
-                                        <span id="jobRemaining" class="text-info fw-bold">{{ $job->remaining_positions ?? '' }}</span> คน
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Demand Details Accordion -->
+                        <div id="demandAccordion" class="accordion mb-4" style="{{ old('job_id', $job?->job_id) ? '' : 'display: none;' }}">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                                            data-bs-target="#demandDetails" aria-expanded="false">
+                                        <i class="bi bi-info-circle me-2"></i>รายละเอียด Demand <span id="demandNo" class="ms-2"></span>
+                                    </button>
+                                </h2>
+                                <div id="demandDetails" class="accordion-collapse collapse">
+                                    <div class="accordion-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="mb-3" id="demandJobSection" style="display: none;">
+                                                    <strong>รายละเอียดงาน:</strong>
+                                                    <div class="small text-muted mt-1" id="demandJob"></div>
+                                                </div>
+                                                
+                                                <div class="mb-3" id="demandSalarySection" style="display: none;">
+                                                    <strong>เงินเดือน/สวัสดิการ:</strong>
+                                                    <div class="small text-success mt-1" id="demandSalary"></div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-md-6">
+                                                <div class="mb-3" id="demandTimeSection" style="display: none;">
+                                                    <strong>เวลาทำงาน:</strong>
+                                                    <div class="small text-muted mt-1" id="demandTime"></div>
+                                                </div>
+                                                
+                                                <div class="mb-3" id="demandBenefitsSection" style="display: none;">
+                                                    <strong>สวัสดิการ:</strong>
+                                                    <div class="mt-1" id="demandBenefits"></div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -157,14 +288,113 @@ document.addEventListener('DOMContentLoaded', function() {
     // Job selection change
     jobSelect.addEventListener('change', function() {
         const option = this.options[this.selectedIndex];
+        const demandAccordion = document.getElementById('demandAccordion');
         
         if (this.value) {
-            // Show job info
-            document.getElementById('jobCountry').textContent = option.dataset.country;
-            document.getElementById('jobCompany').textContent = option.dataset.company;
-            document.getElementById('jobTotal').textContent = option.dataset.total;
-            document.getElementById('jobRemaining').textContent = option.dataset.remaining;
+            // Update job info - basic
+            document.getElementById('jobNumber').textContent = option.dataset.jobNumber || '';
+            document.getElementById('jobStatus').textContent = option.dataset.jobStatus || '';
+            document.getElementById('jobStatus').className = 'badge fs-6 ' + (option.dataset.jobStatus === 'เปิดรับสมัคร' ? 'bg-success' : 'bg-secondary');
+            document.getElementById('jobName').textContent = option.dataset.jobName || '';
+            
+            // Update job info - details
+            document.getElementById('jobCountry').textContent = option.dataset.country || '-';
+            document.getElementById('jobCustomer').textContent = option.dataset.customer || '-';
+            document.getElementById('jobGroup').textContent = option.dataset.jobGroup || '-';
+            document.getElementById('jobPosition').textContent = option.dataset.position || '-';
+            
+            // Update dates
+            const startDateEl = document.getElementById('jobStartDate');
+            if (option.dataset.startDate) {
+                startDateEl.innerHTML = '<i class="bi bi-calendar-check text-success"></i> ' + option.dataset.startDate;
+            } else {
+                startDateEl.textContent = '-';
+            }
+            
+            const endDateEl = document.getElementById('jobEndDate');
+            if (option.dataset.endDate && option.dataset.endDate !== 'รับสมัครต่อเนื่อง') {
+                endDateEl.innerHTML = '<i class="bi bi-calendar-x text-danger"></i> ' + option.dataset.endDate;
+            } else {
+                endDateEl.innerHTML = '<span class="badge bg-info">รับสมัครต่อเนื่อง</span>';
+            }
+            
+            // Update totals
+            document.getElementById('jobTotal').textContent = option.dataset.total || '0';
+            document.getElementById('jobRemaining').textContent = option.dataset.remaining || '0';
+            document.getElementById('jobCompany').textContent = option.dataset.company || '-';
+            
+            // Update demand details
+            const demandNo = option.dataset.demandNo;
+            const demandJob = option.dataset.demandJob;
+            const demandSalary = option.dataset.demandSalary;
+            const demandTime = option.dataset.demandTime;
+            const demandBenefitsJson = option.dataset.demandBenefits;
+            
+            if (demandNo) {
+                document.getElementById('demandNo').textContent = '#' + demandNo;
+            }
+            
+            // Show/hide demand sections based on data
+            const demandJobSection = document.getElementById('demandJobSection');
+            if (demandJob) {
+                document.getElementById('demandJob').innerHTML = demandJob.replace(/\n/g, '<br>');
+                demandJobSection.style.display = 'block';
+            } else {
+                demandJobSection.style.display = 'none';
+            }
+            
+            const demandSalarySection = document.getElementById('demandSalarySection');
+            if (demandSalary) {
+                document.getElementById('demandSalary').innerHTML = demandSalary.replace(/\n/g, '<br>');
+                demandSalarySection.style.display = 'block';
+            } else {
+                demandSalarySection.style.display = 'none';
+            }
+            
+            const demandTimeSection = document.getElementById('demandTimeSection');
+            if (demandTime) {
+                document.getElementById('demandTime').textContent = demandTime;
+                demandTimeSection.style.display = 'block';
+            } else {
+                demandTimeSection.style.display = 'none';
+            }
+            
+            const demandBenefitsSection = document.getElementById('demandBenefitsSection');
+            if (demandBenefitsJson) {
+                try {
+                    const benefits = JSON.parse(demandBenefitsJson);
+                    const benefitMap = {
+                        'accomm': 'ที่พัก',
+                        'food': 'อาหาร',
+                        'med': 'รักษาพยาบาล',
+                        'shuttle': 'รถรับส่ง'
+                    };
+                    
+                    let benefitsHtml = '';
+                    benefits.forEach(benefit => {
+                        const label = benefitMap[benefit] || benefit;
+                        benefitsHtml += `<div class="d-flex align-items-center mb-1">
+                            <i class="bi bi-check-circle text-success me-2"></i>
+                            <span>${label}</span>
+                        </div>`;
+                    });
+                    
+                    if (benefitsHtml) {
+                        document.getElementById('demandBenefits').innerHTML = benefitsHtml;
+                        demandBenefitsSection.style.display = 'block';
+                    } else {
+                        demandBenefitsSection.style.display = 'none';
+                    }
+                } catch (e) {
+                    demandBenefitsSection.style.display = 'none';
+                }
+            } else {
+                demandBenefitsSection.style.display = 'none';
+            }
+            
+            // Show job info and demand accordion
             jobInfo.style.display = 'block';
+            demandAccordion.style.display = 'block';
             
             // Check if job is full
             const remaining = parseInt(option.dataset.remaining);
@@ -182,6 +412,7 @@ document.addEventListener('DOMContentLoaded', function() {
             loadAvailableLeads();
         } else {
             jobInfo.style.display = 'none';
+            demandAccordion.style.display = 'none';
             availableLeads.innerHTML = `
                 <div class="text-center text-muted py-4">
                     <i class="bi bi-person-plus fs-1"></i>
@@ -305,13 +536,36 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <strong>${lead.name}</strong>
                                 ${statusBadge}
                             </div>
-                            <small class="text-muted d-block">
+                            <small class="text-muted d-block mb-2">
                                 <i class="bi bi-card-text"></i> ${lead.passport} | 
-                                <i class="bi bi-briefcase"></i> ${lead.position} |
                                 <i class="bi bi-geo-alt"></i> ${lead.country}
                                 ${lead.phone ? ` | <i class="bi bi-telephone"></i> ${lead.phone}` : ''}
                                 ${lead.age ? ` | อายุ ${lead.age} ปี` : ''}
                             </small>
+                            
+                            ${(() => {
+                                // แสดงข้อมูล Job Group และ Position
+                                let infoHtml = '<div class="mb-2">';
+                                
+                                // Job Group
+                                if (lead.job_group) {
+                                    infoHtml += `<div class="mb-1"><small><i class="bi bi-diagram-3"></i> <strong>กลุ่มงาน:</strong> ${lead.job_group}</small></div>`;
+                                }
+                                
+                                // แสดงตำแหน่งที่ตรงกับงาน (ถ้ามี)
+                                if (lead.matched_position) {
+                                    infoHtml += `<div class="mb-1"><small><i class="bi bi-briefcase-fill text-success"></i> <strong class="text-success">ตำแหน่งที่ตรงกับงาน:</strong> <span class="badge bg-success">${lead.matched_position}</span></small></div>`;
+                                }
+                                
+                                // แสดงตำแหน่งทั้งหมด
+                                if (lead.positions && lead.positions.length > 0) {
+                                    infoHtml += `<div class="mb-1"><small><i class="bi bi-briefcase"></i> <strong>ตำแหน่งที่สนใจ:</strong> ${lead.positions.join(', ')}</small></div>`;
+                                }
+                                
+                                infoHtml += '</div>';
+                                return infoHtml;
+                            })()}
+                            
                             ${(() => {
                                 if (lead.is_locked) {
                                     console.log('Lead is locked:', lead.name, 'Existing app:', lead.existing_application);

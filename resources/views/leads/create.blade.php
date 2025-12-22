@@ -37,7 +37,7 @@
                                   <div class="col-md-3">
                                 <label class="form-label">รูปถ่าย</label>
                                 <div class="text-center">
-                                    <img id="photo_preview" src="https://via.placeholder.com/200x250" class="img-thumbnail mb-2" style="width: 100%; max-height: 280px; object-fit: cover;">
+                                    <img id="photo_preview" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='250'%3E%3Crect fill='%23f0f0f0' width='200' height='250'/%3E%3Ctext fill='%23999' font-family='sans-serif' font-size='18' dy='125' font-weight='bold' x='50%25' y='50%25' text-anchor='middle'%3E200x250%3C/text%3E%3C/svg%3E" class="img-thumbnail mb-2" style="width: 100%; max-height: 280px; object-fit: cover;">
                                     <input type="file" class="form-control" name="lead_photo" accept="image/*" onchange="previewPhoto(event)" id="lead_photo_input">
                                     <small class="text-muted">รูปถ่ายหน้าตรง สวมเสื้อเป็นทางการ</small>
                                 </div>
@@ -357,42 +357,6 @@
                     <div class="card-body">
                         <div class="row mb-3">
                             <div class="col-md-4">
-                                <label class="form-label">Position 1:</label>
-                                <select class="form-control select2-position1" name="position_id">
-                                    <option value="">-- เลือกตำแหน่ง --</option>
-                                    @foreach($positions as $position)
-                                        <option value="{{ $position->position_id }}" {{ old('position_id') == $position->position_id ? 'selected' : '' }}>
-                                            {{ $position->position_name }} ({{ $position->position_name_th }})
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label">Position 2:</label>
-                                <select class="form-control select2-position2" name="position_id_2">
-                                    <option value="">-- เลือกตำแหน่ง --</option>
-                                    @foreach($positions as $position)
-                                        <option value="{{ $position->position_id }}" {{ old('position_id_2') == $position->position_id ? 'selected' : '' }}>
-                                            {{ $position->position_name }} ({{ $position->position_name_th }})
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label">Position 3:</label>
-                                <select class="form-control select2-position3" name="position_id_3">
-                                    <option value="">-- เลือกตำแหน่ง --</option>
-                                    @foreach($positions as $position)
-                                        <option value="{{ $position->position_id }}" {{ old('position_id_3') == $position->position_id ? 'selected' : '' }}>
-                                            {{ $position->position_name }} ({{ $position->position_name_th }})
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-4">
                                 <label class="form-label">ประเทศที่สนใจ</label>
                                 <select class="form-select" name="country_id">
                                     <option value="">-- เลือกประเทศ --</option>
@@ -403,18 +367,39 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="col-md-4">
-                                <label class="form-label">กลุ่มงาน</label>
-                                <select class="form-select" name="job_group_id">
-                                    <option value="">-- เลือกกลุ่มงาน --</option>
+                            <div class="col-md-8">
+                                <label class="form-label">ประเภทงาน (Job Group) <span class="text-danger">*</span></label>
+                                <select class="form-select" id="lead_job_group_id" name="job_group_id">
+                                    <option value="">-- เลือกประเภทงาน --</option>
                                     @foreach($jobGroups as $jobGroup)
                                         <option value="{{ $jobGroup->job_group_id }}" {{ old('job_group_id') == $jobGroup->job_group_id ? 'selected' : '' }}>
-                                            {{ $jobGroup->job_group_name_th ?? $jobGroup->job_group_name }}
+                                            {{ $jobGroup->job_group_name }} ({{ $jobGroup->job_group_name_th }})
                                         </option>
                                     @endforeach
                                 </select>
+                                <small class="text-muted"><i class="bi bi-info-circle"></i> เลือกประเภทงานก่อน จากนั้นเลือกตำแหน่งที่สนใจ (เลือกได้สูงสุด 3 ตำแหน่ง)</small>
                             </div>
                         </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label class="form-label">ตำแหน่งที่ 1 (Position 1)</label>
+                                <select class="form-control select2-position1" id="position_id_1" name="position_id">
+                                    <option value="">-- กรุณาเลือกประเภทงานก่อน --</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">ตำแหน่งที่ 2 (Position 2)</label>
+                                <select class="form-control select2-position2" id="position_id_2" name="position_id_2">
+                                    <option value="">-- กรุณาเลือกประเภทงานก่อน --</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">ตำแหน่งที่ 3 (Position 3)</label>
+                                <select class="form-control select2-position3" id="position_id_3" name="position_id_3">
+                                    <option value="">-- กรุณาเลือกประเภทงานก่อน --</option>
+                                </select>
+                            </div>
 
                         <!-- Skills Section -->
                         <div class="row mt-4">
@@ -2059,6 +2044,70 @@
                     }
                 }
             });
+
+            // Dynamic Position filtering based on Job Group
+            const jobGroupSelect = document.getElementById('lead_job_group_id');
+            const positionSelects = ['position_id_1', 'position_id_2', 'position_id_3'];
+
+            // Store all positions data
+            const allPositions = @json($positions);
+
+            if (jobGroupSelect) {
+                jobGroupSelect.addEventListener('change', function() {
+                    const selectedJobGroup = this.value;
+                    
+                    positionSelects.forEach((selectId) => {
+                        const $select = $('#' + selectId);
+                        if (!$select.length) return;
+
+                        // Get current value before clearing
+                        const currentValue = $select.val();
+                        
+                        // Clear options first
+                        $select.empty();
+                        
+                        // If no job group selected, show placeholder message
+                        if (!selectedJobGroup) {
+                            $select.append(new Option('-- กรุณาเลือกประเภทงานก่อน --', '', false, false));
+                            $select.trigger('change');
+                            return;
+                        }
+                        
+                        // Add default option
+                        $select.append(new Option('-- เลือกตำแหน่ง --', '', false, false));
+                        
+                        let visibleCount = 0;
+                        let keepCurrentValue = false;
+
+                        allPositions.forEach(position => {
+                            // Filter by selected job group
+                            if (position.job_group_id == selectedJobGroup) {
+                                const optionText = position.position_name + ' (' + position.position_name_th + ')';
+                                const newOption = new Option(optionText, position.position_id, false, false);
+                                $select.append(newOption);
+                                visibleCount++;
+                                
+                                // Check if current value should be kept
+                                if (currentValue == position.position_id) {
+                                    keepCurrentValue = true;
+                                }
+                            }
+                        });
+
+                        // Restore value if still valid
+                        if (keepCurrentValue && currentValue) {
+                            $select.val(currentValue);
+                        }
+
+                        // Trigger change
+                        $select.trigger('change');
+                        
+                        if (visibleCount === 0) {
+                            console.log('ไม่มีตำแหน่งในกลุ่มงานนี้');
+                        }
+                    });
+                });
+            }
 
             // Recommender (ผู้แนะนำ)
             $('.select2-recommender').select2({

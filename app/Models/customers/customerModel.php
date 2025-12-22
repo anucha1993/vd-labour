@@ -13,6 +13,8 @@ class customerModel extends Model
     protected $fillable = [
         'country_id',
         'customer_name',
+        'customer_address',
+        'customer_registration_no',
         'customer_status',
         'customer_note',
     ];

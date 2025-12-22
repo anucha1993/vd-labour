@@ -51,6 +51,7 @@
         .label {
             font-weight: bold;
             width: 150px;
+            white-space: nowrap;
         }
         .positions-table {
             width: 100%;
@@ -84,6 +85,10 @@
             margin: 10px 0;
             background-color: #f9f9f9;
             min-height: 60px;
+            font-size: 14px;
+            line-height: 2.0;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
         }
         .footer {
             margin-top: 40px;
@@ -172,8 +177,8 @@
     <table class="info-table">
         @if($demand->dm_job)
         <tr>
-            <td class="label">ลักษณะงาน:</td>
-            <td>
+            <td class="label" style="vertical-align: top; padding-top: 15px;">ลักษณะงาน:</td>
+            <td style="padding: 0;">
                 <div class="description-box">{{ $demand->dm_job }}</div>
             </td>
         </tr>

@@ -545,10 +545,42 @@ class JobLeadController extends Controller
         $search = $request->get('search', '');
         $jobId = $request->get('job_id');
         
-        $query = LeadModel::with(['position', 'country'])
+        // Get job details to filter by position and job group
+        $job = null;
+        $jobPositionId = null;
+        $jobGroupId = null;
+        
+        if ($jobId) {
+            $job = JobModel::with(['position', 'jobGroup'])->find($jobId);
+            if ($job) {
+                $jobPositionId = $job->position_id;
+                $jobGroupId = $job->job_group_id;
+            }
+        }
+        
+        $query = LeadModel::with(['position', 'position2', 'position3', 'jobGroup', 'country'])
                           ->whereNotNull('lead_firstname')
                           ->whereNotNull('lead_lastname')
                           ->where('lead_status', '!=', 'converted'); // ไม่เอาที่แปลงเป็น labour แล้ว
+        
+        // Filter by Job Group และ Position (ตรวจสอบทั้ง 3 ตำแหน่ง)
+        if ($jobGroupId || $jobPositionId) {
+            $query->where(function($q) use ($jobGroupId, $jobPositionId) {
+                // ถ้ามี Job Group ให้ filter ตาม
+                if ($jobGroupId) {
+                    $q->where('job_group_id', $jobGroupId);
+                }
+                
+                // ถ้ามี Position ให้ filter ตามตำแหน่งทั้ง 3
+                if ($jobPositionId) {
+                    $q->where(function($posQ) use ($jobPositionId) {
+                        $posQ->where('position_id', $jobPositionId)
+                             ->orWhere('position_id_2', $jobPositionId)
+                             ->orWhere('position_id_3', $jobPositionId);
+                    });
+                }
+            });
+        }
         
         // Filter by search term
         if (!empty($search)) {
@@ -558,19 +590,52 @@ class JobLeadController extends Controller
                   ->orWhere('lead_phone', 'LIKE', "%{$search}%")
                   ->orWhereHas('position', function($posQuery) use ($search) {
                       $posQuery->where('position_name', 'LIKE', "%{$search}%");
+                  })
+                  ->orWhereHas('position2', function($posQuery) use ($search) {
+                      $posQuery->where('position_name', 'LIKE', "%{$search}%");
+                  })
+                  ->orWhereHas('position3', function($posQuery) use ($search) {
+                      $posQuery->where('position_name', 'LIKE', "%{$search}%");
                   });
             });
         }
         
-        $leads = $query->limit(50)->get()->map(function($lead) use ($jobId) {
+        $leads = $query->limit(50)->get()->map(function($lead) use ($jobId, $jobPositionId) {
             $isAvailable = JobLeadModel::isLeadAvailable($lead->lead_id, $jobId);
             $existingApp = !$isAvailable ? JobLeadModel::getExistingApplicationInfo($lead->lead_id, $jobId) : null;
+            
+            // รวมตำแหน่งทั้ง 3
+            $positions = [];
+            if ($lead->position) {
+                $positions[] = $lead->position->position_name . ' (' . $lead->position->position_name_th . ')';
+            }
+            if ($lead->position2) {
+                $positions[] = $lead->position2->position_name . ' (' . $lead->position2->position_name_th . ')';
+            }
+            if ($lead->position3) {
+                $positions[] = $lead->position3->position_name . ' (' . $lead->position3->position_name_th . ')';
+            }
+            
+            // หาตำแหน่งที่ตรงกับงาน (ถ้ามี)
+            $matchedPosition = '';
+            if ($jobPositionId) {
+                if ($lead->position_id == $jobPositionId && $lead->position) {
+                    $matchedPosition = $lead->position->position_name . ' (' . $lead->position->position_name_th . ')';
+                } elseif ($lead->position_id_2 == $jobPositionId && $lead->position2) {
+                    $matchedPosition = $lead->position2->position_name . ' (' . $lead->position2->position_name_th . ')';
+                } elseif ($lead->position_id_3 == $jobPositionId && $lead->position3) {
+                    $matchedPosition = $lead->position3->position_name . ' (' . $lead->position3->position_name_th . ')';
+                }
+            }
             
             return [
                 'id' => $lead->lead_id,
                 'name' => $lead->getFullNameAttribute(),
                 'passport' => $lead->lead_passport_number ?? 'ไม่มี',
                 'position' => $lead->position->position_name ?? 'ไม่ระบุ',
+                'positions' => $positions, // ตำแหน่งทั้ง 3
+                'matched_position' => $matchedPosition, // ตำแหน่งที่ตรงกับงาน
+                'job_group' => $lead->jobGroup ? $lead->jobGroup->job_group_name . ' (' . $lead->jobGroup->job_group_name_th . ')' : 'ไม่ระบุ',
                 'country' => $lead->country->country_name_th ?? 'ไม่ระบุ',
                 'phone' => $lead->lead_phone,
                 'age' => $lead->lead_age,

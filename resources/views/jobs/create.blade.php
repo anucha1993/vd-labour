@@ -215,6 +215,13 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Select2 for Position dropdown
+    $('#position_id').select2({
+        placeholder: '-- เลือกตำแหน่ง --',
+        allowClear: true,
+        width: '100%'
+    });
+
     const countrySelect = document.getElementById('country_id');
     const demandSelect = document.getElementById('dm_id');
     const startDateInput = document.getElementById('job_start_date');
@@ -284,8 +291,8 @@ document.addEventListener('DOMContentLoaded', function() {
     if (jobGroupSelect) {
         jobGroupSelect.addEventListener('change', function() {
             const jobGroupId = this.value;
-            // Clear current positions
-            positionSelect.innerHTML = '<option value="">-- เลือกตำแหน่ง --</option>';
+            // Clear current positions in Select2
+            $('#position_id').empty().append('<option value="">-- เลือกตำแหน่ง --</option>').trigger('change');
 
             if (!jobGroupId) return;
 
@@ -294,11 +301,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 .then(res => res.json())
                 .then(data => {
                     data.forEach(p => {
-                        const opt = document.createElement('option');
-                        opt.value = p.position_id;
-                        opt.textContent = p.position_name + ' (' + p.position_name_th + ')';
-                        positionSelect.appendChild(opt);
+                        const opt = new Option(p.position_name + ' (' + p.position_name_th + ')', p.position_id, false, false);
+                        $('#position_id').append(opt);
                     });
+                    $('#position_id').trigger('change');
                 })
                 .catch(err => {
                     console.error('Could not load positions:', err);

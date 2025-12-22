@@ -378,42 +378,6 @@
                     <div class="card-body">
                         <div class="row mb-3">
                             <div class="col-md-4">
-                                <label class="form-label">Position 1:</label>
-                                <select class="form-control select2-position1" name="position_id">
-                                    <option value="">-- เลือกตำแหน่ง --</option>
-                                    @foreach($positions as $position)
-                                        <option value="{{ $position->position_id }}" {{ old('position_id', $lead->position_id) == $position->position_id ? 'selected' : '' }}>
-                                            {{ $position->position_name }} ({{ $position->position_name_th }})
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label">Position 2:</label>
-                                <select class="form-control select2-position2" name="position_id_2">
-                                    <option value="">-- เลือกตำแหน่ง --</option>
-                                    @foreach($positions as $position)
-                                        <option value="{{ $position->position_id }}" {{ old('position_id_2', $lead->position_id_2) == $position->position_id ? 'selected' : '' }}>
-                                            {{ $position->position_name }} ({{ $position->position_name_th }})
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label">Position 3:</label>
-                                <select class="form-control select2-position3" name="position_id_3">
-                                    <option value="">-- เลือกตำแหน่ง --</option>
-                                    @foreach($positions as $position)
-                                        <option value="{{ $position->position_id }}" {{ old('position_id_3', $lead->position_id_3) == $position->position_id ? 'selected' : '' }}>
-                                            {{ $position->position_name }} ({{ $position->position_name_th }})
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-4">
                                 <label class="form-label">ประเทศที่สนใจ</label>
                                 <select class="form-select" name="country_id">
                                     <option value="">-- เลือกประเทศ --</option>
@@ -424,13 +388,56 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="col-md-4">
-                                <label class="form-label">กลุ่มงาน</label>
-                                <select class="form-select" name="job_group_id">
-                                    <option value="">-- เลือกกลุ่มงาน --</option>
+                            <div class="col-md-8">
+                                <label class="form-label">ประเภทงาน (Job Group) <span class="text-danger">*</span></label>
+                                <select class="form-select" id="edit_job_group_id" name="job_group_id">
+                                    <option value="">-- เลือกประเภทงาน --</option>
                                     @foreach($jobGroups as $jobGroup)
                                         <option value="{{ $jobGroup->job_group_id }}" {{ old('job_group_id', $lead->job_group_id) == $jobGroup->job_group_id ? 'selected' : '' }}>
-                                            {{ $jobGroup->job_group_name_th ?? $jobGroup->job_group_name }}
+                                            {{ $jobGroup->job_group_name }} ({{ $jobGroup->job_group_name_th }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <small class="text-muted"><i class="bi bi-info-circle"></i> เลือกประเภทงานเพื่อ filter ตำแหน่งที่เกี่ยวข้อง</small>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label class="form-label">ตำแหน่งที่ 1 (Position 1)</label>
+                                <select class="form-control select2-position1" id="position_id_1" name="position_id">
+                                    <option value="">-- เลือกตำแหน่ง --</option>
+                                    @foreach($positions as $position)
+                                        <option value="{{ $position->position_id }}" 
+                                                data-jobgroup="{{ $position->job_group_id }}"
+                                                {{ old('position_id', $lead->position_id) == $position->position_id ? 'selected' : '' }}>
+                                            {{ $position->position_name }} ({{ $position->position_name_th }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">ตำแหน่งที่ 2 (Position 2)</label>
+                                <select class="form-control select2-position2" id="position_id_2" name="position_id_2">
+                                    <option value="">-- เลือกตำแหน่ง --</option>
+                                    @foreach($positions as $position)
+                                        <option value="{{ $position->position_id }}" 
+                                                data-jobgroup="{{ $position->job_group_id }}"
+                                                {{ old('position_id_2', $lead->position_id_2) == $position->position_id ? 'selected' : '' }}>
+                                            {{ $position->position_name }} ({{ $position->position_name_th }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">ตำแหน่งที่ 3 (Position 3)</label>
+                                <select class="form-control select2-position3" id="position_id_3" name="position_id_3">
+                                    <option value="">-- เลือกตำแหน่ง --</option>
+                                    @foreach($positions as $position)
+                                        <option value="{{ $position->position_id }}" 
+                                                data-jobgroup="{{ $position->job_group_id }}"
+                                                {{ old('position_id_3', $lead->position_id_3) == $position->position_id ? 'selected' : '' }}>
+                                            {{ $position->position_name }} ({{ $position->position_name_th }})
                                         </option>
                                     @endforeach
                                 </select>
@@ -2252,6 +2259,78 @@
                     }
                 }
             });
+
+            // Dynamic Position filtering based on Job Group
+            const jobGroupSelect = document.getElementById('edit_job_group_id');
+            const positionSelects = ['position_id_1', 'position_id_2', 'position_id_3'];
+
+            // Store all positions data
+            const allPositions = @json($positions);
+
+            if (jobGroupSelect) {
+                jobGroupSelect.addEventListener('change', function() {
+                    const selectedJobGroup = this.value;
+                    
+                    positionSelects.forEach((selectId) => {
+                        const $select = $('#' + selectId);
+                        if (!$select.length) return;
+
+                        // Get current value before clearing
+                        const currentValue = $select.val();
+                        
+                        // Clear options first
+                        $select.empty();
+                        
+                        // If no job group selected, show all positions
+                        if (!selectedJobGroup) {
+                            $select.append(new Option('-- เลือกตำแหน่ง --', '', false, false));
+                            allPositions.forEach(position => {
+                                const optionText = position.position_name + ' (' + position.position_name_th + ')';
+                                const newOption = new Option(optionText, position.position_id, false, false);
+                                $select.append(newOption);
+                            });
+                            if (currentValue) {
+                                $select.val(currentValue);
+                            }
+                            $select.trigger('change');
+                            return;
+                        }
+                        
+                        // Add default option
+                        $select.append(new Option('-- เลือกตำแหน่ง --', '', false, false));
+                        
+                        let visibleCount = 0;
+                        let keepCurrentValue = false;
+
+                        allPositions.forEach(position => {
+                            // Filter by selected job group
+                            if (position.job_group_id == selectedJobGroup) {
+                                const optionText = position.position_name + ' (' + position.position_name_th + ')';
+                                const newOption = new Option(optionText, position.position_id, false, false);
+                                $select.append(newOption);
+                                visibleCount++;
+                                
+                                // Check if current value should be kept
+                                if (currentValue == position.position_id) {
+                                    keepCurrentValue = true;
+                                }
+                            }
+                        });
+
+                        // Restore value if still valid
+                        if (keepCurrentValue && currentValue) {
+                            $select.val(currentValue);
+                        }
+
+                        // Trigger change
+                        $select.trigger('change');
+                        
+                        if (visibleCount === 0) {
+                            console.log('ไม่มีตำแหน่งในกลุ่มงานนี้');
+                        }
+                    });
+                });
+            }
         });
     </script>
 @endsection
