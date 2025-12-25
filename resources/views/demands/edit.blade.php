@@ -237,10 +237,12 @@
                                                 <select class="form-control" name="positions[{{ $index }}][position_id]" required>
                                                     <option value="">เลือกตำแหน่ง</option>
                                                     @foreach($positions as $pos)
+
                                                         <option value="{{ $pos->position_id }}" 
                                                             {{ $position->position_id == $pos->position_id ? 'selected' : '' }}>
                                                             {{ $pos->position_name }}
                                                         </option>
+
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -305,7 +307,7 @@ let positionIndex = {{ count($demand->positions) }};
 // Store positions data for JavaScript use
 const positionsData = {!! json_encode($positions->map(function($position) {
     return [
-        'id' => $position->id,
+        'id' => $position->position_id,
         'name' => $position->position_name
     ];
 })) !!};
