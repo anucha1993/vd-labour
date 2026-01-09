@@ -653,9 +653,31 @@ public function deleteVisaFile($labourId)
     public function destroy(labourModel $labourModel)
     {
         try {
+            // Check if this labour is referenced in leads
+            $leadsCount = \App\Models\leads\LeadModel::where('labour_id', $labourModel->labour_id)->count();
+            if ($leadsCount > 0) {
+                return redirect()->route('labour.index')->with('error', 'ไม่สามารถลบแรงงานได้ เนื่องจากมี Lead ที่เชื่อมโยงอยู่ (' . $leadsCount . ' รายการ) กรุณาตัดการเชื่อมโยงก่อน');
+            }
+
+            // Check if this labour is referenced in job_leads
+            $jobLeadsCount = \App\Models\jobs\JobLeadModel::where('labour_id', $labourModel->labour_id)->count();
+            if ($jobLeadsCount > 0) {
+                return redirect()->route('labour.index')->with('error', 'ไม่สามารถลบแรงงานได้ เนื่องจากมีใบสมัครงาน (Job Lead) ที่เชื่อมโยงอยู่ (' . $jobLeadsCount . ' รายการ) กรุณาตัดการเชื่อมโยงก่อน');
+            }
+
             // Delete related files if exists
             if ($labourModel->labour_photo && Storage::exists('public/' . $labourModel->labour_photo)) {
                 Storage::delete('public/' . $labourModel->labour_photo);
+            }
+
+            // Delete CID files
+            if ($labourModel->labour_cid_file && Storage::exists('public/' . $labourModel->labour_cid_file)) {
+                Storage::delete('public/' . $labourModel->labour_cid_file);
+            }
+
+            // Delete visa files
+            if ($labourModel->labour_visa_file && Storage::exists('public/' . $labourModel->labour_visa_file)) {
+                Storage::delete('public/' . $labourModel->labour_visa_file);
             }
 
             // Delete labour files
@@ -667,14 +689,15 @@ public function deleteVisaFile($labourId)
                 $file->delete();
             }
 
-            // Delete CID results
-            CIDresultsModel::where('labour_id', $labourModel->labour_id)->delete();
+            // Note: CID results table is a lookup table (master data), not related to specific labour
+            // No need to delete from cid_results table
 
             // Delete the labour
             $labourModel->delete();
 
             return redirect()->route('labour.index')->with('success', 'ลบข้อมูลแรงงานเรียบร้อยแล้ว');
         } catch (\Exception $e) {
+            \Log::error('Labour deletion error: ' . $e->getMessage());
             return redirect()->route('labour.index')->with('error', 'เกิดข้อผิดพลาดในการลบข้อมูล: ' . $e->getMessage());
         }
     }
