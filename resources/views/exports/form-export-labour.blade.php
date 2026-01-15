@@ -116,7 +116,8 @@
 
                             @forelse ($examinationRound as $item)
                                 <option 
-                                value="{{ $item->examination_round_name }}">
+                                @if($request->labour_examination && in_array($item->examination_round_id, $request->labour_examination)) selected @endif
+                                value="{{ $item->examination_round_id }}">
                                     {{ date('d-m-Y', strtotime($item->examination_round_name)) }}
                                     ({{ $item->examination_round_note }})</option>
                             @empty

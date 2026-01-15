@@ -348,11 +348,10 @@
                                 <label>Examination round (รอบสอบ)</label>
                                 <select name="labour_examination" class="form-select select2-examination"
                                     @cannot('update labour') disabled @endcannot>
-                                    <option selected value="{{ $labourModel->labour_examination }}">
-                                        {{ date('d-m-Y', strtotime($labourModel->labour_examination)) }}-{{ $item->examination_round_note }}
-                                    </option>
+                                    <option value="">เลือกรอบสอบ</option>
                                     @forelse ($examinationRound as $item)
-                                        <option value="{{ $item->examination_round_name }}">
+                                        <option @if($item->examination_round_id == $labourModel->labour_examination) selected @endif 
+                                            value="{{ $item->examination_round_id }}">
                                             {{ date('d-m-Y', strtotime($item->examination_round_name)) }}-{{ $item->examination_round_note }}
                                         </option>
                                     @empty
