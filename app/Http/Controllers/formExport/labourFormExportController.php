@@ -86,9 +86,15 @@ class labourFormExportController extends Controller
         }
 
         //labour_examination
-
-        if (is_array($labour_examination)) {
-            $query->whereIn('labour_examination', $labour_examination);
+        if (is_array($labour_examination) && !empty($labour_examination)) {
+            // ดึง examination_round_name จาก examination_round_id ที่เลือก
+            $examinationDates = examinationRoundModel::whereIn('examination_round_id', $labour_examination)
+                ->pluck('examination_round_name')
+                ->toArray();
+            
+            if (!empty($examinationDates)) {
+                $query->whereIn('labour_examination', $examinationDates);
+            }
         }
         // //labour_examination
 
