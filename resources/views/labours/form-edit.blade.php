@@ -350,7 +350,7 @@
                                     @cannot('update labour') disabled @endcannot>
                                     <option value="">เลือกรอบสอบ</option>
                                     @forelse ($examinationRound as $item)
-                                        <option @if($item->examination_round_id = $labourModel->labour_examination) selected @endif 
+                                        <option @if($item->examination_round_id == $labourModel->labour_examination) selected @endif 
                                             value="{{ $item->examination_round_id }}">
                                             {{ date('d-m-Y', strtotime($item->examination_round_name)) }}-{{ $item->examination_round_note }}
                                         </option>
