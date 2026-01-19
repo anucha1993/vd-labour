@@ -24,6 +24,13 @@ class labourFormExportController extends Controller
 
     public function index(Request $request)
     {
+        // แปลง labour_examination เป็น array of integers
+        if ($request->has('labour_examination') && is_array($request->labour_examination)) {
+            $request->merge([
+                'labour_examination' => array_map('intval', $request->labour_examination)
+            ]);
+        }
+
         $examinationRound = examinationRoundModel::where('examination_round_status', 'active')->latest()->get();
         $jobGroup = jobGroupModel::where('job_group_status', 'active')->latest()->get();
         $customers = customerModel::latest()->get();
@@ -40,7 +47,6 @@ class labourFormExportController extends Controller
         $labour_staff = $request->labour_staff;
         $labour_status = $request->labour_status;
         $labour_customer = $request->labour_customer;
-        $labour_examination = $request->labour_examination;
         $labour_examination = $request->labour_examination;
         $labour_cid_deposit_status = $request->labour_cid_deposit_status;
         $labour_cid_results = $request->labour_cid_results;
@@ -85,18 +91,10 @@ class labourFormExportController extends Controller
             $query->where('labour_status', $labour_status);
         }
 
-        //labour_examination
+        //labour_examination - ค้นหาด้วย examination_round_id โดยตรง
         if (is_array($labour_examination) && !empty($labour_examination)) {
-            // ดึง examination_round_name จาก examination_round_id ที่เลือก
-            $examinationDates = examinationRoundModel::whereIn('examination_round_id', $labour_examination)
-                ->pluck('examination_round_name')
-                ->toArray();
-            
-            if (!empty($examinationDates)) {
-                $query->whereIn('labour_examination', $examinationDates);
-            }
+            $query->whereIn('labour_examination', $labour_examination);
         }
-        // //labour_examination
 
         if ($labour_cid_deposit_status && $labour_cid_deposit_status != 'all') {
             $query->where('labour_cid_deposit_status', $labour_cid_deposit_status);
