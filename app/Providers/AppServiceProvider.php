@@ -34,6 +34,7 @@ class AppServiceProvider extends ServiceProvider
                 'scopeExpiringDiseaseConstruct' => getExpiringDiseaseConstruct(),
                 'scopeExpiringDiseaseFactory' => getExpiringDiseaseFactory(),
                 'scopeExpiringPassport' => getExpiringPassport(),
+                'scopeExpiringIdCard' => getExpiringIdCard(),
                 'scopeExpiringCIDConstruct' => getExpiringCIDConstruct(),
                 'scopeExpiringCIDFactory' => getExpiringCIDFactory(),
                 'scopeExpiringCidMoney' => getExpiringCidMoney(),

@@ -35,6 +35,11 @@ if (!function_exists('getExpiringPassport')) {
         return labourModel::expiringPassport()->count();
     }
 }
+if (!function_exists('getExpiringIdCard')) {
+    function getExpiringIdCard() {
+        return labourModel::expiringIdCard()->count();
+    }
+}
 if (!function_exists('getExpiringCIDConstruct')) {
     function getExpiringCIDConstruct() {
         return labourModel::expiringCIDConstruct()->count();

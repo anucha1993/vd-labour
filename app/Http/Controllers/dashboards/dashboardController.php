@@ -24,6 +24,7 @@ class dashboardController extends Controller
         $scopeExpiringCIDConstruct    = labourModel::query()->ExpiringCIDConstruct()->count();
         $scopeExpiringCIDFactory   = labourModel::query()->ExpiringCIDFactory()->count();
         $scopeExpiringPassport   = labourModel::query()->ExpiringPassport()->count();
+        $scopeExpiringIdCard   = labourModel::query()->ExpiringIdCard()->count();
         $scopeExpiringCidMoney   = labourModel::query()->ExpiringCidMoney()->count();
         $scopeExpiringAffidavit = labourModel::query()->ExpiringAffidavit()->count();
 
@@ -39,6 +40,6 @@ class dashboardController extends Controller
         // Job Lead Notifications
         $jobLeadNotifications = $this->notificationService->getUnreadCount();
 
-        return view('dashboards.index', compact( 'countCancel', 'countAll','scopeExpiringCidMoney', 'countSuccess','scopeExpiringPassport','scopeExpiringDiseaseConstruct','scopeExpiringDiseaseFactory','scopeExpiringCIDConstruct','scopeExpiringCIDFactory','scopeExpiringAffidavit', 'visaNotUpdate', 'visaApproved', 'visaRejected', 'jobLeadNotifications'));
+        return view('dashboards.index', compact( 'countCancel', 'countAll','scopeExpiringCidMoney', 'countSuccess','scopeExpiringPassport','scopeExpiringIdCard','scopeExpiringDiseaseConstruct','scopeExpiringDiseaseFactory','scopeExpiringCIDConstruct','scopeExpiringCIDFactory','scopeExpiringAffidavit', 'visaNotUpdate', 'visaApproved', 'visaRejected', 'jobLeadNotifications'));
     }
 }

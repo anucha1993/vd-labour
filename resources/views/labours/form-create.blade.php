@@ -101,7 +101,18 @@
                                 <label>Phone.</label>
                                 <input type="text" class="form-control" name="labour_phone" placeholder="+66" >
                             </div>
+                          
+ <div class="col-md-3">
+                                <label>เลขที่บัตร ปปช</label>
+                                <input type="text" class="form-control" name="labour_id_card_number" placeholder="เลขที่บัตรประชาชน" >
+                            </div>
+                            <div class="col-md-2">
+                                <label>วันหมดอายุบัตร ปปช</label>
+                                <input type="date" class="form-control" name="labour_id_card_expiry" >
+                            </div>
+                           
                         </div>
+                        
                     </div>
                     <!-- Tab 2: Passport & สุขภาพ -->
                     <div class="tab-pane fade" id="passport" role="tabpanel">

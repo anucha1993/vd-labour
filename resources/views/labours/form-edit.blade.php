@@ -174,6 +174,19 @@
                                         @cannot('update labour') disabled @endcannot
                                         value="{{ $labourModel->labour_phone }}">
                                 </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">เลขที่บัตร ปปช</label>
+                                    <input type="text" class="form-control" name="labour_id_card_number" 
+                                        placeholder="เลขที่บัตรประชาชน"
+                                        @cannot('update labour') disabled @endcannot
+                                        value="{{ $labourModel->labour_id_card_number }}">
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label">วันหมดอายุบัตร ปปช</label>
+                                    <input type="date" class="form-control" name="labour_id_card_expiry"
+                                        @cannot('update labour') disabled @endcannot
+                                        value="{{ $labourModel->labour_id_card_expiry }}">
+                                </div>
 
 
                             </div>

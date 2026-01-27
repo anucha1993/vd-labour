@@ -25,6 +25,8 @@ class labourModel extends Model
        'labour_firstname',
        'labour_lastname',
        'labour_phone',
+       'labour_id_card_number',
+       'labour_id_card_expiry',
        'labour_passport_number',
        'labour_passport_issue',
        'labour_passport_expiry',
@@ -199,6 +201,15 @@ class labourModel extends Model
         return $query->where('labour_status', 'wait')
                      ->whereNotNull('labour_passport_expiry')
                      ->where('labour_passport_expiry', '<=', $expiryDate);
+    }
+
+    // แจ้งเตือนบัตร ปปช ภายใน 15 วัน (รวมหมดอายุ)
+    public function scopeExpiringIdCard($query)
+    {
+        $expiryDate = Carbon::now()->copy()->addDays(15)->toDateString();
+        return $query->where('labour_status', 'wait')
+                     ->whereNotNull('labour_id_card_expiry')
+                     ->where('labour_id_card_expiry', '<=', $expiryDate);
     }
 
      public function scopeCountCancel($query)

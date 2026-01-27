@@ -4,6 +4,7 @@ namespace App\Exports;
 use Maatwebsite\Excel\Concerns\Exportable;
 use App\Exports\Sheets\ExpiringCidMoneySheet;
 use App\Exports\Sheets\ExpiringPassportSheet;
+use App\Exports\Sheets\ExpiringIdCardSheet;
 use App\Exports\Sheets\ExpiringCIDFactorySheet;
 use App\Exports\Sheets\ExpiringCIDConstructSheet;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
@@ -18,6 +19,7 @@ class LabourAlertsExport implements WithMultipleSheets
     {
         return [
             new ExpiringPassportSheet(),
+            new ExpiringIdCardSheet(),
             new ExpiringDiseaseConstructSheet(),
             new ExpiringDiseaseFactorySheet(),
             new ExpiringCIDConstructSheet(),

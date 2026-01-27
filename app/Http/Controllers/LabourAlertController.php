@@ -15,6 +15,7 @@ class LabourAlertController extends Controller
     {
         $labours = match ($type) {
             'passport'          => labourModel::ExpiringPassport()->with('customer')->get(),
+            'id-card'           => labourModel::ExpiringIdCard()->with('customer')->get(),
             'disease-construct' => labourModel::ExpiringDiseaseConstruct()->with('customer')->get(),
             'disease-factory'   => labourModel::ExpiringDiseaseFactory()->with('customer')->get(),
             'cid-construct'     => labourModel::ExpiringCIDConstruct()->with('customer')->get(),

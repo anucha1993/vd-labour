@@ -111,7 +111,7 @@
                 <span class="alert-icon bg-red"><i class="mdi mdi-bell-alert"></i></span>
                 <span class="alert-badge">แจ้งเตือน</span>
                 <div class="alert-label">แจ้งเตือนรวม</div>
-                <div class="alert-value">{{ number_format($scopeExpiringPassport + $scopeExpiringCIDConstruct + $scopeExpiringCIDFactory + $scopeExpiringDiseaseConstruct + $scopeExpiringDiseaseFactory + $scopeExpiringCidMoney + $scopeExpiringAffidavit + $visaNotUpdate + $visaApproved + $visaRejected) }}</div>
+                <div class="alert-value">{{ number_format($scopeExpiringPassport + $scopeExpiringIdCard + $scopeExpiringCIDConstruct + $scopeExpiringCIDFactory + $scopeExpiringDiseaseConstruct + $scopeExpiringDiseaseFactory + $scopeExpiringCidMoney + $scopeExpiringAffidavit + $visaNotUpdate + $visaApproved + $visaRejected) }}</div>
                 <div class="alert-desc">รวมทุกประเภท</div>
             </div>
         </div>
@@ -149,6 +149,17 @@
                     <span class="alert-badge" style="background:#2196f3;">Passport</span>
                     <div class="alert-label">พาสปอร์ตหมดอายุ</div>
                     <div class="alert-value">{{ number_format($scopeExpiringPassport) }}</div>
+                    <div class="alert-desc">ก่อนหมดอายุ 15 วัน</div>
+                </div>
+            </a>
+        </div>
+        <div class="col-12 col-sm-6 col-md-3">
+            <a href="{{ route('labours.alert.list', ['type' => 'id-card']) }}" class="text-decoration-none">
+                <div class="alert-card">
+                    <span class="alert-icon bg-indigo"><i class="mdi mdi-card-account-details"></i></span>
+                    <span class="alert-badge" style="background:#3f51b5;">บัตร ปปช</span>
+                    <div class="alert-label">บัตร ปปช หมดอายุ</div>
+                    <div class="alert-value">{{ number_format($scopeExpiringIdCard) }}</div>
                     <div class="alert-desc">ก่อนหมดอายุ 15 วัน</div>
                 </div>
             </a>
@@ -307,6 +318,7 @@
         'ผลโรค ก่อสร้าง',
         'ผลโรค โรงงาน',
         'พาสปอร์ตหมดอายุ',
+        'บัตร ปปช หมดอายุ',
         'CID ก่อสร้าง',
         'CID โรงงาน',
         'ยังไม่ได้จ่ายเงินประกัน',
@@ -322,6 +334,7 @@
           {{ $scopeExpiringDiseaseConstruct ?? 0 }},
           {{ $scopeExpiringDiseaseFactory ?? 0 }},
           {{ $scopeExpiringPassport ?? 0 }},
+          {{ $scopeExpiringIdCard ?? 0 }},
           {{ $scopeExpiringCIDConstruct ?? 0 }},
           {{ $scopeExpiringCIDFactory ?? 0 }},
           {{ $scopeExpiringCidMoney ?? 0 }},
@@ -331,7 +344,7 @@
           {{ $visaRejected ?? 0 }}
         ],
         backgroundColor: [
-          '#2196f3', '#00bcd4', '#673ab7', '#2196f3', '#ff9800', '#ff9800', '#f44336', '#2196f3', '#f44336', '#4caf50', '#ff9800'
+          '#2196f3', '#00bcd4', '#673ab7', '#2196f3', '#3f51b5', '#ff9800', '#ff9800', '#f44336', '#2196f3', '#f44336', '#4caf50', '#ff9800'
         ],
         borderRadius: 10,
         maxBarThickness: 60
