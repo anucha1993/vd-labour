@@ -29,7 +29,8 @@ class labourExport implements FromCollection, WithHeadings, WithMapping, WithCol
         $query = labourModel::whereIn('labour_id',$this->labourIdsArray)
         ->leftJoin('position', 'position.position_id', '=', 'labours.labour_position')
         ->leftJoin('staff', 'staff.staff_id', '=', 'labours.labour_staff')
-        ->leftJoin('customers', 'customers.customer_id', '=', 'labours.labour_customer');
+        ->leftJoin('customers', 'customers.customer_id', '=', 'labours.labour_customer')
+        ->leftJoin('examination_round', 'examination_round.examination_round_id', '=', 'labours.labour_examination');
         $query->orderBy('labours.labour_id');
 
         $this->labour = $query->get();
@@ -114,8 +115,10 @@ class labourExport implements FromCollection, WithHeadings, WithMapping, WithCol
         }
 
         // Return ข้อมูลโดยรวม arrays ที่เราทำ loop $labour->labour_birthday
+        $examinationDate = $labour->examination_round_name ? date('d-m-Y', strtotime($labour->examination_round_name)) : '-';
+        
         return array_merge(
-            [++$this->num, $labour->labour_firstname, $labour->labour_lastname, $labour->labour_prefix . '.' . $labour->labour_firstname . ' ' . $labour->labour_lastname,date('d-m-Y', strtotime($labour->labour_birthday)), $labour->customer_name ? $labour->customer_name : 'ยังไม่ระบุ', $labour->position_name, $labour->labour_register_number, $labour->labour_passport_number, date('d-m-Y', strtotime($labour->labour_examination)), $labour->labour_passport_issue, $labour->labour_passport_expiry, $labour->labour_phone, $labour->staff_name],
+            [++$this->num, $labour->labour_firstname, $labour->labour_lastname, $labour->labour_prefix . '.' . $labour->labour_firstname . ' ' . $labour->labour_lastname,date('d-m-Y', strtotime($labour->labour_birthday)), $labour->customer_name ? $labour->customer_name : 'ยังไม่ระบุ', $labour->position_name, $labour->labour_register_number, $labour->labour_passport_number, $examinationDate, $labour->labour_passport_issue, $labour->labour_passport_expiry, $labour->labour_phone, $labour->staff_name],
             [$status, $labour->labour_note],
             $filePathSuccess, // รวมเครื่องหมาย / หรือ X สำหรับ success// รวมเครื่องหมาย / หรือ X สำหรับ wait
         );
