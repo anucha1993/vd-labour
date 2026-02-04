@@ -69,7 +69,7 @@
 
                 <div class="row float-end mb-4">
 
-                    <div class="col-md-12 text-success">
+                    <div class="col-md-6 text-success">
                         <label>สถานะคนงาน (Status)</label>
                         <select name="labour_status" class="form-select" @cannot('update labour') disabled @endcannot>
                             <option @if ($labourModel->labour_status === 'wait') selected @endif value="wait">กำลังดำเนินการ
@@ -78,6 +78,12 @@
                             </option>
                             <option @if ($labourModel->labour_status === 'cancel') selected @endif value="cancel">ยกเลิก</option>
                         </select>
+                    </div>
+                    <div class="col-md-6 text-success">
+                        <label>วันที่บิน (Flight Date)</label>
+                        <input type="date" name="labour_flight_date" class="form-control"
+                            value="{{ old('labour_flight_date', $labourModel->labour_flight_date) }}"
+                            @cannot('update labour') disabled @endcannot>
                     </div>
                 </div>
                 <br>

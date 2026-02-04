@@ -108,6 +108,14 @@
                             <option @if($request->labour_status == 'cancel') selected @endif  value="cancel">ยกเลิก</option>
                         </select>
                     </div>
+                    <div class="col-md-3 mt-3">
+                        <label>วันที่บิน (จาก)</label>
+                        <input type="date" name="labour_flight_date_start" class="form-control" value="{{ $request->labour_flight_date_start }}">
+                    </div>
+                    <div class="col-md-3 mt-3">
+                        <label>วันที่บิน (ถึง)</label>
+                        <input type="date" name="labour_flight_date_end" class="form-control" value="{{ $request->labour_flight_date_end }}">
+                    </div>
                     <div class="col-md-6 mt-3">
                         <label> รอบสอบ</label>
                         <select name="labour_examination[]" class="form-select selectMulti text-dark" multiple="multiple"

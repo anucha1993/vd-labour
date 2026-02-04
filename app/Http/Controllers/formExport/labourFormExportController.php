@@ -50,6 +50,8 @@ class labourFormExportController extends Controller
         $labour_examination = $request->labour_examination;
         $labour_cid_deposit_status = $request->labour_cid_deposit_status;
         $labour_cid_results = $request->labour_cid_results;
+        $labour_flight_date_start = $request->labour_flight_date_start;
+        $labour_flight_date_end = $request->labour_flight_date_end;
 
         //dd($labour_customer);
         $query = labourModel::with('customer');
@@ -102,6 +104,16 @@ class labourFormExportController extends Controller
         if ($labour_cid_results) {
             $query->where('labour_cid_results', $labour_cid_results);
         }
+
+        // ค้นหาวันที่บิน
+        if (!empty($labour_flight_date_start) && !empty($labour_flight_date_end)) {
+            $query->whereBetween('labour_flight_date', [$labour_flight_date_start, $labour_flight_date_end]);
+        } elseif (!empty($labour_flight_date_start)) {
+            $query->where('labour_flight_date', '>=', $labour_flight_date_start);
+        } elseif (!empty($labour_flight_date_end)) {
+            $query->where('labour_flight_date', '<=', $labour_flight_date_end);
+        }
+
         if($request->all()) { // ตรวจสอบว่า request มีข้อมูลใดๆ
             $labours = $query->latest()->get();
         } else {

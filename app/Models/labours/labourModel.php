@@ -36,6 +36,7 @@ class labourModel extends Model
        'labour_location_test',
        'labour_staff',
        'labour_status',
+       'labour_flight_date',
        'labour_note',
        'labour_folder_year',
        'labour_examination',
