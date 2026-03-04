@@ -33,24 +33,6 @@
         .company-name {
             font-family: 'Arial Black', 'Arial', sans-serif;
         }
-
-        .checkbox {
-            border: 2px solid black;
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            margin-left: 10px;
-            vertical-align: middle;
-            background-color: white;
-            text-align: center;
-            font-size: 14px;
-            line-height: 20px;
-            box-sizing: border-box;
-            font-weight: bold;
-        }
-        .checkbox-empty {
-            color: white;
-        }
     </style>
 </head>
 
@@ -89,23 +71,27 @@
             <tr>
                 <td colspan="4"
                     style="border-left: 2px solid black; padding: 4px; text-align: left; font-weight: bold;">
-                    Male <span class="checkbox">{!! $lead && $lead->lead_gender == 'male' ? '✓' : '<span style="color:white;">✓</span>' !!}</span>
+                    Male <span style="font-size:18px;">{!! $lead && $lead->lead_gender == 'male' ? '■' : '☐' !!}</span>
                 </td>
                 <td colspan="4" style=" padding: 4px; text-align: left; font-weight: bold;">
-                    Female <span class="checkbox">{!! $lead && $lead->lead_gender == 'female' ? '✓' : '<span style="color:white;">✓</span>' !!}</span>
+                    Female <span style="font-size:18px;">{!! $lead && $lead->lead_gender == 'female' ? '■' : '☐' !!}</span>
                 </td>
                 <td colspan="4" style=" padding: 4px; text-align: left; font-weight: bold;">
-                    Single <span class="checkbox">{!! $lead && $lead->lead_marital_status == 'single' ? '✓' : '<span style="color:white;">✓</span>' !!}</span>
+                    Single <span style="font-size:18px;">{!! $lead && $lead->lead_marital_status == 'single' ? '■' : '☐' !!}</span>
                 </td>
                 <td colspan="4" style=" padding: 4px; text-align: left; font-weight: bold;">
-                    Married <span class="checkbox">{!! $lead && $lead->lead_marital_status == 'married' ? '✓' : '<span style="color:white;">✓</span>' !!}</span>
+                    Married <span style="font-size:18px;">{!! $lead && $lead->lead_marital_status == 'married' ? '■' : '☐' !!}</span>
                 </td>
                 <td colspan="4" style=" padding: 4px; text-align: left; font-weight: bold;">
-                    Divorced <span class="checkbox">{!! $lead && $lead->lead_marital_status == 'divorced' ? '✓' : '<span style="color:white;">✓</span>' !!}</span>
+                    Divorced <span style="font-size:18px;">{!! $lead && $lead->lead_marital_status == 'divorced' ? '■' : '☐' !!}</span>
                 </td>
                 <td colspan="4" rowspan="6"
                     style="border: 1px solid black; text-align: center; font-weight: bold; font-size: 24px; vertical-align: middle; width: 120px; background-color: #f9f9f9;">
-                    PHOTO
+                    @if($lead && $lead->lead_photo && file_exists(public_path('storage/' . $lead->lead_photo)))
+                        <img src="{{ public_path('storage/' . $lead->lead_photo) }}" width="115" />
+                    @else
+                        PHOTO
+                    @endif
                 </td>
             </tr>
 
@@ -166,23 +152,23 @@
             <tr>
                 <td colspan="4"
                     style="border-left: 1px solid black; padding: 4px; text-align: left; font-weight: bold;">
-                    <span class="checkbox">{!! $lead && $lead->lead_education == 'elementary' ? '✓' : '<span style="color:white;">✓</span>' !!}</span> ELEMENTARY <br>SCHOOL
+                    <span style="font-size:18px;">{!! $lead && $lead->lead_education == 'elementary' ? '■' : '☐' !!}</span> ELEMENTARY <br>SCHOOL
                 </td>
                 <td colspan="4" style=" padding: 4px; text-align: left; font-weight: bold;">
-                    <span class="checkbox">{!! $lead && $lead->lead_education == 'junior_high' ? '✓' : '<span style="color:white;">✓</span>' !!}</span> JUNIOR  <br>HIGH SCHOOL
+                    <span style="font-size:18px;">{!! $lead && $lead->lead_education == 'junior_high' ? '■' : '☐' !!}</span> JUNIOR  <br>HIGH SCHOOL
                 </td>
                 <td colspan="4" style=" padding: 4px; text-align: left; font-weight: bold;">
-                    <span class="checkbox">{!! $lead && $lead->lead_education == 'high_school' ? '✓' : '<span style="color:white;">✓</span>' !!}</span> HIGH SCHOOL
+                    <span style="font-size:18px;">{!! $lead && $lead->lead_education == 'high_school' ? '■' : '☐' !!}</span> HIGH SCHOOL
                 </td>
                 <td colspan="4" style=" padding: 4px; text-align: left; font-weight: bold;">
-                    <span class="checkbox">{!! $lead && $lead->lead_education == 'voc_cert' ? '✓' : '<span style="color:white;">✓</span>' !!}</span>VOC. CERT
+                    <span style="font-size:18px;">{!! $lead && $lead->lead_education == 'voc_cert' ? '■' : '☐' !!}</span>VOC. CERT
                 </td>
                 <td colspan="4" style=" padding: 4px; text-align: left; font-weight: bold;">
-                    <span class="checkbox">{!! $lead && $lead->lead_education == 'high_voc_cert' ? '✓' : '<span style="color:white;">✓</span>' !!}</span>HIGH VOC.CERT
+                    <span style="font-size:18px;">{!! $lead && $lead->lead_education == 'high_voc_cert' ? '■' : '☐' !!}</span>HIGH VOC.CERT
                 </td>
                 <td colspan="4"
                     style=" padding: 4px ; text-align: left; font-weight: bold; border-right: 1px solid black;">
-                    <span class="checkbox">{!! $lead && $lead->lead_education == 'bachelor' ? '✓' : '<span style="color:white;">✓</span>' !!}</span> BACHELOR <br>DEGREES
+                    <span style="font-size:18px;">{!! $lead && $lead->lead_education == 'bachelor' ? '■' : '☐' !!}</span> BACHELOR <br>DEGREES
                 </td>
             </tr>
 
@@ -199,16 +185,16 @@
                     CHINESE SPEAKING
                 </td>
                 <td colspan="4" style=" padding: 3px; text-align: left; font-weight: bold;">
-                    <span class="checkbox">{!! $lead && $lead->lead_chinese_speaking == 'no' ? '✓' : '<span style="color:white;">✓</span>' !!}</span> NO
+                    <span style="font-size:18px;">{!! $lead && $lead->lead_chinese_speaking == 'no' ? '■' : '☐' !!}</span> NO
                 </td>
                 <td colspan="4" style=" padding: 3px; text-align: left; font-weight: bold;">
-                    <span class="checkbox">{!! $lead && $lead->lead_chinese_speaking == 'beginner' ? '✓' : '<span style="color:white;">✓</span>' !!}</span>  BEGINNER
+                    <span style="font-size:18px;">{!! $lead && $lead->lead_chinese_speaking == 'beginner' ? '■' : '☐' !!}</span>  BEGINNER
                 </td>
                 <td colspan="4" style=" padding: 3px; text-align: left; font-weight: bold;">
-                    <span class="checkbox">{!! $lead && $lead->lead_chinese_speaking == 'intermediate' ? '✓' : '<span style="color:white;">✓</span>' !!}</span> INTERMEDIATE
+                    <span style="font-size:18px;">{!! $lead && $lead->lead_chinese_speaking == 'intermediate' ? '■' : '☐' !!}</span> INTERMEDIATE
                 </td>
                 <td colspan="4" style=" padding: 3px; text-align: left; font-weight: bold;">
-                    <span class="checkbox">{!! $lead && $lead->lead_chinese_speaking == 'advance' ? '✓' : '<span style="color:white;">✓</span>' !!}</span> ADVANCE
+                    <span style="font-size:18px;">{!! $lead && $lead->lead_chinese_speaking == 'advance' ? '■' : '☐' !!}</span> ADVANCE
                 </td>
                 <td colspan="4"
                     style=" padding: 3px; text-align: left; font-weight: bold; border-right: 1px solid black;">
@@ -230,16 +216,16 @@
                     ENGLISH SPEAKING
                 </td>
                 <td colspan="4" style=" padding: 3px; text-align: left; font-weight: bold;">
-                    <span class="checkbox">{!! $lead && $lead->lead_english_speaking == 'no' ? '✓' : '<span style="color:white;">✓</span>' !!}</span> NO
+                    <span style="font-size:18px;">{!! $lead && $lead->lead_english_speaking == 'no' ? '■' : '☐' !!}</span> NO
                 </td>
                 <td colspan="4" style=" padding: 3px; text-align: left; font-weight: bold;">
-                    <span class="checkbox">{!! $lead && $lead->lead_english_speaking == 'beginner' ? '✓' : '<span style="color:white;">✓</span>' !!}</span>  BEGINNER
+                    <span style="font-size:18px;">{!! $lead && $lead->lead_english_speaking == 'beginner' ? '■' : '☐' !!}</span>  BEGINNER
                 </td>
                 <td colspan="4" style=" padding: 3px; text-align: left; font-weight: bold;">
-                    <span class="checkbox">{!! $lead && $lead->lead_english_speaking == 'intermediate' ? '✓' : '<span style="color:white;">✓</span>' !!}</span> INTERMEDIATE
+                    <span style="font-size:18px;">{!! $lead && $lead->lead_english_speaking == 'intermediate' ? '■' : '☐' !!}</span> INTERMEDIATE
                 </td>
                 <td colspan="4" style=" padding: 3px; text-align: left; font-weight: bold;">
-                    <span class="checkbox">{!! $lead && $lead->lead_english_speaking == 'advance' ? '✓' : '<span style="color:white;">✓</span>' !!}</span> ADVANCE
+                    <span style="font-size:18px;">{!! $lead && $lead->lead_english_speaking == 'advance' ? '■' : '☐' !!}</span> ADVANCE
                 </td>
                 <td colspan="4"
                     style=" padding: 3px; text-align: left; font-weight: bold; border-right: 1px solid black;">
@@ -271,19 +257,19 @@
             <tr>
                 <td colspan="4"
                     style="border-left: 1px solid black; padding: 3px; text-align: left; font-weight: bold;">
-                    <span class="checkbox">{!! $lead && $lead->lead_work_israel == 'no' ? '✓' : '<span style="color:white;">✓</span>' !!}</span> NO
+                    <span style="font-size:18px;">{!! $lead && $lead->lead_work_israel == 'no' ? '■' : '☐' !!}</span> NO
                 </td>
                 <td colspan="4" style=" padding: 3px; text-align: left; font-weight: bold;">
-                    <span class="checkbox">{!! $lead && $lead->lead_work_israel == 'yes' ? '✓' : '<span style="color:white;">✓</span>' !!}</span> YES
+                    <span style="font-size:18px;">{!! $lead && $lead->lead_work_israel == 'yes' ? '■' : '☐' !!}</span> YES
                 </td>
                 <td colspan="4" style=" padding: 3px; text-align: left; font-weight: bold;">
                     Details : <u>{{ $lead && $lead->lead_work_israel_details ? $lead->lead_work_israel_details : '' }}</u>
                 </td>
                 <td colspan="4" style=" padding: 3px; text-align: left; font-weight: bold;">
-                    <span class="checkbox">{!! $lead && $lead->lead_criminal_history == 'no' ? '✓' : '<span style="color:white;">✓</span>' !!}</span> NO
+                    <span style="font-size:18px;">{!! $lead && $lead->lead_criminal_history == 'no' ? '■' : '☐' !!}</span> NO
                 </td>
                 <td colspan="4" style=" padding: 3px; text-align: left; font-weight: bold;">
-                    <span class="checkbox">{!! $lead && $lead->lead_criminal_history == 'yes' ? '✓' : '<span style="color:white;">✓</span>' !!}</span> YES
+                    <span style="font-size:18px;">{!! $lead && $lead->lead_criminal_history == 'yes' ? '■' : '☐' !!}</span> YES
                 </td>
                 <td colspan="4"
                     style=" padding: 3px ; text-align: left; font-weight: bold; border-right: 1px solid black;">
@@ -304,19 +290,19 @@
             <tr>
                 <td colspan="4"
                     style="border-left: 1px solid black; padding: 3px; text-align: left; font-weight: bold;">
-                    <span class="checkbox">{!! $lead && $lead->lead_eyesight == 'normal' ? '✓' : '<span style="color:white;">✓</span>' !!}</span> Normal
+                    <span style="font-size:18px;">{!! $lead && $lead->lead_eyesight == 'normal' ? '■' : '☐' !!}</span> Normal
                 </td>
                 <td colspan="4" style=" padding: 3px; text-align: left; font-weight: bold;">
-                    <span class="checkbox">{!! $lead && $lead->lead_eyesight == 'abnormal' ? '✓' : '<span style="color:white;">✓</span>' !!}</span> Abnormal
+                    <span style="font-size:18px;">{!! $lead && $lead->lead_eyesight == 'abnormal' ? '■' : '☐' !!}</span> Abnormal
                 </td>
                 <td colspan="4" style=" padding: 3px; text-align: left; font-weight: bold;">
                    
                 </td>
                 <td colspan="4" style=" padding: 3px; text-align: left; font-weight: bold;">
-                    <span class="checkbox">{!! $lead && $lead->lead_color_blindness == 'no' ? '✓' : '<span style="color:white;">✓</span>' !!}</span> NO
+                    <span style="font-size:18px;">{!! $lead && $lead->lead_color_blindness == 'no' ? '■' : '☐' !!}</span> NO
                 </td>
                 <td colspan="4" style=" padding: 8px; text-align: left; font-weight: bold;">
-                    <span class="checkbox">{!! $lead && $lead->lead_color_blindness == 'yes' ? '✓' : '<span style="color:white;">✓</span>' !!}</span> YES
+                    <span style="font-size:18px;">{!! $lead && $lead->lead_color_blindness == 'yes' ? '■' : '☐' !!}</span> YES
                 </td>
                 <td colspan="4"
                     style=" padding: 8px ; text-align: left; font-weight: bold; border-right: 1px solid black;">
@@ -332,68 +318,68 @@
             <tr>
                 <td colspan="4"
                     style="border-left: 1px solid black; padding: 3px; text-align: left; font-weight: bold;">
-                    <span class="checkbox">{!! $lead && $lead->lead_skills && in_array('electrician', $lead->lead_skills) ? '✓' : '<span style="color:white;">✓</span>' !!}</span>  ELECTRICIAN
+                    <span style="font-size:18px;">{!! $lead && $lead->lead_skills && in_array('electrician', $lead->lead_skills) ? '■' : '☐' !!}</span>  ELECTRICIAN
                 </td>
                 <td colspan="4" style=" padding: 3px; text-align: left; font-weight: bold;">
-                    <span class="checkbox">{!! $lead && $lead->lead_skills && in_array('painter', $lead->lead_skills) ? '✓' : '<span style="color:white;">✓</span>' !!}</span>  PAINTER
+                    <span style="font-size:18px;">{!! $lead && $lead->lead_skills && in_array('painter', $lead->lead_skills) ? '■' : '☐' !!}</span>  PAINTER
                 </td>
                 <td colspan="4" style=" padding: 3px; text-align: left; font-weight: bold;">
-                    <span class="checkbox">{!! $lead && $lead->lead_skills && in_array('welder', $lead->lead_skills) ? '✓' : '<span style="color:white;">✓</span>' !!}</span>  WELDER
+                    <span style="font-size:18px;">{!! $lead && $lead->lead_skills && in_array('welder', $lead->lead_skills) ? '■' : '☐' !!}</span>  WELDER
                 </td>
                 <td colspan="4" style=" padding: 3px; text-align: left; font-weight: bold;">
-                    <span class="checkbox">{!! $lead && $lead->lead_skills && in_array('tile', $lead->lead_skills) ? '✓' : '<span style="color:white;">✓</span>' !!}</span> TILE
+                    <span style="font-size:18px;">{!! $lead && $lead->lead_skills && in_array('tile', $lead->lead_skills) ? '■' : '☐' !!}</span> TILE
                 </td>
                 <td colspan="4" style=" padding: 3px; text-align: left; font-weight: bold;">
-                    <span class="checkbox">{!! $lead && $lead->lead_skills && in_array('agriculture', $lead->lead_skills) ? '✓' : '<span style="color:white;">✓</span>' !!}</span> AGRICULTURE
+                    <span style="font-size:18px;">{!! $lead && $lead->lead_skills && in_array('agriculture', $lead->lead_skills) ? '■' : '☐' !!}</span> AGRICULTURE
                 </td>
                 <td colspan="4"
                     style=" padding: 3px ; text-align: left; font-weight: bold; border-right: 1px solid black;">
-                    <span class="checkbox">{!! $lead && $lead->lead_skills && in_array('factory', $lead->lead_skills) ? '✓' : '<span style="color:white;">✓</span>' !!}</span>  FACTORY
+                    <span style="font-size:18px;">{!! $lead && $lead->lead_skills && in_array('factory', $lead->lead_skills) ? '■' : '☐' !!}</span>  FACTORY
                 </td>
             </tr>
              <tr>
                 <td colspan="4"
                     style="border-left: 1px solid black; padding: 3px; text-align: left; font-weight: bold;">
-                    <span class="checkbox">{!! $lead && $lead->lead_skills && in_array('carpenter', $lead->lead_skills) ? '✓' : '<span style="color:white;">✓</span>' !!}</span>   CARPENTER
+                    <span style="font-size:18px;">{!! $lead && $lead->lead_skills && in_array('carpenter', $lead->lead_skills) ? '■' : '☐' !!}</span>   CARPENTER
                 </td>
                 <td colspan="4" style=" padding: 3px; text-align: left; font-weight: bold;">
-                    <span class="checkbox">{!! $lead && $lead->lead_skills && in_array('plasterer', $lead->lead_skills) ? '✓' : '<span style="color:white;">✓</span>' !!}</span>   PLASTERER
+                    <span style="font-size:18px;">{!! $lead && $lead->lead_skills && in_array('plasterer', $lead->lead_skills) ? '■' : '☐' !!}</span>   PLASTERER
                 </td>
                 <td colspan="4" style=" padding: 3px; text-align: left; font-weight: bold;">
-                    <span class="checkbox">{!! $lead && $lead->lead_skills && in_array('iron', $lead->lead_skills) ? '✓' : '<span style="color:white;">✓</span>' !!}</span>   IRON
+                    <span style="font-size:18px;">{!! $lead && $lead->lead_skills && in_array('iron', $lead->lead_skills) ? '■' : '☐' !!}</span>   IRON
                 </td>
                 <td colspan="4" style=" padding: 3px; text-align: left; font-weight: bold;">
-                    <span class="checkbox">{!! $lead && $lead->lead_skills && in_array('brick', $lead->lead_skills) ? '✓' : '<span style="color:white;">✓</span>' !!}</span>  BRICK
+                    <span style="font-size:18px;">{!! $lead && $lead->lead_skills && in_array('brick', $lead->lead_skills) ? '■' : '☐' !!}</span>  BRICK
                 </td>
                 <td colspan="4" style=" padding: 3px; text-align: left; font-weight: bold;">
-                    <span class="checkbox">{!! $lead && $lead->lead_skills && in_array('plumber', $lead->lead_skills) ? '✓' : '<span style="color:white;">✓</span>' !!}</span>  PLUMBER
+                    <span style="font-size:18px;">{!! $lead && $lead->lead_skills && in_array('plumber', $lead->lead_skills) ? '■' : '☐' !!}</span>  PLUMBER
                 </td>
                 <td colspan="4"
                     style=" padding: 3px ; text-align: left; font-weight: bold; border-right: 1px solid black;">
-                    <span class="checkbox">{!! $lead && $lead->lead_skills && in_array('roller', $lead->lead_skills) ? '✓' : '<span style="color:white;">✓</span>' !!}</span>   ROLLER
+                    <span style="font-size:18px;">{!! $lead && $lead->lead_skills && in_array('roller', $lead->lead_skills) ? '■' : '☐' !!}</span>   ROLLER
                 </td>
             </tr>
 
              <tr>
                 <td colspan="4"
                     style="border-left: 1px solid black; padding: 3px; text-align: left; font-weight: bold; border-bottom: 1px solid black;">
-                    <span class="checkbox">{!! $lead && $lead->lead_skills && in_array('loader', $lead->lead_skills) ? '✓' : '<span style="color:white;">✓</span>' !!}</span>    LOADER
+                    <span style="font-size:18px;">{!! $lead && $lead->lead_skills && in_array('loader', $lead->lead_skills) ? '■' : '☐' !!}</span>    LOADER
                 </td>
                 <td colspan="4" style=" padding: 3px; text-align: left; font-weight: bold; border-bottom: 1px solid black;">
-                    <span class="checkbox">{!! $lead && $lead->lead_skills && in_array('excavators', $lead->lead_skills) ? '✓' : '<span style="color:white;">✓</span>' !!}</span>    Excavators
+                    <span style="font-size:18px;">{!! $lead && $lead->lead_skills && in_array('excavators', $lead->lead_skills) ? '■' : '☐' !!}</span>    Excavators
                 </td>
                 <td colspan="4" style=" padding: 3px; text-align: left; font-weight: bold; border-bottom: 1px solid black;">
-                    <span class="checkbox">{!! $lead && $lead->lead_skills && in_array('jcb', $lead->lead_skills) ? '✓' : '<span style="color:white;">✓</span>' !!}</span>     JCB
+                    <span style="font-size:18px;">{!! $lead && $lead->lead_skills && in_array('jcb', $lead->lead_skills) ? '■' : '☐' !!}</span>     JCB
                 </td>
                 <td colspan="4" style=" padding: 3px; text-align: left; font-weight: bold; border-bottom: 1px solid black;">
-                    <span class="checkbox">{!! $lead && $lead->lead_skills && in_array('telescopic', $lead->lead_skills) ? '✓' : '<span style="color:white;">✓</span>' !!}</span>    Telescopic
+                    <span style="font-size:18px;">{!! $lead && $lead->lead_skills && in_array('telescopic', $lead->lead_skills) ? '■' : '☐' !!}</span>    Telescopic
                 </td>
                 <td colspan="4" style=" padding: 3px; text-align: left; font-weight: bold; border-bottom: 1px solid black;">
-                    <span class="checkbox">{!! $lead && $lead->lead_skills && in_array('forklift', $lead->lead_skills) ? '✓' : '<span style="color:white;">✓</span>' !!}</span>    Driving a Forklift
+                    <span style="font-size:18px;">{!! $lead && $lead->lead_skills && in_array('forklift', $lead->lead_skills) ? '■' : '☐' !!}</span>    Driving a Forklift
                 </td>
                 <td colspan="4"
                     style=" padding: 3px ; text-align: left; font-weight: bold; border-right: 1px solid black; border-bottom: 1px solid black;" >
-                    <span class="checkbox">{!! $lead && $lead->lead_skills && in_array('etc', $lead->lead_skills) ? '✓' : '<span style="color:white;">✓</span>' !!}</span>   Etc.
+                    <span style="font-size:18px;">{!! $lead && $lead->lead_skills && in_array('etc', $lead->lead_skills) ? '■' : '☐' !!}</span>   Etc.
                 </td>
             </tr>
             <tr>
@@ -478,7 +464,7 @@
              </tr>
              <tr>
                 <td  colspan="26" style=" padding: 4px ; text-align: left; font-weight: bold; border: 1px solid black;">
-                    DRIVING LICENSE : <small>(ใบขับขี่)</small>: <span class="checkbox">{!! $lead && $lead->lead_driving_license == 'no' ? '✓' : '<span style="color:white;">✓</span>' !!}</span> NO  <span class="checkbox">{!! $lead && $lead->lead_driving_license == 'yes' ? '✓' : '<span style="color:white;">✓</span>' !!}</span> YES
+                    DRIVING LICENSE : <small>(ใบขับขี่)</small>: <span style="font-size:18px;">{!! $lead && $lead->lead_driving_license == 'no' ? '■' : '☐' !!}</span> NO  <span style="font-size:18px;">{!! $lead && $lead->lead_driving_license == 'yes' ? '■' : '☐' !!}</span> YES
                     &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
                     TYPE OF CAR : <small>(ประเภทรถ)</small> : {{ $lead && $lead->lead_driving_license == 'yes' ? $lead->lead_car_type : '' }}
                     &nbsp; <br><br>
@@ -625,7 +611,7 @@
          <tr>
                 <td colspan="2"
                     style= "padding: 8px; text-align: left; font-weight: bold;">
-                    <span class="checkbox">{!! isset($leftKeys[$i]) && in_array($leftKeys[$i], $leadDocuments) ? '✓' : '<span style="color:white;">✓</span>' !!}</span>
+                    <span style="font-size:18px;">{!! isset($leftKeys[$i]) && in_array($leftKeys[$i], $leadDocuments) ? '■' : '☐' !!}</span>
                 </td>
                 <td colspan="23" style="padding: 8px; text-align: left; font-weight: bold;">
                     {{ $leftColumn[$i] ?? '' }}
@@ -633,7 +619,7 @@
               
                 <td colspan="2"
                     style=" padding: 8px ; text-align: left; font-weight: bold;">
-                    <span class="checkbox">{!! isset($rightKeys[$i]) && in_array($rightKeys[$i], $leadDocuments) ? '✓' : '<span style="color:white;">✓</span>' !!}</span>
+                    <span style="font-size:18px;">{!! isset($rightKeys[$i]) && in_array($rightKeys[$i], $leadDocuments) ? '■' : '☐' !!}</span>
                 </td>
                 <td colspan="23" style="padding: 8px; text-align: left; font-weight: bold;">
                     {{ $rightColumn[$i] ?? '' }}
@@ -646,11 +632,11 @@
 
      <div style="padding: 10px; text-align: left; font-weight: bold;">การยืนยันสถานะทางกฎหมายและความบริสุทธิ์ทางคดี</div>
      <div style="padding: 10px; text-align: left; font-weight: bold;"> 
-        <span class="checkbox">{!! $lead && $lead->lead_criminal_history == 'no' ? '✓' : '<span style="color:white;">✓</span>' !!}</span> ไม่มีคดี &nbsp; &nbsp; &nbsp; 
-        <span class="checkbox">{!! $lead && $lead->lead_criminal_history == 'yes' ? '✓' : '<span style="color:white;">✓</span>' !!}</span> มีคดี ระบุรายละเอียด: {{ $lead && $lead->lead_criminal_details ? $lead->lead_criminal_details : '' }}
+        <span style="font-size:18px;">{!! $lead && $lead->lead_criminal_history == 'no' ? '■' : '☐' !!}</span> ไม่มีคดี &nbsp; &nbsp; &nbsp; 
+        <span style="font-size:18px;">{!! $lead && $lead->lead_criminal_history == 'yes' ? '■' : '☐' !!}</span> มีคดี ระบุรายละเอียด: {{ $lead && $lead->lead_criminal_details ? $lead->lead_criminal_details : '' }}
      </div>
      <div style="padding: 10px; text-align: left; font-weight: bold;">
-        <span class="checkbox"><span style="color:white;">✓</span></span> ข้าพเจ้ายืนยันว่าข้าพเจ้าไม่เคยมีประวัติอาชญากรรม ไม่เคยถูกดำเนินคดีอาญาใด ๆ  ทั้งในอดีตและ																									
+        <span style="font-size:18px;">☐</span> ข้าพเจ้ายืนยันว่าข้าพเจ้าไม่เคยมีประวัติอาชญากรรม ไม่เคยถูกดำเนินคดีอาญาใด ๆ  ทั้งในอดีตและ																									
 ปัจจุบัน และไม่มีคดีอาญาที่อยู่ในกระบวนการพิจารณาของศาล หากมีการเปลี่ยนแปลงเกี่ยวกับสถานะทาง																									
 กฎหมายในอนาคต ข้าพเจ้าจะแจ้งให้บริษัททราบโดยทันที 
      </div>
