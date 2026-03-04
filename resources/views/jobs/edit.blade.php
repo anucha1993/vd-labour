@@ -230,8 +230,9 @@
         </div>
     </div>
 </div>
-
 <script>
+
+
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize Select2 for dropdowns
     $('#position_id').select2({ placeholder: '-- เลือกตำแหน่ง --', allowClear: true, width: '100%' });
