@@ -109,7 +109,7 @@
             </tr>
             <!-- Full Name Row -->
             <tr>
-                <td colspan="10" style="border: 1px solid black; padding: 4px; font-weight: bold;">Full Name : {{ $lead ? ($lead->lead_prefix ? $lead->lead_prefix . ' ' : '') . $lead->lead_firstname . ' ' . $lead->lead_lastname : '' }}</td>
+                <td colspan="10" style="border: 1px solid black; padding: 4px; font-weight: bold;">Full Name : {{ $lead ? strtoupper(($lead->lead_prefix ? $lead->lead_prefix . ' ' : '') . $lead->lead_firstname . ' ' . $lead->lead_lastname) : '' }}</td>
                 <td colspan="5" style="border: 1px solid black; padding: 4px; font-weight: bold;">TEL: {{ $lead ? $lead->lead_phone : '' }}</td>
                 <td colspan="5" style="border: 1px solid black; padding: 4px; font-weight: bold;">TEL: {{ $lead ? $lead->lead_phone_2 : '' }}</td>
             </tr>
@@ -509,7 +509,7 @@
 
         <td style="width: 40%; padding-top: 8px; font-weight: bold; text-align: left;">
             
-            SIGN <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ $lead ? ($lead->lead_prefix ? $lead->lead_prefix . ' ' : '') . $lead->lead_firstname . ' ' . $lead->lead_lastname : '' }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u> Job Applicants<br>
+            SIGN <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ $lead ? strtoupper(($lead->lead_prefix ? $lead->lead_prefix . ' ' : '') . $lead->lead_firstname . ' ' . $lead->lead_lastname) : '' }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u> Job Applicants<br>
             Recommender: {{ $lead && $lead->recommenderStaff ? $lead->recommenderStaff->staff_sub_name . ($lead && $lead->staff ? '/' . $lead->staff->staff_nickname : '') : '' }}<br>
           
         </td>
