@@ -509,7 +509,7 @@
 
         <td style="width: 40%; padding-top: 8px; font-weight: bold; text-align: left;">
             
-            SIGN ____________________________________________ Job Applicants<br>
+            SIGN <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ $lead ? ($lead->lead_prefix ? $lead->lead_prefix . ' ' : '') . $lead->lead_firstname . ' ' . $lead->lead_lastname : '' }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u> Job Applicants<br>
             Recommender: {{ $lead && $lead->recommenderStaff ? $lead->recommenderStaff->staff_sub_name . ($lead && $lead->staff ? '/' . $lead->staff->staff_nickname : '') : '' }}<br>
           
         </td>
