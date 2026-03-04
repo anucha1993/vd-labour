@@ -233,32 +233,44 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Select2 for dropdowns
+    $('#position_id').select2({ placeholder: '-- เลือกตำแหน่ง --', allowClear: true, width: '100%' });
+    $('#customer_id').select2({ placeholder: '-- เลือกบริษัทนายจ้าง --', allowClear: true, width: '100%' });
+    $('#dm_id').select2({ placeholder: '-- เลือก Demand --', allowClear: true, width: '100%' });
+
     const countrySelect = document.getElementById('country_id');
-    const demandSelect = document.getElementById('dm_id');
     const startDateInput = document.getElementById('job_start_date');
     const endDateInput = document.getElementById('job_end_date');
     
+    // Store all demand options for filtering
+    const allDemandOptions = [];
+    $('#dm_id option').each(function() {
+        if (this.value !== '') {
+            allDemandOptions.push({
+                id: this.value,
+                text: this.text,
+                country: this.dataset.country,
+                selected: this.selected
+            });
+        }
+    });
+
     // Filter demands based on selected country
     countrySelect.addEventListener('change', function() {
         const selectedCountry = this.value;
-        const demandOptions = demandSelect.querySelectorAll('option');
+        const currentVal = $('#dm_id').val();
         
-        demandOptions.forEach(option => {
-            if (option.value === '') {
-                option.style.display = 'block';
-                return;
-            }
-            
-            const optionCountry = option.dataset.country;
-            if (!selectedCountry || optionCountry === selectedCountry) {
-                option.style.display = 'block';
-            } else {
-                option.style.display = 'none';
-                if (option.selected) {
-                    option.selected = false;
-                }
+        $('#dm_id').empty().append('<option value="">-- เลือก Demand --</option>');
+        
+        allDemandOptions.forEach(opt => {
+            if (!selectedCountry || opt.country === selectedCountry) {
+                const option = new Option(opt.text, opt.id, false, opt.id === currentVal);
+                option.dataset.country = opt.country;
+                $('#dm_id').append(option);
             }
         });
+        
+        $('#dm_id').trigger('change');
     });
     
     // Validate end date is after start date
@@ -279,10 +291,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Job Group -> Positions dynamic loading (edit view)
     const jobGroupSelect = document.getElementById('job_group_id');
-    const positionSelect = document.getElementById('position_id');
 
     function loadPositionsForJobGroup(jobGroupId, selectedId = null) {
-        positionSelect.innerHTML = '<option value="">-- เลือกตำแหน่ง --</option>';
+        $('#position_id').empty().append('<option value="">-- เลือกตำแหน่ง --</option>').trigger('change');
         if (!jobGroupId) return;
 
         const url = '{{ route("jobgroup.ajaxSelectPosition") }}?jobgroup=' + encodeURIComponent(jobGroupId);
@@ -290,12 +301,10 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(res => res.json())
             .then(data => {
                 data.forEach(p => {
-                    const opt = document.createElement('option');
-                    opt.value = p.position_id;
-                    opt.textContent = p.position_name+ ' (' + p.position_name_th + ')';
-                    if (selectedId && selectedId == p.position_id) opt.selected = true;
-                    positionSelect.appendChild(opt);
+                    const opt = new Option(p.position_name + ' (' + p.position_name_th + ')', p.position_id, false, selectedId == p.position_id);
+                    $('#position_id').append(opt);
                 });
+                $('#position_id').trigger('change');
             })
             .catch(err => console.error('Could not load positions:', err));
     }

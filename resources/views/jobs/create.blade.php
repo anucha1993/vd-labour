@@ -222,37 +222,56 @@ document.addEventListener('DOMContentLoaded', function() {
         width: '100%'
     });
 
+    // Initialize Select2 for Customer dropdown
+    $('#customer_id').select2({
+        placeholder: '-- เลือกบริษัทนายจ้าง --',
+        allowClear: true,
+        width: '100%'
+    });
+
+    // Initialize Select2 for Demand dropdown
+    $('#dm_id').select2({
+        placeholder: '-- เลือก Demand --',
+        allowClear: true,
+        width: '100%'
+    });
+
+    // ปรับ height ของ Select2
+    $('#customer_id').next('.select2-container').find('.select2-selection').css('height', '33px');
+    $('#dm_id').next('.select2-container').find('.select2-selection').css('height', '33px');
+
     const countrySelect = document.getElementById('country_id');
-    const demandSelect = document.getElementById('dm_id');
     const startDateInput = document.getElementById('job_start_date');
     const endDateInput = document.getElementById('job_end_date');
     
+    // Store all demand options for filtering
+    const allDemandOptions = [];
+    $('#dm_id option').each(function() {
+        if (this.value !== '') {
+            allDemandOptions.push({
+                id: this.value,
+                text: this.text,
+                country: this.dataset.country
+            });
+        }
+    });
+
     // Filter demands based on selected country
     countrySelect.addEventListener('change', function() {
         const selectedCountry = this.value;
-        const demandOptions = demandSelect.querySelectorAll('option');
         
-        demandOptions.forEach(option => {
-            if (option.value === '') {
-                option.style.display = 'block';
-                return;
-            }
-            
-            const optionCountry = option.dataset.country;
-            if (!selectedCountry || optionCountry === selectedCountry) {
-                option.style.display = 'block';
-            } else {
-                option.style.display = 'none';
-                if (option.selected) {
-                    option.selected = false;
-                }
+        // Clear and rebuild demand options
+        $('#dm_id').empty().append('<option value="">-- เลือก Demand --</option>');
+        
+        allDemandOptions.forEach(opt => {
+            if (!selectedCountry || opt.country === selectedCountry) {
+                const option = new Option(opt.text, opt.id, false, false);
+                option.dataset.country = opt.country;
+                $('#dm_id').append(option);
             }
         });
         
-        // Reset demand selection if hidden
-        if (demandSelect.value && demandSelect.querySelector(`option[value="${demandSelect.value}"]`).style.display === 'none') {
-            demandSelect.value = '';
-        }
+        $('#dm_id').val('').trigger('change');
     });
     
     // Validate end date is after start date
