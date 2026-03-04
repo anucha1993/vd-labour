@@ -95,7 +95,7 @@ class PdfDownloadController extends Controller
     {
         $lead = null;
         if ($leadId) {
-            $lead = LeadModel::with(['position', 'country', 'jobGroup', 'staff', 'jobHistory'])->findOrFail($leadId);
+            $lead = LeadModel::with(['position', 'position2', 'position3', 'country', 'jobGroup', 'staff', 'jobHistory', 'recommenderStaff.staff'])->findOrFail($leadId);
         }
         
         $data = [

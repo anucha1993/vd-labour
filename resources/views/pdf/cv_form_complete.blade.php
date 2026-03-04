@@ -421,10 +421,23 @@
                 </th>
             </tr>
             @php
-             $limit = 5;
              $jobHistories = $lead && $lead->jobHistory ? $lead->jobHistory : collect();
+             $maxSlots = 5;
+             $usedLines = 0;
+             foreach ($jobHistories as $history) {
+                 $text = $history->company_type . ($history->company_name ? ' - ' . $history->company_name : '');
+                 $textLen = mb_strlen($text);
+                 if ($textLen > 120) {
+                     $usedLines += 3;
+                 } elseif ($textLen > 55) {
+                     $usedLines += 2;
+                 } else {
+                     $usedLines += 1;
+                 }
+             }
+             $emptyRows = max(0, $maxSlots - $usedLines);
             @endphp
-           @for ($i = 0; $i < $limit ; $i++)
+           @for ($i = 0; $i < $jobHistories->count() ; $i++)
             @php
                 $history = $jobHistories->get($i);
             @endphp
@@ -449,6 +462,15 @@
                     style=" padding: 3px ; text-align: left; font-weight: bold; border: 1px solid black;">
                   {{ $history ? $history->experience_years : '' }}
                 </td>
+            </tr>
+             @endfor
+             @for ($j = 0; $j < $emptyRows; $j++)
+            <tr>
+               <td colspan="1" style=" padding: 3px ; text-align: left; font-weight: bold; border: 1px solid black;">{{ $jobHistories->count() + $j + 1 }}</td>
+               <td colspan="12" style=" padding: 3px ; text-align: left; font-weight: bold; border: 1px solid black;">&nbsp;</td>
+               <td colspan="5" style=" padding: 3px ; text-align: left; font-weight: bold; border: 1px solid black;">&nbsp;</td>
+               <td colspan="4" style=" padding: 3px ; text-align: left; font-weight: bold; border: 1px solid black;">&nbsp;</td>
+               <td colspan="4" style=" padding: 3px ; text-align: left; font-weight: bold; border: 1px solid black;">&nbsp;</td>
             </tr>
              @endfor
 
@@ -476,10 +498,7 @@
 
         </table>
 
-<!-- Spacer to push signature section to bottom -->
-<div style="height: 50px;"></div>
-
-<table style="width: 100%; border-collapse: collapse; position: fixed; bottom: 30px; left: 0; right: 0;">
+<table style="width: 100%; border-collapse: collapse; margin-top: 50px;">
     <tr>
         <td style="width: 40%; padding-top: 8px; text-align: center; font-weight: bold;">
             ____________________________________________ <br>
@@ -489,8 +508,9 @@
         <td style="width: 20%"></td>
 
         <td style="width: 40%; padding-top: 8px; font-weight: bold; text-align: left;">
+            
             SIGN ____________________________________________ Job Applicants<br>
-            Recommender: {{ $lead && $lead->recommenderStaff ? $lead->recommenderStaff->staff_sub_name : '' }}<br>
+            Recommender: {{ $lead && $lead->recommenderStaff ? $lead->recommenderStaff->staff_sub_name . ($lead && $lead->staff ? '/' . $lead->staff->staff_nickname : '') : '' }}<br>
           
         </td>
         

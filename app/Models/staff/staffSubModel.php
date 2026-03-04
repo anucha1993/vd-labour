@@ -16,4 +16,9 @@ class staffSubModel extends Model
         'staff_sub_status',
         'staff_sub_staff',
     ];
+
+    public function staff()
+    {
+        return $this->belongsTo(staffModel::class, 'staff_sub_staff', 'staff_id');
+    }
 }
