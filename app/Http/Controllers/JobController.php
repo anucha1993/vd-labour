@@ -95,7 +95,8 @@ class JobController extends Controller
             'customer_id' => 'required|exists:customers,customer_id',
             'dm_id' => 'required|exists:demands,dm_id',
             'job_group_id' => 'nullable|exists:job_group,job_group_id',
-            'position_id' => 'nullable|exists:position,position_id',
+            'position_ids' => 'nullable|array',
+            'position_ids.*' => 'exists:position,position_id',
             'job_total' => 'required|integer|min:1',
             'job_start_date' => 'required|date|after_or_equal:today',
             'job_end_date' => 'nullable|date|after:job_start_date',
@@ -118,9 +119,12 @@ class JobController extends Controller
             DB::beginTransaction();
             
             $jobData = $request->only([
-                'job_name','country_id','customer_id','dm_id','job_group_id','position_id',
+                'job_name','country_id','customer_id','dm_id','job_group_id',
                 'job_total','job_start_date','job_end_date','job_status'
             ]);
+            $jobData['position_ids'] = $request->input('position_ids', []);
+            // Keep first position as position_id for backward compatibility
+            $jobData['position_id'] = !empty($jobData['position_ids']) ? $jobData['position_ids'][0] : null;
             $job = JobModel::create($jobData);
             
             DB::commit();
@@ -211,9 +215,12 @@ class JobController extends Controller
             DB::beginTransaction();
             
             $jobData = $request->only([
-                'job_name','country_id','dm_id','job_group_id','position_id',
+                'job_name','country_id','dm_id','job_group_id',
                 'job_total','job_start_date','job_end_date','job_status','customer_id'
             ]);
+            $jobData['position_ids'] = $request->input('position_ids', []);
+            // Keep first position as position_id for backward compatibility
+            $jobData['position_id'] = !empty($jobData['position_ids']) ? $jobData['position_ids'][0] : null;
 
             $job->update($jobData);
             

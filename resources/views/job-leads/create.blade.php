@@ -49,7 +49,7 @@
                                                     data-customer="{{ $jobOption->customer->customer_name ?? '' }}"
                                                     data-company="{{ $jobOption->demand->dm_com_name ?? '' }}"
                                                     data-job-group="{{ $jobOption->jobGroup ? $jobOption->jobGroup->job_group_name . ' (' . $jobOption->jobGroup->job_group_name_th . ')' : '' }}"
-                                                    data-position="{{ $jobOption->position ? $jobOption->position->position_name . ' (' . $jobOption->position->position_name_th . ')' : '' }}"
+                                                    data-position="{{ $jobOption->positions->count() > 0 ? $jobOption->positions->map(fn($p) => $p->position_name . ' (' . $p->position_name_th . ')')->implode(', ') : '' }}"
                                                     data-start-date="{{ $jobOption->job_start_date ? $jobOption->job_start_date->format('d/m/Y') : '' }}"
                                                     data-end-date="{{ $jobOption->job_end_date ? $jobOption->job_end_date->format('d/m/Y') : 'รับสมัครต่อเนื่อง' }}"
                                                     data-total="{{ $jobOption->job_total }}"
@@ -119,7 +119,15 @@
                                     <div class="col-md-6">
                                         <div class="mb-3">
                                             <label class="text-muted small">ตำแหน่ง (Position)</label>
-                                            <div id="jobPosition">{{ $job->position ? $job->position->position_name . ' (' . $job->position->position_name_th . ')' : '-' }}</div>
+                                            <div id="jobPosition">
+                                                @if($job && $job->positions->count() > 0)
+                                                    @foreach($job->positions as $pos)
+                                                        <span class="badge bg-primary me-1">{{ $pos->position_name }} ({{ $pos->position_name_th }})</span>
+                                                    @endforeach
+                                                @else
+                                                    -
+                                                @endif
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -301,7 +309,15 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('jobCountry').textContent = option.dataset.country || '-';
             document.getElementById('jobCustomer').textContent = option.dataset.customer || '-';
             document.getElementById('jobGroup').textContent = option.dataset.jobGroup || '-';
-            document.getElementById('jobPosition').textContent = option.dataset.position || '-';
+            
+            // Update positions as badges
+            const posEl = document.getElementById('jobPosition');
+            const posData = option.dataset.position;
+            if (posData) {
+                posEl.innerHTML = posData.split(', ').map(p => `<span class="badge bg-primary me-1">${p}</span>`).join('');
+            } else {
+                posEl.textContent = '-';
+            }
             
             // Update dates
             const startDateEl = document.getElementById('jobStartDate');

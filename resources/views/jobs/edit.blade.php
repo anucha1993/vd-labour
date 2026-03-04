@@ -143,16 +143,16 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="position_id" class="form-label">ตำแหน่ง (Position)</label>
-                                    <select class="form-select @error('position_id') is-invalid @enderror" id="position_id" name="position_id">
-                                        <option value="">-- เลือกตำแหน่ง --</option>
+                                    <label for="position_ids" class="form-label">ตำแหน่ง (Position) <small class="text-muted">เลือกได้หลายตำแหน่ง</small></label>
+                                    @php $selectedPositionIds = old('position_ids', $job->position_ids ?? ($job->position_id ? [$job->position_id] : [])); @endphp
+                                    <select class="form-select @error('position_ids') is-invalid @enderror" id="position_ids" name="position_ids[]" multiple>
                                         @foreach($positions as $pos)
-                                            <option value="{{ $pos->position_id }}" data-jobgroup="{{ $pos->job_group_id }}" {{ old('position_id', $job->position_id) == $pos->position_id ? 'selected' : '' }}>
+                                            <option value="{{ $pos->position_id }}" data-jobgroup="{{ $pos->job_group_id }}" {{ in_array($pos->position_id, (array)$selectedPositionIds) ? 'selected' : '' }}>
                                                  {{ $pos->position_name }} ({{ $pos->position_name_th }})
                                             </option>
                                         @endforeach
                                     </select>
-                                    @error('position_id')
+                                    @error('position_ids')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
@@ -235,7 +235,7 @@
 
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize Select2 for dropdowns
-    $('#position_id').select2({ placeholder: '-- เลือกตำแหน่ง --', allowClear: true, width: '100%' });
+    $('#position_ids').select2({ placeholder: '-- เลือกตำแหน่ง --', allowClear: true, width: '100%' });
     $('#customer_id').select2({ placeholder: '-- เลือกบริษัทนายจ้าง --', allowClear: true, width: '100%' });
     $('#dm_id').select2({ placeholder: '-- เลือก Demand --', allowClear: true, width: '100%' });
 
@@ -293,8 +293,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Job Group -> Positions dynamic loading (edit view)
     const jobGroupSelect = document.getElementById('job_group_id');
 
-    function loadPositionsForJobGroup(jobGroupId, selectedId = null) {
-        $('#position_id').empty().append('<option value="">-- เลือกตำแหน่ง --</option>').trigger('change');
+    const selectedPositionIds = @json(old('position_ids', $job->position_ids ?? ($job->position_id ? [$job->position_id] : [])));
+
+    function loadPositionsForJobGroup(jobGroupId, selectedIds = []) {
+        $('#position_ids').empty().trigger('change');
         if (!jobGroupId) return;
 
         const url = '{{ route("jobgroup.ajaxSelectPosition") }}?jobgroup=' + encodeURIComponent(jobGroupId);
@@ -302,24 +304,24 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(res => res.json())
             .then(data => {
                 data.forEach(p => {
-                    const opt = new Option(p.position_name + ' (' + p.position_name_th + ')', p.position_id, false, selectedId == p.position_id);
-                    $('#position_id').append(opt);
+                    const isSelected = selectedIds.includes(p.position_id) || selectedIds.includes(String(p.position_id));
+                    const opt = new Option(p.position_name + ' (' + p.position_name_th + ')', p.position_id, false, isSelected);
+                    $('#position_ids').append(opt);
                 });
-                $('#position_id').trigger('change');
+                $('#position_ids').trigger('change');
             })
             .catch(err => console.error('Could not load positions:', err));
     }
 
     if (jobGroupSelect) {
         jobGroupSelect.addEventListener('change', function() {
-            loadPositionsForJobGroup(this.value, null);
+            loadPositionsForJobGroup(this.value, []);
         });
 
         // On load, if there's a selected job group, load positions and select current
         const initialGroup = jobGroupSelect.value;
-        const initialPos = '{{ old("position_id", $job->position_id) }}';
         if (initialGroup) {
-            loadPositionsForJobGroup(initialGroup, initialPos || null);
+            loadPositionsForJobGroup(initialGroup, selectedPositionIds.map(String));
         }
     }
 });

@@ -126,16 +126,15 @@
                             </div>
                             <div class="col-md-3">
                                 <div class="mb-3">
-                                    <label for="position_id" class="form-label">ตำแหน่ง (Position) <span class="text-danger">*</span></label>
-                                    <select class="form-select @error('position_id') is-invalid @enderror" id="position_id" name="position_id" required> 
-                                        <option value="">-- เลือกตำแหน่ง --</option>
+                                    <label for="position_ids" class="form-label">ตำแหน่ง (Position) <span class="text-danger">*</span> <small class="text-muted">เลือกได้หลายตำแหน่ง</small></label>
+                                    <select class="form-select @error('position_ids') is-invalid @enderror" id="position_ids" name="position_ids[]" multiple required> 
                                         @foreach($positions as $pos)
-                                            <option value="{{ $pos->position_id }}" data-jobgroup="{{ $pos->job_group_id }}" {{ old('position_id') == $pos->position_id ? 'selected' : '' }}>
+                                            <option value="{{ $pos->position_id }}" data-jobgroup="{{ $pos->job_group_id }}" {{ in_array($pos->position_id, old('position_ids', [])) ? 'selected' : '' }}>
                                                 {{ $pos->position_name }} ({{ $pos->position_name_th }})
                                             </option>
                                         @endforeach
                                     </select>
-                                    @error('position_id')
+                                    @error('position_ids')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
@@ -215,8 +214,8 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize Select2 for Position dropdown
-    $('#position_id').select2({
+    // Initialize Select2 for Position dropdown (multi-select)
+    $('#position_ids').select2({
         placeholder: '-- เลือกตำแหน่ง --',
         allowClear: true,
         width: '100%'
@@ -305,13 +304,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Job Group -> Positions dynamic loading
     const jobGroupSelect = document.getElementById('job_group_id');
-    const positionSelect = document.getElementById('position_id');
 
     if (jobGroupSelect) {
         jobGroupSelect.addEventListener('change', function() {
             const jobGroupId = this.value;
             // Clear current positions in Select2
-            $('#position_id').empty().append('<option value="">-- เลือกตำแหน่ง --</option>').trigger('change');
+            $('#position_ids').empty().trigger('change');
 
             if (!jobGroupId) return;
 
@@ -321,9 +319,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 .then(data => {
                     data.forEach(p => {
                         const opt = new Option(p.position_name + ' (' + p.position_name_th + ')', p.position_id, false, false);
-                        $('#position_id').append(opt);
+                        $('#position_ids').append(opt);
                     });
-                    $('#position_id').trigger('change');
+                    $('#position_ids').trigger('change');
                 })
                 .catch(err => {
                     console.error('Could not load positions:', err);

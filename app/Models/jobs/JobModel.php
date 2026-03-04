@@ -26,6 +26,7 @@ class JobModel extends Model
         'dm_id',
         'job_group_id',
         'position_id',
+        'position_ids',
         'job_total',
         'job_start_date',
         'job_end_date',
@@ -38,6 +39,7 @@ class JobModel extends Model
     protected $casts = [
         'job_start_date' => 'date',
         'job_end_date' => 'date',
+        'position_ids' => 'array',
     ];
     
     // Relationships
@@ -76,6 +78,18 @@ class JobModel extends Model
      public function position()
     {
         return $this->belongsTo(positionModel::class, 'position_id', 'position_id');
+    }
+
+    /**
+     * Get all positions (from position_ids JSON)
+     */
+    public function getPositionsAttribute()
+    {
+        if (!$this->position_ids || !is_array($this->position_ids)) {
+            // Fallback to single position_id
+            return $this->position ? collect([$this->position]) : collect();
+        }
+        return positionModel::whereIn('position_id', $this->position_ids)->get();
     }
     
     // Scopes

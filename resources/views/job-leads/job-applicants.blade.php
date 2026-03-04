@@ -479,8 +479,10 @@
                     <div class="col-md-6">
                         <label class="text-muted small">ตำแหน่ง (Position)</label>
                         <div>
-                            @if($job->position)
-                                {{ $job->position->position_name }} ({{ $job->position->position_name_th }})
+                            @if($job->positions->count() > 0)
+                                @foreach($job->positions as $pos)
+                                    <span class="badge bg-primary me-1">{{ $pos->position_name }} ({{ $pos->position_name_th }})</span>
+                                @endforeach
                             @else
                                 -
                             @endif
