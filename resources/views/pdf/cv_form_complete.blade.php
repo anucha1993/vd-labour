@@ -501,8 +501,8 @@
 <table style="width: 100%; border-collapse: collapse; margin-top: 50px;">
     <tr>
         <td style="width: 40%; padding-top: 8px; text-align: center; font-weight: bold;">
-            ____________________________________________ <br>
-            <small>DATE & LOCATION <br>วันที่ทดสอบ + สถานท้ี่ทดสอบ<br>{{ $lead ? $lead->lead_date_location : '' }}</small>
+            <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ $lead && $lead->examinationRound ? date('d/m/Y', strtotime($lead->examinationRound->examination_round_name)) . ' - ' . $lead->examinationRound->examination_round_note : '' }}{{ $lead && $lead->lead_date_location ? ($lead->examinationRound ? ' / ' : '') . $lead->lead_date_location : '' }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u><br>
+            <small>DATE & LOCATION <br>วันที่ทดสอบ + สถานที่ทดสอบ<br></small>
         </td>
 
         <td style="width: 20%"></td>
@@ -581,12 +581,20 @@
                 </td>
             </tr>
               <tr >
-         <td style="padding: 8px" colspan="10"><b>งาน:</b> {{ $lead && $lead->jobGroup ? $lead->jobGroup->job_group_name : '' }}</td>
+         <td style="padding: 8px" colspan="10"><b>งาน:</b> {{ $lead && $lead->jobGroup ? $lead->jobGroup->job_group_name_th : '' }}</td>
          <td colspan="10"></td>
-         <td colspan="10"><b>ตำแหน่ง:</b> {{ $lead && $lead->position ? $lead->position->position_name : '' }}</td>
+         <td colspan="10"><b>ตำแหน่ง:</b> {{ $lead && $lead->position ? $lead->position->position_name_th : '' }}</td>
          </tr>
+           @php
+             $thaiPrefix = match($lead->lead_prefix ?? '') {
+                 'Mr.' => 'นาย',
+                 'Mrs.' => 'นาง',
+                 'Ms.' => 'นางสาว',
+                 default => $lead->lead_prefix ?? ''
+             };
+           @endphp
            <tr >
-         <td style="padding: 8px" colspan="10"><b>ชื่อ - นามสกุล :</b> {{ $lead ? ($lead->lead_prefix ? $lead->lead_prefix . ' ' : '') . $lead->lead_firstname . ' ' . $lead->lead_lastname : '' }}</td>
+         <td style="padding: 8px" colspan="10"><b>ชื่อ - นามสกุล :</b> {{ $lead ? ($thaiPrefix ? $thaiPrefix . ' ' : '') . $lead->lead_firstname_th . ' ' . $lead->lead_lastname_th : '' }}</td>
          <td colspan="10"></td>
          <td colspan="10"><b>เบอร์โทร :</b> {{ $lead ? $lead->lead_phone : '' }}</td>
          </tr>

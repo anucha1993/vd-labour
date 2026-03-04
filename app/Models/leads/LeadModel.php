@@ -19,7 +19,7 @@ class LeadModel extends Model
     protected $primaryKey = 'lead_id';
     
     protected $fillable = [
-        'lead_number', 'lead_prefix', 'lead_firstname', 'lead_lastname', 'lead_father_name', 
+        'lead_number', 'lead_prefix', 'lead_firstname', 'lead_lastname', 'lead_firstname_th', 'lead_lastname_th', 'lead_father_name', 
         'lead_mother_name', 'lead_gender',
         'lead_marital_status', 'lead_birthday', 'lead_age', 'lead_height',
         'lead_weight', 'lead_bmi', 'lead_phone', 'lead_phone_2', 'lead_email',

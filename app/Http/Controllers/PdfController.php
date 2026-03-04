@@ -96,7 +96,7 @@ class PdfController extends Controller
     {
         $lead = null;
         if ($leadId) {
-            $lead = LeadModel::with(['position', 'position2', 'position3', 'country', 'jobGroup', 'staff', 'jobHistory', 'recommenderStaff.staff'])->findOrFail($leadId);
+            $lead = LeadModel::with(['position', 'position2', 'position3', 'country', 'jobGroup', 'staff', 'jobHistory', 'recommenderStaff.staff', 'examinationRound'])->findOrFail($leadId);
         }
         
         $data = [

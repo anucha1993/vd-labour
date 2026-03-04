@@ -85,7 +85,20 @@
                                     </div>
                                 </div>
 
-                             
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">ชื่อ (ภาษาไทย)</label>
+                                        <input type="text" class="form-control @error('lead_firstname_th') is-invalid @enderror" 
+                                               name="lead_firstname_th" value="{{ old('lead_firstname_th', $lead->lead_firstname_th) }}" placeholder="ชื่อภาษาไทย">
+                                        @error('lead_firstname_th')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">นามสกุล (ภาษาไทย)</label>
+                                        <input type="text" class="form-control @error('lead_lastname_th') is-invalid @enderror" 
+                                               name="lead_lastname_th" value="{{ old('lead_lastname_th', $lead->lead_lastname_th) }}" placeholder="นามสกุลภาษาไทย">
+                                        @error('lead_lastname_th')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                    </div>
+                                </div>
 
                                 <div class="row mb-3">
                                     <div class="col-md-1">
@@ -1026,6 +1039,7 @@
         // Calculate BMI
         document.getElementById('lead_height').addEventListener('input', calculateBMI);
         document.getElementById('lead_weight').addEventListener('input', calculateBMI);
+        calculateBMI(); // คำนวณตอนโหลดหน้า
 
         function calculateBMI() {
             const height = parseFloat(document.getElementById('lead_height').value);
