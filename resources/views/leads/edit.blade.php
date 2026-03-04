@@ -895,11 +895,21 @@
                             </div>
                             <div class="col-md-3">
                                 <label class="form-label">Country (ประเทศ)</label>
-                                <select class="form-select" id="modal_country">
+                                <select class="form-select" id="modal_country_select" onchange="toggleCustomCountry(this)">
                                     <option value="THAI">THAI</option>
                                     <option value="ISRAEL">ISRAEL</option>
-                                    <option value="OTHER">OTHER</option>
+                                    <option value="JAPAN">JAPAN</option>
+                                    <option value="KOREA">KOREA</option>
+                                    <option value="TAIWAN">TAIWAN</option>
+                                    <option value="SINGAPORE">SINGAPORE</option>
+                                    <option value="MALAYSIA">MALAYSIA</option>
+                                    <option value="UAE">UAE</option>
+                                    <option value="QATAR">QATAR</option>
+                                    <option value="__custom__">อื่นๆ (พิมพ์เอง)...</option>
                                 </select>
+                                <input type="text" class="form-control mt-1" id="modal_country_custom" 
+                                       placeholder="พิมพ์ชื่อประเทศ" style="display:none;">
+                                <input type="hidden" id="modal_country" value="THAI">
                             </div>
                             <div class="col-md-3">
                                 <label class="form-label">Experience Years (ปี)</label>
@@ -1360,7 +1370,21 @@
             document.getElementById('modal_start_date').value = data.start_date;
             document.getElementById('modal_end_date').value = data.end_date;
             document.getElementById('modal_position').value = data.position;
-            document.getElementById('modal_country').value = data.country;
+            // Set country: check if value exists in select options
+            const countrySelect = document.getElementById('modal_country_select');
+            const countryCustom = document.getElementById('modal_country_custom');
+            const countryHidden = document.getElementById('modal_country');
+            const predefined = [...countrySelect.options].map(o => o.value).filter(v => v !== '__custom__');
+            if (predefined.includes(data.country)) {
+                countrySelect.value = data.country;
+                countryCustom.style.display = 'none';
+                countryCustom.value = '';
+            } else {
+                countrySelect.value = '__custom__';
+                countryCustom.style.display = 'block';
+                countryCustom.value = data.country;
+            }
+            countryHidden.value = data.country;
             document.getElementById('modal_experience_years').value = data.experience_years;
             document.getElementById('modal_company_type').value = data.company_type;
             document.getElementById('modal_company_name').value = data.company_name;
@@ -1405,6 +1429,11 @@
             document.getElementById('jobHistoryForm').reset();
             document.getElementById('modal_experience_years').value = '0';
             document.getElementById('modalOverlapError').classList.add('d-none');
+            // Reset country to default
+            document.getElementById('modal_country_select').value = 'THAI';
+            document.getElementById('modal_country_custom').style.display = 'none';
+            document.getElementById('modal_country_custom').value = '';
+            document.getElementById('modal_country').value = 'THAI';
             
             // ลบ validation classes
             document.querySelectorAll('#jobHistoryModal .is-invalid').forEach(el => {
@@ -1703,6 +1732,25 @@
                 }
             }, 3000);
         }
+
+        // Toggle custom country input
+        function toggleCustomCountry(sel) {
+            const customInput = document.getElementById('modal_country_custom');
+            const hiddenInput = document.getElementById('modal_country');
+            if (sel.value === '__custom__') {
+                customInput.style.display = 'block';
+                customInput.focus();
+                hiddenInput.value = customInput.value;
+            } else {
+                customInput.style.display = 'none';
+                customInput.value = '';
+                hiddenInput.value = sel.value;
+            }
+        }
+        // Sync custom country text to hidden input
+        document.getElementById('modal_country_custom')?.addEventListener('input', function() {
+            document.getElementById('modal_country').value = this.value.toUpperCase();
+        });
 
         // ฟังก์ชันแปลภาษาสำหรับฟิลด์ Job History
         async function translateJobField(fieldId) {

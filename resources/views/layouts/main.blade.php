@@ -34,6 +34,10 @@
       background: #001d3d;
       color: white;
       position: fixed;
+      width: 250px;
+      z-index: 1050;
+      transition: transform 0.3s ease;
+      overflow-y: auto;
     }
     .sidebar a {
       color: #adb5bd;
@@ -107,11 +111,11 @@
     .bg-purple {
       background-color: #9c27b0 !important;
     }
-  .content {
-  margin-left: 250px;
-  padding: 30px;
-  padding-top: 80px; /* เพิ่มจากเดิม */
-}
+    .content {
+      margin-left: 250px;
+      padding: 30px;
+      padding-top: 80px;
+    }
 
     .card-custom {
       border: none;
@@ -166,18 +170,87 @@
       overflow-x: auto;
       box-shadow: 0 2px 16px 0 rgba(178,60,60,0.07);
     }
-    @media (max-width: 767px) {
+
+    /* Hamburger button */
+    .sidebar-toggle {
+      display: none;
+      position: fixed;
+      top: 12px;
+      left: 12px;
+      z-index: 1100;
+      background: #001d3d;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      width: 44px;
+      height: 44px;
+      font-size: 1.5rem;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    /* Sidebar overlay */
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 1040;
+    }
+    .sidebar-overlay.active {
+      display: block;
+    }
+
+    /* Mobile: < 992px */
+    @media (max-width: 991px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+      .sidebar.mobile-open {
+        transform: translateX(0);
+      }
+      .sidebar-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .content {
+        margin-left: 0;
+        padding: 20px 15px;
+        padding-top: 75px;
+      }
       .table th, .table td {
         padding: 10px 8px;
-        font-size: 0.95em;
+        font-size: 0.92em;
+      }
+      .display-6 {
+        font-size: 1.4rem !important;
+      }
+    }
+
+    @media (max-width: 767px) {
+      .table th, .table td {
+        padding: 8px 6px;
+        font-size: 0.85em;
       }
     }
   </style>
 </head>
 <body>
 
+<!-- Hamburger Toggle Button (mobile only) -->
+<button class="sidebar-toggle" id="sidebarToggle">
+  <i class="bi bi-list"></i>
+</button>
+
+<!-- Sidebar Overlay (mobile only) -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
 <!-- Sidebar -->
-<div class="sidebar p-4" style="width:250px;">
+<div class="sidebar p-4" id="sidebarMenu">
   <h4 class="mb-4">📘 VD-LABOURS</h4>
  <a href="{{ route('my-leads.index') }}"
      class="{{ Request::routeIs('my-leads.*') ? 'active' : '' }}">
@@ -324,7 +397,7 @@
 
 <!-- Topbar Notification -->
 
-<nav class="navbar navbar-expand-lg navbar-light px-3" style="min-height:64px; z-index: 2147483647; position: fixed; top: 0; left: 0; width: 110vw;">
+<nav class="navbar navbar-expand-lg navbar-light px-3" style="min-height:64px; z-index: 1050; position: fixed; top: 0; left: 0; right: 0; width: 100%;">
   <div class="container">
     <span class="navbar-brand d-none d-lg-block"></span>
     {{-- @php dd($scopeExpiringDiseaseConstruct, $scopeExpiringDiseaseFactory); @endphp --}}
@@ -507,6 +580,23 @@
       // Toggle dropdown
       $dropdown.toggleClass('show');
       $icon.toggleClass('rotate');
+    });
+
+    // Mobile sidebar toggle
+    $('#sidebarToggle').click(function() {
+      $('#sidebarMenu').toggleClass('mobile-open');
+      $('#sidebarOverlay').toggleClass('active');
+    });
+    $('#sidebarOverlay').click(function() {
+      $('#sidebarMenu').removeClass('mobile-open');
+      $('#sidebarOverlay').removeClass('active');
+    });
+    // Close sidebar when clicking a link (mobile)
+    $('#sidebarMenu a').not('.sidebar-dropdown > a').click(function() {
+      if ($(window).width() < 992) {
+        $('#sidebarMenu').removeClass('mobile-open');
+        $('#sidebarOverlay').removeClass('active');
+      }
     });
   });
 </script>
