@@ -547,13 +547,18 @@ class JobLeadController extends Controller
         
         // Get job details to filter by position and job group
         $job = null;
-        $jobPositionId = null;
+        $jobPositionIds = [];
         $jobGroupId = null;
         
         if ($jobId) {
             $job = JobModel::with(['position', 'jobGroup'])->find($jobId);
             if ($job) {
-                $jobPositionId = $job->position_id;
+                // ใช้ position_ids (JSON array) ถ้ามี, fallback เป็น position_id เดี่ยว
+                if ($job->position_ids && is_array($job->position_ids)) {
+                    $jobPositionIds = $job->position_ids;
+                } elseif ($job->position_id) {
+                    $jobPositionIds = [$job->position_id];
+                }
                 $jobGroupId = $job->job_group_id;
             }
         }
@@ -563,20 +568,20 @@ class JobLeadController extends Controller
                           ->whereNotNull('lead_lastname')
                           ->where('lead_status', '!=', 'converted'); // ไม่เอาที่แปลงเป็น labour แล้ว
         
-        // Filter by Job Group และ Position (ตรวจสอบทั้ง 3 ตำแหน่ง)
-        if ($jobGroupId || $jobPositionId) {
-            $query->where(function($q) use ($jobGroupId, $jobPositionId) {
+        // Filter by Job Group และ Position (ตรวจสอบทั้ง 3 ตำแหน่งของคนงาน กับทุกตำแหน่งของงาน)
+        if ($jobGroupId || !empty($jobPositionIds)) {
+            $query->where(function($q) use ($jobGroupId, $jobPositionIds) {
                 // ถ้ามี Job Group ให้ filter ตาม
                 if ($jobGroupId) {
                     $q->where('job_group_id', $jobGroupId);
                 }
                 
-                // ถ้ามี Position ให้ filter ตามตำแหน่งทั้ง 3
-                if ($jobPositionId) {
-                    $q->where(function($posQ) use ($jobPositionId) {
-                        $posQ->where('position_id', $jobPositionId)
-                             ->orWhere('position_id_2', $jobPositionId)
-                             ->orWhere('position_id_3', $jobPositionId);
+                // ถ้ามี Position ให้ filter ตามตำแหน่งทั้ง 3 ของคนงาน กับทุกตำแหน่งของงาน
+                if (!empty($jobPositionIds)) {
+                    $q->where(function($posQ) use ($jobPositionIds) {
+                        $posQ->whereIn('position_id', $jobPositionIds)
+                             ->orWhereIn('position_id_2', $jobPositionIds)
+                             ->orWhereIn('position_id_3', $jobPositionIds);
                     });
                 }
             });
@@ -600,7 +605,7 @@ class JobLeadController extends Controller
             });
         }
         
-        $leads = $query->limit(50)->get()->map(function($lead) use ($jobId, $jobPositionId) {
+        $leads = $query->limit(50)->get()->map(function($lead) use ($jobId, $jobPositionIds) {
             $isAvailable = JobLeadModel::isLeadAvailable($lead->lead_id, $jobId);
             $existingApp = !$isAvailable ? JobLeadModel::getExistingApplicationInfo($lead->lead_id, $jobId) : null;
             
@@ -616,17 +621,20 @@ class JobLeadController extends Controller
                 $positions[] = $lead->position3->position_name . ' (' . $lead->position3->position_name_th . ')';
             }
             
-            // หาตำแหน่งที่ตรงกับงาน (ถ้ามี)
-            $matchedPosition = '';
-            if ($jobPositionId) {
-                if ($lead->position_id == $jobPositionId && $lead->position) {
-                    $matchedPosition = $lead->position->position_name . ' (' . $lead->position->position_name_th . ')';
-                } elseif ($lead->position_id_2 == $jobPositionId && $lead->position2) {
-                    $matchedPosition = $lead->position2->position_name . ' (' . $lead->position2->position_name_th . ')';
-                } elseif ($lead->position_id_3 == $jobPositionId && $lead->position3) {
-                    $matchedPosition = $lead->position3->position_name . ' (' . $lead->position3->position_name_th . ')';
+            // หาตำแหน่งที่ตรงกับงาน (ถ้ามี) — ตรวจสอบกับทุก position ของงาน
+            $matchedPositions = [];
+            if (!empty($jobPositionIds)) {
+                if ($lead->position && in_array($lead->position_id, $jobPositionIds)) {
+                    $matchedPositions[] = $lead->position->position_name . ' (' . $lead->position->position_name_th . ')';
+                }
+                if ($lead->position2 && in_array($lead->position_id_2, $jobPositionIds)) {
+                    $matchedPositions[] = $lead->position2->position_name . ' (' . $lead->position2->position_name_th . ')';
+                }
+                if ($lead->position3 && in_array($lead->position_id_3, $jobPositionIds)) {
+                    $matchedPositions[] = $lead->position3->position_name . ' (' . $lead->position3->position_name_th . ')';
                 }
             }
+            $matchedPosition = implode(', ', $matchedPositions);
             
             return [
                 'id' => $lead->lead_id,

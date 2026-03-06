@@ -31,14 +31,14 @@
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
             display: flex;
             position: relative;
-            padding-top: 50px; /* เว้นที่สำหรับ Header ด้านบน */
+            padding-top: 40px;
         }
 
         .company-logo {
             position: absolute;
-            top: 10px;
-            right: 30px;
-            width: 80px;
+            top: 8px;
+            right: 20px;
+            width: 65px;
             height: auto;
             margin: 5px;
             z-index: 1000;
@@ -89,7 +89,7 @@
         /* ================= คอลัมน์ซ้าย ================= */
         .left-col {
             width: 35%;
-            padding: 0 20px 30px 30px;
+            padding: 0 15px 20px 20px;
             color: var(--text-grey);
             border-right: 1px solid #eee;
         }
@@ -97,8 +97,8 @@
         /* กรอบรูป */
         .photo-frame {
             width: 100%;
-            margin-bottom: 20px;
-            padding-top: 20px;
+            margin-bottom: 12px;
+            padding-top: 10px;
         }
 
         .profile-img {
@@ -113,22 +113,22 @@
         /* หัวข้อส่วนย่อย (Professional Summary, Contact) */
         .sidebar-title {
             color: #555;
-            font-size: 18px;
+            font-size: 14px;
             font-weight: 700;
-            margin-bottom: 15px;
-            padding-bottom: 8px;
+            margin-bottom: 8px;
+            padding-bottom: 5px;
             border-bottom: 3px solid var(--theme-blue);
             background: linear-gradient(to right, #cce7f0 0%, #cce7f0 60%, transparent 60%);
-            padding-left: 10px;
+            padding-left: 8px;
             width: 100%;
-            margin-top: 30px;
+            margin-top: 15px;
         }
 
         /* เนื้อหา Summary */
         .summary-text {
-            font-size: 14px;
-            line-height: 1.5;
-            margin-bottom: 25px;
+            font-size: 11px;
+            line-height: 1.4;
+            margin-bottom: 12px;
             text-align: justify;
         }
 
@@ -136,39 +136,39 @@
         .profile-list {
             list-style: none;
             padding-left: 0;
-            font-size: 13px;
+            font-size: 11px;
         }
 
         .profile-list li {
-            margin-bottom: 8px;
-            line-height: 1.4;
+            margin-bottom: 4px;
+            line-height: 1.3;
         }
         
         .profile-list strong {
             color: var(--text-dark);
             font-weight: 500;
             display: inline-block;
-            min-width: 100px;
+            min-width: 85px;
         }
 
         /* ส่วน Contact */
         .contact-list {
             list-style: none;
-            font-size: 14px;
+            font-size: 11px;
         }
 
         .contact-list li {
-            margin-bottom: 10px;
+            margin-bottom: 6px;
             display: flex;
             align-items: flex-start;
         }
 
         .contact-list i {
             color: var(--theme-blue);
-            margin-right: 10px;
-            font-size: 18px;
-            margin-top: 3px;
-            width: 20px;
+            margin-right: 8px;
+            font-size: 13px;
+            margin-top: 2px;
+            width: 16px;
             text-align: center;
         }
         
@@ -181,19 +181,19 @@
         /* ================= คอลัมน์ขวา ================= */
         .right-col {
             width: 65%;
-            padding: 0 30px 30px 30px;
+            padding: 0 20px 20px 20px;
             color: var(--text-grey);
         }
 
         /* ส่วนหัวชื่อ */
         .main-header {
-            margin-top: -20px; /* ดึงขึ้นไปด้านบน */
-            margin-bottom: 30px;
+            margin-top: -20px;
+            margin-bottom: 15px;
         }
 
         .main-name {
             font-family: 'Roboto', sans-serif;
-            font-size: 38px;
+            font-size: 30px;
             color: var(--text-dark);
             text-transform: uppercase;
             font-weight: 700;
@@ -203,18 +203,18 @@
         /* หัวข้อหลัก Work Experience */
         .main-section-title {
             color: #555;
-            font-size: 20px;
+            font-size: 15px;
             font-weight: 700;
-            margin-bottom: 20px;
-            padding-bottom: 8px;
-            padding-left: 10px;
+            margin-bottom: 12px;
+            padding-bottom: 5px;
+            padding-left: 8px;
             border-bottom: 3px solid var(--theme-blue);
             background: linear-gradient(to right, #cce7f0 0%, #cce7f0 60%, transparent 60%);
         }
         
         /* Job Item Container */
         .job-item {
-            margin-bottom: 30px;
+            margin-bottom: 15px;
             padding-left: 10px;
             position: relative;
         }
@@ -249,43 +249,43 @@
 
         /* ส่วนหัวข้องาน */
         .job-info {
-            margin-bottom: 10px;
-            padding-left: 15px; /* เว้นให้พ้น bullet */
+            margin-bottom: 5px;
+            padding-left: 15px;
         }
         
         .job-info strong {
-            font-size: 15px;
+            font-size: 12px;
             color: var(--text-dark);
             font-weight: 500;
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 2px;
         }
 
         .company-name {
             color: var(--theme-blue);
             font-weight: 500;
-            font-size: 14px;
+            font-size: 11px;
             display: inline-block;
-            margin-right: 15px;
+            margin-right: 10px;
         }
 
         .job-date {
             color: var(--text-grey);
-            font-size: 13px;
+            font-size: 11px;
         }
 
         /* รายละเอียดงาน */
         .job-duties {
             list-style-type: none;
             padding-left: 15px;
-            font-size: 13px;
-            line-height: 1.4;
+            font-size: 11px;
+            line-height: 1.3;
         }
 
         .job-duties li {
             position: relative;
-            padding-left: 15px;
-            margin-bottom: 5px;
+            padding-left: 12px;
+            margin-bottom: 3px;
         }
 
         .job-duties li::before {
@@ -334,6 +334,7 @@
 </head>
 <body>
 
+    <div id="resume-wrapper">
     <div class="resume-container">
         <img src="{{ asset('logo/V dragon-02.png') }}" alt="Company Logo" class="company-logo">
        
@@ -409,7 +410,7 @@
         </div>
 
         <div class="right-col">
-            <div style="margin-top: 150px;"></div> <div class="main-section-title">Work Experience</div>
+            <div style="margin-top: 100px;"></div> <div class="main-section-title">Work Experience</div>
             
             @if($lead->jobHistory && $lead->jobHistory->count() > 0)
                 @foreach($lead->jobHistory->sortByDesc('start_date') as $job)
@@ -446,6 +447,7 @@
             ^<br>^<br>^
         </div>
     </div>
+    </div><!-- end resume-wrapper -->
 
     <!-- Template Selector & Print Button -->
     <div style="position: fixed; top: 20px; right: 20px; z-index: 2000; background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.2);">
@@ -464,6 +466,45 @@
             currentUrl.searchParams.set('template', templateNumber);
             window.location.href = currentUrl.toString();
         }
+
+        // Auto-scale: ย่อเนื้อหาทั้งหมดให้พอดี 1 หน้า A4 โดยแสดงข้อมูลครบ
+        function fitToOnePage() {
+            const container = document.querySelector('.resume-container');
+            const wrapper = document.getElementById('resume-wrapper');
+            if (!container || !wrapper) return;
+
+            wrapper.style.width = '210mm';
+            wrapper.style.height = '297mm';
+            wrapper.style.overflow = 'hidden';
+            wrapper.style.margin = '0 auto';
+            const a4Height = wrapper.offsetHeight;
+
+            container.style.zoom = '1';
+            container.style.width = '210mm';
+
+            const contentHeight = container.scrollHeight;
+
+            let zoomLevel = 1;
+            if (contentHeight > a4Height) {
+                zoomLevel = Math.floor((a4Height / contentHeight) * 1000) / 1000;
+            }
+
+            let dynamicStyle = document.getElementById('dynamic-zoom-style');
+            if (!dynamicStyle) {
+                dynamicStyle = document.createElement('style');
+                dynamicStyle.id = 'dynamic-zoom-style';
+                document.head.appendChild(dynamicStyle);
+            }
+            dynamicStyle.textContent = 
+                '.resume-container { zoom: ' + zoomLevel + ' !important; }' +
+                '#resume-wrapper { width: 210mm !important; height: 297mm !important; overflow: hidden !important; margin: 0 auto !important; }' +
+                '@media print { ' +
+                '  .resume-container { zoom: ' + zoomLevel + ' !important; }' +
+                '  #resume-wrapper { width: 210mm !important; height: 297mm !important; overflow: hidden !important; margin: 0 !important; }' +
+                '}';
+        }
+
+        window.addEventListener('load', fitToOnePage);
     </script>
 
     <style>
@@ -498,7 +539,9 @@
                 margin: 0;
                 padding-top: 50px;
                 page-break-after: auto;
-                display: flex;
+                display: flex !important;
+                flex-direction: row !important;
+                flex-wrap: nowrap !important;
                 position: relative;
             }
             
@@ -528,14 +571,18 @@
             
             /* คอลัมน์ซ้าย */
             .left-col {
-                width: 35%;
+                width: 35% !important;
+                flex: 0 0 35% !important;
+                max-width: 35% !important;
                 padding: 0 20px 30px 30px;
                 border-right: 1px solid #eee !important;
             }
             
             /* คอลัมน์ขวา */
             .right-col {
-                width: 65%;
+                width: 65% !important;
+                flex: 0 0 65% !important;
+                max-width: 65% !important;
                 padding: 0 30px 30px 20px;
             }
             

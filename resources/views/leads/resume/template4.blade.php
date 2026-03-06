@@ -74,16 +74,16 @@
         /* ================= คอลัมน์ซ้าย (ข้อมูลส่วนตัว & Contact) ================= */
         .left-col {
             width: 38%;
-            padding: 30px 20px 30px 30px;
+            padding: 20px 15px 20px 20px;
             color: var(--text-grey);
-            border-right: 1px solid var(--border-grey); /* เส้นแบ่งคอลัมน์ */
+            border-right: 1px solid var(--border-grey);
         }
         
         /* กรอบรูป */
         .photo-frame {
             width: 100%;
-            margin-bottom: 25px;
-            padding: 5px;
+            margin-bottom: 12px;
+            padding: 3px;
         }
 
         .profile-img {
@@ -101,33 +101,33 @@
         /* หัวข้อส่วนย่อย (Contact, About Me, Skills) */
         .sidebar-title {
             color: var(--text-dark);
-            font-size: 18px;
+            font-size: 14px;
             font-weight: 500;
-            margin-bottom: 15px;
-            padding-bottom: 5px;
-            border-bottom: 1px solid var(--text-dark); /* เส้นบางๆ สีดำ */
+            margin-bottom: 8px;
+            padding-bottom: 4px;
+            border-bottom: 1px solid var(--text-dark);
             width: 80%;
-            margin-top: 30px;
+            margin-top: 15px;
         }
         
         /* Contact */
         .contact-list {
             list-style: none;
-            font-size: 14px;
+            font-size: 11px;
         }
 
         .contact-list li {
-            margin-bottom: 10px;
+            margin-bottom: 6px;
             display: flex;
             align-items: flex-start;
         }
 
         .contact-list i {
             color: var(--theme-blue);
-            margin-right: 15px;
-            font-size: 20px;
-            margin-top: 3px;
-            width: 20px;
+            margin-right: 10px;
+            font-size: 14px;
+            margin-top: 2px;
+            width: 16px;
             text-align: center;
         }
         
@@ -140,32 +140,32 @@
         .about-me-list {
             list-style: none;
             padding-left: 0;
-            font-size: 13px;
+            font-size: 11px;
         }
 
         .about-me-list li {
-            margin-bottom: 8px;
-            line-height: 1.4;
+            margin-bottom: 4px;
+            line-height: 1.3;
         }
         
         .about-me-list strong {
             color: var(--text-dark);
             font-weight: 500;
             display: inline-block;
-            min-width: 120px;
+            min-width: 95px;
         }
 
         /* Skills List */
         .skills-list {
             list-style: none;
             padding-left: 0;
-            font-size: 14px;
+            font-size: 11px;
         }
         
         .skills-list li {
             position: relative;
-            padding-left: 15px;
-            margin-bottom: 8px;
+            padding-left: 12px;
+            margin-bottom: 4px;
         }
         
         .skills-list li::before {
@@ -179,68 +179,68 @@
         /* ================= คอลัมน์ขวา (ชื่อ & ประสบการณ์) ================= */
         .right-col {
             width: 62%;
-            padding: 30px 30px 30px 20px;
+            padding: 20px 20px 20px 15px;
             color: var(--text-grey);
         }
 
         /* ส่วนหัวชื่อ */
         .main-header {
-            margin-bottom: 25px;
-            padding-top: 80px; /* เว้นที่ให้ Logo */
+            margin-bottom: 12px;
+            padding-top: 50px;
         }
 
         .main-name {
             font-family: 'Roboto', sans-serif;
-            font-size: 32px;
-            color: var(--text-dark); /* ใช้สีดำเข้มตามภาพ */
+            font-size: 26px;
+            color: var(--text-dark);
             text-transform: uppercase;
             font-weight: 700;
             line-height: 1.1;
         }
         
         .supermarket-tag {
-            font-size: 16px;
+            font-size: 13px;
             color: var(--text-grey);
             font-weight: 500;
-            margin-top: 5px;
-            margin-bottom: 10px;
+            margin-top: 3px;
+            margin-bottom: 6px;
         }
         
         .summary-text {
-            font-size: 14px;
-            line-height: 1.5;
-            margin-bottom: 30px;
+            font-size: 11px;
+            line-height: 1.4;
+            margin-bottom: 15px;
             text-align: justify;
         }
 
         /* หัวข้อหลัก Experience */
         .main-section-title {
             color: var(--text-dark);
-            font-size: 20px;
+            font-size: 15px;
             font-weight: 700;
-            margin-bottom: 20px;
-            padding-bottom: 5px;
+            margin-bottom: 10px;
+            padding-bottom: 4px;
             border-bottom: 2px solid var(--theme-blue);
         }
         
         /* Job Item Container */
         .job-item {
-            margin-bottom: 30px;
+            margin-bottom: 12px;
         }
 
         /* ส่วนหัวข้องาน */
         .job-info {
-            margin-bottom: 10px;
+            margin-bottom: 5px;
             background-color: var(--light-grey-bg);
-            padding: 8px 10px;
+            padding: 5px 8px;
         }
         
         .job-info strong {
-            font-size: 16px;
+            font-size: 12px;
             color: var(--text-dark);
             font-weight: 500;
             display: block;
-            margin-bottom: 3px;
+            margin-bottom: 2px;
         }
 
         .job-details-line {
@@ -252,26 +252,26 @@
         .job-role {
             color: var(--theme-blue);
             font-weight: 500;
-            font-size: 14px;
+            font-size: 11px;
         }
 
         .job-date {
             color: var(--text-grey);
-            font-size: 13px;
+            font-size: 11px;
         }
 
         /* รายละเอียดงาน */
         .job-duties {
             list-style: none;
             padding-left: 0;
-            font-size: 14px;
-            line-height: 1.5;
+            font-size: 11px;
+            line-height: 1.3;
         }
 
         .job-duties li {
             position: relative;
-            padding-left: 15px;
-            margin-bottom: 5px;
+            padding-left: 12px;
+            margin-bottom: 3px;
         }
 
         .job-duties li::before {
@@ -285,6 +285,7 @@
 </head>
 <body>
 
+    <div id="resume-wrapper">
     <div class="resume-container">
         <img src="{{ asset('logo/V dragon-02.png') }}" alt="Company Logo" class="company-logo">
        
@@ -406,6 +407,7 @@
         
         <footer class="footer-credit">{{ $lead->staff->staff_nickname ?? 'VD Labour' }}/ {{ $lead->recommenderStaff->staff_sub_name ?? '' }}</footer>
     </div>
+    </div><!-- end resume-wrapper -->
 
     <!-- Template Selector & Print Button -->
     <div style="position: fixed; top: 20px; right: 20px; z-index: 2000; background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.2);">
@@ -424,6 +426,44 @@
             currentUrl.searchParams.set('template', templateNumber);
             window.location.href = currentUrl.toString();
         }
+
+        function fitToOnePage() {
+            const container = document.querySelector('.resume-container');
+            const wrapper = document.getElementById('resume-wrapper');
+            if (!container || !wrapper) return;
+
+            wrapper.style.width = '210mm';
+            wrapper.style.height = '297mm';
+            wrapper.style.overflow = 'hidden';
+            wrapper.style.margin = '0 auto';
+            const a4Height = wrapper.offsetHeight;
+
+            container.style.zoom = '1';
+            container.style.width = '210mm';
+
+            const contentHeight = container.scrollHeight;
+
+            let zoomLevel = 1;
+            if (contentHeight > a4Height) {
+                zoomLevel = Math.floor((a4Height / contentHeight) * 1000) / 1000;
+            }
+
+            let dynamicStyle = document.getElementById('dynamic-zoom-style');
+            if (!dynamicStyle) {
+                dynamicStyle = document.createElement('style');
+                dynamicStyle.id = 'dynamic-zoom-style';
+                document.head.appendChild(dynamicStyle);
+            }
+            dynamicStyle.textContent = 
+                '.resume-container { zoom: ' + zoomLevel + ' !important; }' +
+                '#resume-wrapper { width: 210mm !important; height: 297mm !important; overflow: hidden !important; margin: 0 auto !important; }' +
+                '@media print { ' +
+                '  .resume-container { zoom: ' + zoomLevel + ' !important; }' +
+                '  #resume-wrapper { width: 210mm !important; height: 297mm !important; overflow: hidden !important; margin: 0 !important; }' +
+                '}';
+        }
+
+        window.addEventListener('load', fitToOnePage);
     </script>
 
     <style>
@@ -435,7 +475,7 @@
             
             @page {
                 size: A4;
-                margin: 20px;
+                margin: 0;
             }
             
             * {
@@ -457,7 +497,9 @@
                 box-shadow: none;
                 margin: 0;
                 page-break-after: auto;
-                display: flex;
+                display: flex !important;
+                flex-direction: row !important;
+                flex-wrap: nowrap !important;
                 position: relative;
             }
             
@@ -482,15 +524,19 @@
             
             /* คอลัมน์ซ้าย */
             .left-col {
-                width: 38%;
-                padding: 30px 20px 30px 30px;
+                width: 38% !important;
+                flex: 0 0 38% !important;
+                max-width: 38% !important;
+                padding: 20px 15px 20px 20px;
                 border-right: 1px solid #ddd !important;
             }
             
             /* คอลัมน์ขวา */
             .right-col {
-                width: 62%;
-                padding: 30px 30px 30px 25px;
+                width: 62% !important;
+                flex: 0 0 62% !important;
+                max-width: 62% !important;
+                padding: 20px 20px 20px 15px;
             }
             
             /* รูปโปรไฟล์ */

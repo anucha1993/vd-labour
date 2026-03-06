@@ -32,7 +32,7 @@
             width: 210mm;
             min-height: 297mm;
             box-shadow: 0 0 15px rgba(0,0,0,0.1);
-            padding: 40px 30px;
+            padding: 25px 25px;
             display: flex;
             flex-wrap: wrap;
             position: relative;
@@ -42,9 +42,9 @@
         .resume-container::before {
             content: '';
             position: absolute;
-            top: 20px;
-            left: 30px;
-            right: 30px;
+            top: 12px;
+            left: 25px;
+            right: 25px;
             height: 2px;
             background-color: #888;
         }
@@ -52,9 +52,9 @@
         .resume-container::after {
             content: '';
             position: absolute;
-            bottom: 20px;
-            left: 30px;
-            right: 30px;
+            bottom: 12px;
+            left: 25px;
+            right: 25px;
             height: 2px;
             background-color: #888;
         }
@@ -62,7 +62,7 @@
         /* คอลัมน์ซ้าย */
         .left-col {
             width: 35%;
-            padding-right: 20px;
+            padding-right: 15px;
         }
 
         /* คอลัมน์ขวา */
@@ -73,8 +73,8 @@
 
         /* รูปโปรไฟล์ */
         .profile-img-container {
-            margin-bottom: 30px;
-            margin-top: 40px; /* เว้นที่ให้เส้นบน */
+            margin-bottom: 15px;
+            margin-top: 20px;
         }
         
         .profile-img {
@@ -89,59 +89,59 @@
         .section-header {
             background-color: #4e607b;
             color: white;
-            padding: 8px 15px;
+            padding: 5px 12px;
             font-weight: 700;
-            font-size: 18px;
-            margin-bottom: 15px;
-            margin-top: 20px;
+            font-size: 15px;
+            margin-bottom: 8px;
+            margin-top: 10px;
         }
 
         /* รายละเอียดใน Profile */
         .profile-list {
             list-style: none;
-            font-size: 14px;
+            font-size: 12px;
         }
 
         .profile-list li {
-            margin-bottom: 10px;
+            margin-bottom: 4px;
             display: flex;
         }
 
         .profile-list strong {
             margin-right: 5px;
-            min-width: 100px; /* จัดให้ Colon ตรงกัน */
+            min-width: 90px;
             color: #333;
         }
 
         /* ส่วน Contact */
         .contact-list {
             list-style: none;
-            font-size: 14px;
+            font-size: 12px;
         }
 
         .contact-list li {
-            margin-bottom: 15px;
+            margin-bottom: 8px;
             display: flex;
             align-items: flex-start;
         }
 
         .contact-list i {
             color: #4e607b;
-            margin-right: 15px;
-            font-size: 18px;
-            margin-top: 3px;
-            width: 20px;
+            margin-right: 10px;
+            font-size: 14px;
+            margin-top: 2px;
+            width: 16px;
             text-align: center;
         }
 
         /* ส่วนหัวชื่อ (ขวา) */
         .main-header {
-            margin-top: 40px;
-            margin-bottom: 40px;
+            margin-top: 20px;
+            margin-bottom: 15px;
         }
 
         h1 {
-            font-size: 42px;
+            font-size: 32px;
             color: #333;
             text-transform: uppercase;
             line-height: 1.1;
@@ -151,17 +151,17 @@
         /* กล่องสีเทาจางๆ ใต้ชื่อ (ในภาพมีแถบว่างๆ) */
         .grey-bar {
             background-color: #f2f2f2;
-            height: 30px;
+            height: 20px;
             width: 60%;
-            margin-top: 20px;
-            margin-bottom: 40px;
+            margin-top: 10px;
+            margin-bottom: 15px;
         }
 
         /* เนื้อหา Summary */
         .summary-text {
-            font-size: 14px;
+            font-size: 12px;
             text-align: justify;
-            margin-bottom: 30px;
+            margin-bottom: 10px;
             color: #555;
             padding: 0 5px;
         }
@@ -171,38 +171,38 @@
             display: flex;
             justify-content: space-between;
             align-items: baseline;
-            margin-bottom: 5px;
+            margin-bottom: 2px;
         }
 
         .job-title {
             font-weight: 700;
             color: #333;
-            font-size: 16px;
+            font-size: 13px;
         }
 
         .job-date {
-            color: #6a9bd6; /* สีฟ้าอ่อนตามภาพ */
-            font-size: 14px;
+            color: #6a9bd6;
+            font-size: 12px;
             font-weight: 500;
         }
 
         .company-name {
             font-style: italic;
             color: #6a9bd6;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
             display: block;
-            font-size: 14px;
+            font-size: 12px;
         }
 
         .job-tasks {
             list-style-type: disc;
-            padding-left: 20px;
-            font-size: 14px;
+            padding-left: 18px;
+            font-size: 12px;
             color: #555;
         }
 
         .job-tasks li {
-            margin-bottom: 8px;
+            margin-bottom: 3px;
         }
 
         /* ลายเซ็น/Footer มุมขวาล่าง */
@@ -247,9 +247,9 @@
         /* Company Logo */
         .company-logo {
             position: absolute;
-            top: 30px;
-            right: 30px;
-            width: 80px;
+            top: 15px;
+            right: 20px;
+            width: 60px;
             height: auto;
             z-index: 10;
         }
@@ -261,7 +261,7 @@
             
             @page {
                 size: A4;
-                margin: 20px;
+                margin: 0;
             }
             
             * {
@@ -270,188 +270,66 @@
             }
             
             body {
-                background-color: white;
-                padding: 0;
-                margin: 0;
-                width: 210mm;
-                height: 297mm;
+                background-color: white !important;
+                padding: 0 !important;
+                margin: 0 !important;
             }
-            
+
             .resume-container {
-                width: 210mm;
-                height: auto;
-                min-height: 297mm;
-                max-height: none;
-                box-shadow: none;
-                margin: 0;
-                padding: 40px 30px;
-                page-break-after: auto;
-                display: flex;
-                flex-wrap: wrap;
-                position: relative;
+                display: flex !important;
+                flex-direction: row !important;
+                flex-wrap: wrap !important;
+                width: 210mm !important;
+                box-shadow: none !important;
             }
-            
+
+            .left-col {
+                width: 35% !important;
+                flex: 0 0 35% !important;
+                max-width: 35% !important;
+                padding-right: 15px !important;
+            }
+
+            .right-col {
+                width: 65% !important;
+                flex: 0 0 65% !important;
+                max-width: 65% !important;
+                padding-left: 10px !important;
+            }
+
             .resume-container::before {
-                content: '';
-                position: absolute;
-                top: 20px;
-                left: 30px;
-                right: 30px;
-                height: 2px;
                 background-color: #888 !important;
             }
             
             .resume-container::after {
-                content: '';
-                position: absolute;
-                bottom: 20px;
-                left: 30px;
-                right: 30px;
-                height: 2px;
                 background-color: #888 !important;
             }
-            
-            .company-logo {
-                position: absolute;
-                top: 30px;
-                right: 30px;
-                width: 80px;
-                height: auto;
-                z-index: 10;
-            }
-            
-            .left-col {
-                width: 35%;
-                padding-right: 20px;
-            }
-            
-            .right-col {
-                width: 65%;
-                padding-left: 10px;
-            }
-            
-            .profile-img-container {
-                margin-bottom: 30px;
-                margin-top: 40px;
-            }
-            
-            .profile-img {
-                width: 100%;
-                height: auto;
-                border-radius: 4px;
-                object-fit: cover;
-                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            }
-            
-            .main-header {
-                margin-top: 40px;
-                margin-bottom: 40px;
-            }
-            
-            h1 {
-                font-size: 42px;
-                color: #333;
-                text-transform: uppercase;
-                line-height: 1.1;
-                font-weight: 700;
-            }
-            
-            .grey-bar {
-                background-color: #f2f2f2 !important;
-                height: 30px;
-                width: 60%;
-                margin-top: 20px;
-                margin-bottom: 40px;
-            }
-            
+
             .section-header {
                 background-color: #4e607b !important;
                 color: white !important;
-                padding: 8px 15px;
-                font-weight: 700;
-                font-size: 18px;
-                margin-bottom: 15px;
-                margin-top: 20px;
             }
-            
-            .profile-list {
-                font-size: 14px;
+
+            .grey-bar {
+                background-color: #f2f2f2 !important;
             }
-            
-            .profile-list li {
-                margin-bottom: 10px;
-            }
-            
-            .profile-list strong {
-                min-width: 100px;
-                color: #333;
-            }
-            
-            .contact-list {
-                font-size: 14px;
-            }
-            
-            .contact-list li {
-                margin-bottom: 15px;
-            }
-            
+
             .contact-list i {
                 color: #4e607b !important;
-                margin-right: 15px;
-                font-size: 18px;
-                width: 20px;
             }
-            
-            .summary-text {
-                font-size: 14px;
-                margin-bottom: 30px;
-                color: #555;
-            }
-            
-            .job-title {
-                font-weight: 700;
-                color: #333;
-                font-size: 16px;
-            }
-            
+
             .job-date {
                 color: #6a9bd6 !important;
-                font-size: 14px;
-                font-weight: 500;
             }
             
             .company-name {
-                font-style: italic;
                 color: #6a9bd6 !important;
-                margin-bottom: 10px;
-                font-size: 14px;
             }
-            
-            .job-tasks {
-                font-size: 14px;
-                color: #555;
-                padding-left: 20px;
-            }
-            
-            .job-tasks li {
-                margin-bottom: 8px;
-            }
-            
+
             .footer-sign {
-                position: fixed;
-                bottom: 30px;
-                right: 30px;
-                font-size: 12px;
-                color: #333;
-            }
-            
-            /* ป้องกันการแบ่งหน้าในส่วนที่ไม่เหมาะสม */
-            .job-item {
-                page-break-inside: avoid;
-            }
-            
-            .profile-list, .contact-list {
-                page-break-inside: avoid;
+                position: absolute;
+                bottom: 15px;
+                right: 25px;
             }
         }
     </style>
@@ -473,6 +351,7 @@
         </button>
     </div>
 
+    <div id="resume-wrapper">
     <div class="resume-container">
         <!-- Company Logo -->
         <img src="{{ asset('logo/V dragon-02.png') }}" alt="Company Logo" class="company-logo">
@@ -581,6 +460,7 @@
         
         <div class="footer-sign">{{ $lead->staff->staff_nickname ?? 'VD Labour' }} / {{ $lead->recommenderStaff->staff_sub_name ?? ' ' }}</div>
     </div>
+    </div><!-- end resume-wrapper -->
 
     <script>
         function changeTemplate(templateNumber) {
@@ -588,4 +468,47 @@
             currentUrl.searchParams.set('template', templateNumber);
             window.location.href = currentUrl.toString();
         }
+
+        // Auto-scale: ย่อเนื้อหาทั้งหมดให้พอดี 1 หน้า A4 โดยแสดงข้อมูลครบ
+        function fitToOnePage() {
+            const container = document.querySelector('.resume-container');
+            const wrapper = document.getElementById('resume-wrapper');
+            if (!container || !wrapper) return;
+
+            // วัดขนาด A4 จริงจาก wrapper (ใช้ mm ตามที่ browser คำนวณจริง)
+            wrapper.style.width = '210mm';
+            wrapper.style.height = '297mm';
+            wrapper.style.overflow = 'hidden';
+            wrapper.style.margin = '0 auto';
+            const a4Height = wrapper.offsetHeight;
+
+            // Reset zoom ก่อนวัด
+            container.style.zoom = '1';
+            container.style.width = '210mm';
+            
+            const contentHeight = container.scrollHeight;
+
+            // คำนวณ zoom และฝังใน <style> tag เพื่อให้ทำงานทั้ง screen และ print
+            let zoomLevel = 1;
+            if (contentHeight > a4Height) {
+                zoomLevel = Math.floor((a4Height / contentHeight) * 1000) / 1000;
+            }
+
+            // ลบ style tag เก่า (ถ้ามี)
+            let dynamicStyle = document.getElementById('dynamic-zoom-style');
+            if (!dynamicStyle) {
+                dynamicStyle = document.createElement('style');
+                dynamicStyle.id = 'dynamic-zoom-style';
+                document.head.appendChild(dynamicStyle);
+            }
+            dynamicStyle.textContent = 
+                '.resume-container { zoom: ' + zoomLevel + ' !important; }' +
+                '#resume-wrapper { width: 210mm !important; height: 297mm !important; overflow: hidden !important; margin: 0 auto !important; }' +
+                '@media print { ' +
+                '  .resume-container { zoom: ' + zoomLevel + ' !important; }' +
+                '  #resume-wrapper { width: 210mm !important; height: 297mm !important; overflow: hidden !important; margin: 0 !important; }' +
+                '}';
+        }
+
+        window.addEventListener('load', fitToOnePage);
     </script>

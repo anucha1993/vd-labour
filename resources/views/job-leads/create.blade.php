@@ -588,7 +588,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     if (lead.existing_application) {
                                         return `
                                             <div class="mt-2 p-2 border rounded bg-danger bg-opacity-5">
-                                                <small class="text-danger">
+                                                <small class="text-white">
                                                     <i class="bi bi-exclamation-triangle-fill"></i> 
                                                     <strong>ไม่สามารถเลือกได้:</strong> คนงานนี้มีใบสมัครอยู่แล้ว<br>
                                                     <div class="mt-1">
