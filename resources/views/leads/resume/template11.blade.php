@@ -41,7 +41,7 @@
             background: #fff;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             position: relative;
-            padding-bottom: 30px;
+            padding-bottom: 20px;
             overflow: hidden;
         }
 
@@ -60,9 +60,9 @@
             background-color: white;
         }
         .photo-side {
-            width: 30%;
-            padding: 15px 15px;
-            margin: 20px;
+            width: 28%;
+            padding: 10px 10px;
+            margin: 15px;
             position: relative;
             background-color: var(--primary-color);
             display: flex;
@@ -80,8 +80,8 @@
         }
 
         .header-side {
-            width: 70%;
-            padding: 20px 20px 10px 20px;
+            width: 72%;
+            padding: 12px 15px 8px 15px;
         }
         .header-side h1, .header-side h2 {
             font-family: 'Helvetica', sans-serif;
@@ -90,12 +90,12 @@
         }
         .header-side h1 {
             background-color: var(--primary-color);
-            padding: 12px 20px;
-            border-radius: 20px;
+            padding: 8px 15px;
+            border-radius: 15px;
             display: block;
-            margin: 0 0 10px 0;
+            margin: 0 0 6px 0;
             color: var(--secondary-color);
-            font-size: 1.5em;
+            font-size: 1.2em;
             font-weight: bold;
             text-align: center;
         }
@@ -105,26 +105,26 @@
             padding: 0;
             display: block;
             margin-top: 0;
-            margin-bottom: 15px;
-            font-size: 2em;
+            margin-bottom: 8px;
+            font-size: 1.5em;
             font-weight: bold;
             text-transform: uppercase;
         }
         .profile-summary {
-            margin-top: 15px;
-            font-size: 0.85em;
-            line-height: 1.6;
+            margin-top: 6px;
+            font-size: 0.75em;
+            line-height: 1.4;
             text-align: justify;
         }
         .profile-summary p {
-            margin: 5px 0;
+            margin: 3px 0;
         }
 
         /* MAIN CONTENT - 3 COLUMNS layout */
         .main-content {
             display: flex;
-            padding: 20px 20px 20px 20px;
-            gap: 30px; /* Space between columns */
+            padding: 10px 15px 10px 15px;
+            gap: 15px;
         }
         
         /* EXPENSE SECTION (LEFT, WIDER) */
@@ -142,93 +142,93 @@
         .section-title {
             background-color: var(--primary-color);
             color: var(--secondary-color);
-            font-size: 1.1em;
+            font-size: 0.9em;
             font-weight: bold;
             margin-top: 0;
-            margin-bottom: 15px;
-            padding: 8px 20px;
-            border-radius: 10px;
+            margin-bottom: 8px;
+            padding: 5px 15px;
+            border-radius: 8px;
             display: inline-block;
         }
         
         /* CONTACT & PROFILE BOXES */
         .info-box {
-            margin-bottom: 25px;
+            margin-bottom: 10px;
         }
         .info-box h3 {
             background-color: var(--primary-color);
             color: black;
-            font-size: 1em;
-            margin: 0 0 15px 0;
-            padding: 10px 20px;
+            font-size: 0.85em;
+            margin: 0 0 6px 0;
+            padding: 5px 15px;
             text-align: center;
             font-weight: bold;
-            border-radius: 30px;
+            border-radius: 20px;
             display: block;
             box-sizing: border-box;
         }
 
         .contact-details {
-            font-size: 0.9em;
+            font-size: 0.75em;
             word-wrap: break-word;
             overflow-wrap: break-word;
         }
         .contact-details div {
-            margin-bottom: 12px;
+            margin-bottom: 5px;
             display: flex;
             align-items: flex-start;
         }
         .contact-details i {
             color: black;
-            margin-right: 10px;
-            font-size: 1.2em;
-            line-height: 1.5;
-            min-width: 20px;
+            margin-right: 8px;
+            font-size: 1em;
+            line-height: 1.4;
+            min-width: 16px;
         }
         .profile-details ul {
             list-style-type: disc;
-            padding-left: 20px;
+            padding-left: 15px;
             margin: 0;
-            font-size: 0.85em;
+            font-size: 0.75em;
         }
         .profile-details ul li {
-            margin-bottom: 2px;
-            line-height: 1.5;
+            margin-bottom: 1px;
+            line-height: 1.4;
         }
         .profile-details strong {
             display: inline-block;
-            width: 95px; /* Aligning labels */
+            width: 85px;
         }
 
 
         /* EXPERIENCE SECTION */
         .experience-item {
-            margin-bottom: 25px;
+            margin-bottom: 12px;
         }
         .experience-item h4 {
             margin: 0;
-            font-size: 1.1em;
+            font-size: 0.9em;
             color: var(--secondary-color);
             font-weight: bold;
         }
         .experience-item p.duration-role {
-            margin: 3px 0 5px 0;
+            margin: 2px 0 3px 0;
             color: #555;
             font-weight: bold;
-            font-size: 0.9em;
+            font-size: 0.8em;
         }
         .experience-item ul {
             list-style-type: disc;
-            padding-left: 20px;
-            margin-top: 5px;
-            font-size: 0.9em;
+            padding-left: 15px;
+            margin-top: 3px;
+            font-size: 0.75em;
             color: #333;
         }
         .footer-note {
             position: absolute;
             bottom: 5px;
-            right: 40px;
-            font-size: 0.8em;
+            right: 30px;
+            font-size: 0.75em;
             color: #777;
             z-index: 3;
         }
@@ -300,17 +300,77 @@
             .template-selector {
                 display: none !important;
             }
-            .container {
-                box-shadow: none !important;
-                page-break-after: auto;
+            
+            @page {
+                size: A4;
+                margin: 0;
             }
+            
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            
+            body {
+                background-color: white;
+                padding: 0;
+                margin: 0;
+            }
+            
+            .container {
+                box-shadow: none;
+                margin: 0;
+                width: 210mm !important;
+                min-height: auto;
+            }
+            
+            .top-section {
+                display: flex !important;
+                flex-direction: row !important;
+                flex-wrap: nowrap !important;
+            }
+            
+            .photo-side {
+                width: 28% !important;
+                flex: 0 0 28% !important;
+                max-width: 28% !important;
+                background-color: #FFB700 !important;
+            }
+            
+            .header-side {
+                width: 72% !important;
+                flex: 0 0 72% !important;
+                max-width: 72% !important;
+            }
+            
+            .main-content {
+                display: flex !important;
+                flex-direction: row !important;
+                flex-wrap: nowrap !important;
+            }
+            
+            .experience-column {
+                width: 65% !important;
+                flex: 0 0 65% !important;
+                max-width: 65% !important;
+            }
+            
+            .info-column {
+                width: 35% !important;
+                flex: 0 0 35% !important;
+                max-width: 35% !important;
+            }
+            
+            .header-side h1,
+            .section-title,
+            .info-box h3 {
+                background-color: #FFB700 !important;
+            }
+            
             .footer-note {
-                position: fixed;
-                bottom: 10px;
-                right: 40px;
-                font-size: 0.8em;
-                color: #333 !important;
-                z-index: 3;
+                position: absolute;
+                bottom: 5px;
+                right: 30px;
             }
         }
     </style>
@@ -334,8 +394,47 @@
             currentUrl.searchParams.set('template', templateNumber);
             window.location.href = currentUrl.toString();
         }
+
+        function fitToOnePage() {
+            const container = document.querySelector('.container');
+            const wrapper = document.getElementById('resume-wrapper');
+            if (!container || !wrapper) return;
+
+            wrapper.style.width = '210mm';
+            wrapper.style.height = '297mm';
+            wrapper.style.overflow = 'hidden';
+            wrapper.style.margin = '0 auto';
+            const a4Height = wrapper.offsetHeight;
+
+            container.style.zoom = '1';
+            container.style.width = '210mm';
+
+            const contentHeight = container.scrollHeight;
+
+            let zoomLevel = 1;
+            if (contentHeight > a4Height) {
+                zoomLevel = Math.floor((a4Height / contentHeight) * 1000) / 1000;
+            }
+
+            let dynamicStyle = document.getElementById('dynamic-zoom-style');
+            if (!dynamicStyle) {
+                dynamicStyle = document.createElement('style');
+                dynamicStyle.id = 'dynamic-zoom-style';
+                document.head.appendChild(dynamicStyle);
+            }
+            dynamicStyle.textContent = 
+                '.container { zoom: ' + zoomLevel + ' !important; }' +
+                '#resume-wrapper { width: 210mm !important; height: 297mm !important; overflow: hidden !important; margin: 0 auto !important; }' +
+                '@media print { ' +
+                '  .container { zoom: ' + zoomLevel + ' !important; }' +
+                '  #resume-wrapper { width: 210mm !important; height: 297mm !important; overflow: hidden !important; margin: 0 !important; }' +
+                '}';
+        }
+
+        window.addEventListener('load', fitToOnePage);
     </script>
     
+    <div id="resume-wrapper">
     <div class="container">
         
         <!-- Company Logo -->
@@ -442,5 +541,6 @@
             {{ $lead->staff->staff_nickname ?? 'N/A' }} /  {{ $lead->recommenderStaff->staff_sub_name ?? '' }}
         </footer>
     </div>
+    </div><!-- end resume-wrapper -->
 </body>
 </html>

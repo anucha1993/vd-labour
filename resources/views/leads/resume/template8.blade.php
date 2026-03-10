@@ -88,12 +88,12 @@
         }
 
         .profile-circle {
-            width: 180px;
-            height: 180px;
+            width: 140px;
+            height: 140px;
             border-radius: 50%;
             overflow: hidden;
             background-color: #4A90E2;
-            border: 8px solid white;
+            border: 6px solid white;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
@@ -122,27 +122,27 @@
         /* Header Section */
         .header {
             position: relative;
-            padding: 40px 40px 20px 240px;
+            padding: 25px 30px 10px 200px;
             z-index: 2;
         }
 
         .header h1 {
             font-family: 'Roboto', sans-serif;
             color: #4A90E2;
-            font-size: 48px;
+            font-size: 32px;
             font-weight: 900;
             text-transform: uppercase;
             line-height: 1.1;
             margin: 0;
-            letter-spacing: 2px;
+            letter-spacing: 1px;
         }
 
         .header h2 {
             color: #000;
-            font-size: 22px;
+            font-size: 16px;
             font-weight: 700;
             text-transform: uppercase;
-            margin: 10px 0 0 0;
+            margin: 5px 0 0 0;
             letter-spacing: 1px;
         }
 
@@ -151,8 +151,8 @@
             display: flex;
             position: relative;
             z-index: 2;
-            padding: 20px 40px 60px 40px;
-            gap: 30px;
+            padding: 10px 25px 30px 25px;
+            gap: 20px;
         }
 
         .left-column {
@@ -167,55 +167,55 @@
         /* Section Titles */
         .section-title {
             color: #4A90E2;
-            font-size: 20px;
+            font-size: 16px;
             font-weight: 700;
-            margin-bottom: 15px;
+            margin-bottom: 8px;
             margin-top: 0;
         }
 
         /* Contact Section */
         .contact-details {
-            margin-bottom: 30px;
+            margin-bottom: 12px;
         }
 
         .contact-details .phone {
             color: #4A90E2;
-            font-size: 18px;
+            font-size: 14px;
             font-weight: 700;
-            margin-bottom: 10px;
+            margin-bottom: 4px;
         }
 
         .contact-details p {
-            font-size: 13px;
-            line-height: 1.6;
+            font-size: 11px;
+            line-height: 1.4;
             color: #333;
             margin: 0;
         }
 
         /* About Me / Profile Section */
         .about-me {
-            margin-bottom: 30px;
+            margin-bottom: 12px;
         }
 
         .about-me p {
-            font-size: 13px;
-            line-height: 1.6;
+            font-size: 11px;
+            line-height: 1.4;
             text-align: justify;
-            margin-bottom: 15px;
+            margin-bottom: 8px;
         }
 
         .about-me ul {
             list-style: none;
             padding: 0;
             margin: 0;
-            font-size: 12px;
+            font-size: 11px;
         }
 
         .about-me ul li {
-            margin-bottom: 6px;
-            line-height: 1.4;
+            margin-bottom: 2px;
+            line-height: 1.3;
             position: relative;
-            padding-left: 15px;
+            padding-left: 12px;
         }
 
         .about-me ul li::before {
@@ -223,7 +223,7 @@
             position: absolute;
             left: 0;
             color: #4A90E2;
-            font-size: 16px;
+            font-size: 14px;
             font-weight: bold;
         }
 
@@ -234,29 +234,29 @@
         /* Summary Box */
         .summary-box {
             background-color: #e0e7ff;
-            padding: 20px;
-            margin-bottom: 30px;
-            font-size: 14px;
-            line-height: 1.5;
+            padding: 10px 12px;
+            margin-bottom: 12px;
+            font-size: 12px;
+            line-height: 1.3;
             text-align: justify;
-            border-radius: 20px;
+            border-radius: 12px;
             border: 1px solid #c7d2fe;
         }
 
         /* Experience Section */
         .experience-title {
             color: #4A90E2;
-            font-size: 20px;
+            font-size: 16px;
             font-weight: 700;
             margin-top: 0;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
 
         .experience-item {
         
-            margin-bottom: 25px;
+            margin-bottom: 12px;
             position: relative;
-            padding-left: 25px;
+            padding-left: 20px;
         }
 
         .experience-item::before {
@@ -264,8 +264,8 @@
             position: absolute;
             left: 0;
             top: px;
-            width: 12px;
-            height: 12px;
+            width: 10px;
+            height: 10px;
             background-color: #000;
             border-radius: 50%;
             border: 2px solid #000;
@@ -275,31 +275,31 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 8px;
-            margin-top: 8px;
+            margin-bottom: 4px;
+            margin-top: 4px;
         }
 
         .experience-item h4 {
             margin: 0;
-            font-size: 15px;
+            font-size: 13px;
             color: #000;
             font-weight: 700;
         }
 
         .experience-item .company-location {
-            font-size: 13px;
+            font-size: 11px;
             color: #000;
             font-weight: 500;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
        
         }
 
         .experience-item .duration {
-            font-size: 14px;
+            font-size: 12px;
             color: #000;
             font-weight: 700;
             white-space: nowrap;
-             margin-bottom: 8px;
+             margin-bottom: 4px;
             
         }
 
@@ -307,14 +307,14 @@
             list-style: none;
             padding: 0;
             margin: 0;
-            font-size: 12px;
-            line-height: 1.6;
+            font-size: 11px;
+            line-height: 1.3;
         }
 
         .experience-item ul li {
-            margin-bottom: 4px;
+            margin-bottom: 2px;
             position: relative;
-            padding-left: 15px;
+            padding-left: 12px;
             color: #4A90E2;
         }
 
@@ -329,9 +329,9 @@
         /* Footer Note */
         .footer-note {
             position: absolute;
-            bottom: 20px;
-            left: 40px;
-            font-size: 14px;
+            bottom: 12px;
+            left: 25px;
+            font-size: 12px;
             color: #4A90E2;
             font-weight: 700;
             z-index: 10;
@@ -392,29 +392,55 @@
 
         /* Print Styles */
         @media print {
-            body {
-                background-color: white;
-                padding: 0;
-            }
             .template-selector {
                 display: none !important;
             }
-            .container {
-                box-shadow: none;
-                margin: 0;
-                width: 100%;
-                min-height: auto;
-            }
-            .top-left-shape,
-            .top-right-shape,
-            .bottom-left-shape,
-            .bottom-right-shape {
-                print-color-adjust: exact;
-                -webkit-print-color-adjust: exact;
-            }
+            
             @page {
                 size: A4;
                 margin: 0;
+            }
+            
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            
+            body {
+                background-color: white;
+                padding: 0;
+                margin: 0;
+            }
+            
+            .container {
+                box-shadow: none;
+                margin: 0;
+                width: 210mm !important;
+                min-height: auto;
+            }
+            
+            .main-content {
+                display: flex !important;
+                flex-direction: row !important;
+                flex-wrap: nowrap !important;
+            }
+            
+            .left-column {
+                width: 38% !important;
+                flex: 0 0 38% !important;
+                max-width: 38% !important;
+            }
+            
+            .right-column {
+                width: 62% !important;
+                flex: 0 0 62% !important;
+                max-width: 62% !important;
+            }
+            
+            .footer-note {
+                position: absolute;
+                bottom: 10px;
+                left: 25px;
             }
         }
     </style>
@@ -438,8 +464,47 @@
             currentUrl.searchParams.set('template', templateNumber);
             window.location.href = currentUrl.toString();
         }
+
+        function fitToOnePage() {
+            const container = document.querySelector('.container');
+            const wrapper = document.getElementById('resume-wrapper');
+            if (!container || !wrapper) return;
+
+            wrapper.style.width = '210mm';
+            wrapper.style.height = '297mm';
+            wrapper.style.overflow = 'hidden';
+            wrapper.style.margin = '0 auto';
+            const a4Height = wrapper.offsetHeight;
+
+            container.style.zoom = '1';
+            container.style.width = '210mm';
+
+            const contentHeight = container.scrollHeight;
+
+            let zoomLevel = 1;
+            if (contentHeight > a4Height) {
+                zoomLevel = Math.floor((a4Height / contentHeight) * 1000) / 1000;
+            }
+
+            let dynamicStyle = document.getElementById('dynamic-zoom-style');
+            if (!dynamicStyle) {
+                dynamicStyle = document.createElement('style');
+                dynamicStyle.id = 'dynamic-zoom-style';
+                document.head.appendChild(dynamicStyle);
+            }
+            dynamicStyle.textContent = 
+                '.container { zoom: ' + zoomLevel + ' !important; }' +
+                '#resume-wrapper { width: 210mm !important; height: 297mm !important; overflow: hidden !important; margin: 0 auto !important; }' +
+                '@media print { ' +
+                '  .container { zoom: ' + zoomLevel + ' !important; }' +
+                '  #resume-wrapper { width: 210mm !important; height: 297mm !important; overflow: hidden !important; margin: 0 !important; }' +
+                '}';
+        }
+
+        window.addEventListener('load', fitToOnePage);
     </script>
 
+    <div id="resume-wrapper">
     <div class="container">
         <!-- Logo -->
         <div class="logo-vd">
@@ -590,6 +655,7 @@
             @endif
         </div>
     </div>
+    </div><!-- end resume-wrapper -->
 
 </body>
 </html>

@@ -81,10 +81,10 @@
         /* รูปภาพ */
         .photo-frame {
             width: 100%;
-            height: 250px; /* กำหนดความสูงเพื่อให้เท่ากับ Header ม่วงด้านขวา */
+            height: 160px;
             overflow: hidden;
             background-color: #fff;
-            border-bottom: 5px solid white; /* สร้างช่องว่างระหว่างรูปกับ Profile */
+            border-bottom: 5px solid white;
             position: relative;
         }
 
@@ -98,22 +98,22 @@
         
         /* Profile & Contact Content */
         .left-content {
-            padding: 20px 20px 0 30px;
+            padding: 12px 15px 0 20px;
         }
 
         /* Profile Header */
         .profile-header {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 700;
             color: var(--text-dark);
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
 
         /* Profile Text / Summary */
         .profile-text {
-            font-size: 14px;
-            line-height: 1.5;
-            margin-bottom: 20px;
+            font-size: 13px;
+            line-height: 1.4;
+            margin-bottom: 12px;
             text-align: justify;
         }
         
@@ -121,8 +121,8 @@
         .profile-list {
             list-style: none;
             padding-left: 0;
-            font-size: 13px;
-            line-height: 1.6;
+            font-size: 12px;
+            line-height: 1.5;
         }
 
         .profile-list li {
@@ -143,37 +143,37 @@
             color: var(--text-dark);
             font-weight: 500;
             display: inline-block;
-            min-width: 100px;
+            min-width: 95px;
         }
 
         /* Contact Header */
         .contact-header {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 700;
             color: var(--text-dark);
-            margin-top: 30px;
-            margin-bottom: 15px;
+            margin-top: 18px;
+            margin-bottom: 10px;
         }
 
         /* Contact List */
         .contact-list {
             list-style: none;
-            font-size: 13px;
+            font-size: 12px;
         }
 
         .contact-list li {
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             display: flex;
             align-items: flex-start;
         }
 
         .contact-list i {
             color: var(--theme-purple);
-            margin-right: 15px;
-            font-size: 18px;
-            width: 20px;
+            margin-right: 12px;
+            font-size: 16px;
+            width: 18px;
             text-align: center;
-            margin-top: 3px;
+            margin-top: 2px;
         }
         
         .contact-text {
@@ -192,10 +192,10 @@
         /* Header ม่วง */
         .top-header-purple {
             background-color: var(--theme-purple);
-            padding: 50px 30px 30px 30px;
+            padding: 20px 25px 15px 25px;
             color: white;
-            height: 250px; /* ให้ความสูงเท่ากับรูปภาพด้านซ้าย */
-            border-radius: 0 0 50px 0; /* มุมล่างขวาโค้งมน */
+            height: 160px;
+            border-radius: 0 0 50px 0;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -203,84 +203,84 @@
 
         .main-name {
             font-family: 'Roboto', sans-serif;
-            font-size: 42px;
+            font-size: 26px;
             color: white;
             text-transform: uppercase;
             font-weight: 700;
             line-height: 1.2;
             margin-bottom: 0;
-            padding-bottom: 20px;
+            padding-bottom: 10px;
             border-bottom: 3px solid white;
         }
 
         .supermarket-tag {
-            font-size: 20px;
+            font-size: 15px;
             color: white;
             font-weight: 500;
-            padding-top: 20px;
+            padding-top: 10px;
             text-align: center;
         }
         
         /* Content ด้านขวา (Experience) */
         .right-content {
-            padding: 30px 30px 0 30px;
-            background-color: var(--light-purple); /* พื้นหลังสีม่วงอ่อน */
-            min-height: calc(297mm - 250px); /* ความสูงที่เหลือของ A4 */
-            border-radius: 50px 0 0 0; /* มุมบนซ้ายโค้งมน */
-            margin-top: 20px; /* เว้นระยะห่างจาก Header ม่วง */
+            padding: 20px 25px 0 25px;
+            background-color: var(--light-purple);
+            min-height: calc(297mm - 160px);
+            border-radius: 50px 0 0 0;
+            margin-top: 12px;
         }
 
         /* Experience Header */
         .experience-header {
-            font-size: 24px;
+            font-size: 20px;
             font-weight: 700;
             color: var(--text-dark);
             text-transform: uppercase;
-            margin-bottom: 25px;
+            margin-bottom: 15px;
         }
         
         /* Job Item Container */
         .job-item {
-            margin-bottom: 30px;
+            margin-bottom: 15px;
         }
 
         /* Job Dates */
         .job-dates {
-            font-size: 16px;
+            font-size: 14px;
             color: var(--theme-purple);
             font-weight: 700;
-            margin-bottom: 5px;
+            margin-bottom: 3px;
         }
 
         /* Job Title */
         .job-title {
-            font-size: 16px;
+            font-size: 14px;
             color: var(--theme-purple);
-            font-weight: 70s;
+            font-weight: 700;
             display: block;
-            margin-bottom: 3px;
+            margin-bottom: 2px;
         }
 
         .company-name {
-            font-size: 14px;
+            font-size: 13px;
             color: var(--text-dark);
             font-weight: 500;
             display: block;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
         }
 
         /* รายละเอียดงาน */
         .job-duties {
             list-style: none;
             padding-left: 0;
-            font-size: 13px;
-            line-height: 1.5;
+            font-size: 12px;
+            line-height: 1.4;
         }
 
         .job-duties li {
             position: relative;
-            padding-left: 15px;
-            margin-bottom: 5px;
+            padding-left: 12px;
+            margin-bottom: 4px;
         }
 
         .job-duties li::before {
@@ -341,6 +341,16 @@
                 display: none !important;
             }
             
+            @page {
+                size: A4;
+                margin: 0;
+            }
+            
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            
             body {
                 background-color: white;
                 padding: 0;
@@ -350,33 +360,40 @@
             .resume-container {
                 box-shadow: none;
                 margin: 0;
-                width: 100%;
+                width: 210mm !important;
                 min-height: auto;
+                display: flex !important;
+                flex-direction: row !important;
+                flex-wrap: nowrap !important;
             }
             
-            /* Ensure colors print correctly */
+            .left-col {
+                width: 38% !important;
+                flex: 0 0 38% !important;
+                max-width: 38% !important;
+            }
+            
+            .right-col {
+                width: 62% !important;
+                flex: 0 0 62% !important;
+                max-width: 62% !important;
+            }
+            
             .top-header-purple {
-                print-color-adjust: exact;
-                -webkit-print-color-adjust: exact;
+                background-color: #5c3b6d !important;
             }
             
             .right-content {
-                print-color-adjust: exact;
-                -webkit-print-color-adjust: exact;
+                background-color: #f5f0f9 !important;
             }
-             /* Footer credit - แสดงทุกหน้า */
+            
             .footer-credit {
-                position: fixed;
+                position: absolute;
                 bottom: 10px;
                 left: 30px;
                 font-size: 12px;
                 color: #333 !important;
                 font-weight: 500;
-            }
-            
-            @page {
-                size: A4;
-                margin: 20px;
             }
         }
     </style>
@@ -401,8 +418,47 @@
             currentUrl.searchParams.set('template', templateNumber);
             window.location.href = currentUrl.toString();
         }
+
+        function fitToOnePage() {
+            const container = document.querySelector('.resume-container');
+            const wrapper = document.getElementById('resume-wrapper');
+            if (!container || !wrapper) return;
+
+            wrapper.style.width = '210mm';
+            wrapper.style.height = '297mm';
+            wrapper.style.overflow = 'hidden';
+            wrapper.style.margin = '0 auto';
+            const a4Height = wrapper.offsetHeight;
+
+            container.style.zoom = '1';
+            container.style.width = '210mm';
+
+            const contentHeight = container.scrollHeight;
+
+            let zoomLevel = 1;
+            if (contentHeight > a4Height) {
+                zoomLevel = Math.floor((a4Height / contentHeight) * 1000) / 1000;
+            }
+
+            let dynamicStyle = document.getElementById('dynamic-zoom-style');
+            if (!dynamicStyle) {
+                dynamicStyle = document.createElement('style');
+                dynamicStyle.id = 'dynamic-zoom-style';
+                document.head.appendChild(dynamicStyle);
+            }
+            dynamicStyle.textContent = 
+                '.resume-container { zoom: ' + zoomLevel + ' !important; }' +
+                '#resume-wrapper { width: 210mm !important; height: 297mm !important; overflow: hidden !important; margin: 0 auto !important; }' +
+                '@media print { ' +
+                '  .resume-container { zoom: ' + zoomLevel + ' !important; }' +
+                '  #resume-wrapper { width: 210mm !important; height: 297mm !important; overflow: hidden !important; margin: 0 !important; }' +
+                '}';
+        }
+
+        window.addEventListener('load', fitToOnePage);
     </script>
 
+    <div id="resume-wrapper">
     <div class="resume-container">
         <div class="logo-vd">
             <img src="{{ asset('logo/V dragon-02.png') }}" alt="VD Logo">
@@ -539,6 +595,7 @@
             @endif
         </div>
     </div>
+    </div><!-- end resume-wrapper -->
 
 </body>
 </html>

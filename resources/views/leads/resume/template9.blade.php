@@ -35,7 +35,7 @@
         /* Orange Header Bar */
         .top-bar {
             background: linear-gradient(135deg, #F57C00 0%, #FF9800 100%);
-            height: 30px;
+            height: 20px;
             width: 100%;
             position: relative;
             z-index: 1;
@@ -44,7 +44,7 @@
         /* Orange Footer Bar */
         .bottom-bar {
             background: linear-gradient(135deg, #F57C00 0%, #FF9800 100%);
-            height: 40px;
+            height: 30px;
             width: 100%;
             position: absolute;
             bottom: 0;
@@ -55,26 +55,26 @@
             z-index: 10;
             color: white;
             font-weight: 700;
-            font-size: 16px;
+            font-size: 12px;
         }
 
         /* Brown Decorative Shapes */
         .left-brown-bar {
             position: absolute;
-            top: 30px;
+            top: 20px;
             left: 0;
-            width: 25px;
-            height: 280px;
+            width: 20px;
+            height: 220px;
             background-color: #8B4513;
             z-index: 2;
         }
 
         .brown-accent-1 {
             position: absolute;
-            top: 210px;
+            top: 160px;
             right: 0;
-            width: 250px;
-            height: 100px;
+            width: 200px;
+            height: 70px;
             background-color: #D2691E;
             z-index: 1;
         }
@@ -104,11 +104,11 @@
         }
 
         .profile-frame {
-            width: 180px;
-            height: 210px;
+            width: 150px;
+            height: 170px;
             overflow: hidden;
             background-color: #D2691E;
-            border: 5px solid #D2691E;
+            border: 4px solid #D2691E;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
@@ -120,27 +120,27 @@
         /* Header Section */
         .header {
             position: relative;
-            padding: 50px 40px 20px 240px;
+            padding: 30px 30px 10px 210px;
             z-index: 2;
         }
 
         .header h1 {
             font-family: 'Roboto', sans-serif;
             color: #D2691E;
-            font-size: 42px;
+            font-size: 30px;
             font-weight: 900;
             text-transform: uppercase;
             line-height: 1.2;
-            margin: 0 0 15px 0;
+            margin: 0 0 8px 0;
             letter-spacing: 1px;
         }
 
         .header .position-badge {
             background: linear-gradient(135deg, #FFB84D 0%, #FFA726 100%);
             color: #000;
-            font-size: 16px;
+            font-size: 13px;
             font-weight: 700;
-            padding: 8px 20px;
+            padding: 5px 15px;
             display: inline-block;
             text-transform: uppercase;
         }
@@ -150,8 +150,8 @@
             display: flex;
             position: relative;
             z-index: 2;
-            padding: 20px 40px 60px 40px;
-            gap: 30px;
+            padding: 10px 25px 40px 25px;
+            gap: 20px;
         }
 
         .left-column {
@@ -166,10 +166,10 @@
         /* Section Titles */
         .section-title {
             color: #8B4513;
-            font-size: 20px;
+            font-size: 16px;
             font-weight: 700;
-            margin-bottom: 15px;
-            margin-top: 20px;
+            margin-bottom: 6px;
+            margin-top: 10px;
         }
 
         .section-title:first-child {
@@ -178,27 +178,27 @@
 
         /* Contact Section */
         .contact-details {
-            margin-bottom: 20px;
+            margin-bottom: 8px;
         }
 
         .contact-details .phone {
             color: #D2691E;
-            font-size: 18px;
+            font-size: 13px;
             font-weight: 700;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
 
         .contact-details .address {
-            font-size: 13px;
-            line-height: 1.5;
+            font-size: 11px;
+            line-height: 1.3;
             color: #333;
             margin: 0;
             display: flex;
             align-items: flex-start;
-            gap: 8px;
+            gap: 6px;
         }
 
         .contact-details i {
@@ -208,14 +208,14 @@
 
         /* Profile Section */
         .profile-text {
-            margin-bottom: 20px;
+            margin-bottom: 8px;
         }
 
         .profile-text p {
-            font-size: 13px;
-            line-height: 1.6;
+            font-size: 11px;
+            line-height: 1.3;
             text-align: justify;
-            margin-bottom: 15px;
+            margin-bottom: 6px;
             color: #8B4513;
         }
 
@@ -223,14 +223,14 @@
             list-style: none;
             padding: 0;
             margin: 0;
-            font-size: 12px;
+            font-size: 11px;
         }
 
         .profile-text ul li {
-            margin-bottom: 5px;
-            line-height: 1.4;
+            margin-bottom: 2px;
+            line-height: 1.3;
             position: relative;
-            padding-left: 15px;
+            padding-left: 12px;
             color: #333;
         }
 
@@ -239,7 +239,7 @@
             position: absolute;
             left: 0;
             color: #D2691E;
-            font-size: 14px;
+            font-size: 12px;
             font-weight: bold;
         }
 
@@ -251,16 +251,16 @@
         /* Experience Section */
         .experience-title {
             color: #8B4513;
-            font-size: 20px;
+            font-size: 16px;
             font-weight: 700;
             margin-top: 0;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
 
         .experience-item {
-            margin-bottom: 25px;
+            margin-bottom: 12px;
             position: relative;
-            padding-left: 20px;
+            padding-left: 15px;
             border-left: 2px solid #D2691E;
         }
 
@@ -269,52 +269,52 @@
             position: absolute;
             left: -6px;
             top: 5px;
-            width: 10px;
-            height: 10px;
+            width: 8px;
+            height: 8px;
             background-color: #D2691E;
             border-radius: 50%;
         }
 
         .experience-header {
-            margin-bottom: 8px;
+            margin-bottom: 4px;
         }
 
         .experience-item h4 {
-            margin: 0 0 5px 0;
-            font-size: 15px;
+            margin: 0 0 2px 0;
+            font-size: 13px;
             color: #000;
             font-weight: 700;
         }
 
         .experience-item .company-info {
-            font-size: 14px;
+            font-size: 11px;
             color: #D2691E;
             font-weight: 600;
             font-style: italic;
-            margin-bottom: 5px;
+            margin-bottom: 3px;
         }
 
         .experience-item .duration {
-            font-size: 14px;
+            font-size: 11px;
             color: #D2691E;
             font-weight: 700;
             float: right;
-            margin-top: -20px;
+            margin-top: -18px;
         }
 
         .experience-item ul {
             list-style: none;
             padding: 0;
             margin: 0;
-            font-size: 12px;
-            line-height: 1.6;
+            font-size: 11px;
+            line-height: 1.3;
             clear: both;
         }
 
         .experience-item ul li {
-            margin-bottom: 4px;
+            margin-bottom: 2px;
             position: relative;
-            padding-left: 15px;
+            padding-left: 12px;
             color: #333;
         }
 
@@ -329,9 +329,9 @@
         /* Footer Note */
         .footer-note {
             position: absolute;
-            bottom: 20px;
-            left: 40px;
-            font-size: 14px;
+            bottom: 35px;
+            left: 25px;
+            font-size: 12px;
             color: #C55621;
             font-weight: 700;
             z-index: 10;
@@ -393,29 +393,65 @@
 
         /* Print Styles */
         @media print {
-            body {
-                background-color: white;
-                padding: 0;
-            }
             .template-selector {
                 display: none !important;
             }
-            .container {
-                box-shadow: none;
-                margin: 0;
-                width: 100%;
-                min-height: auto;
-            }
-            .top-bar,
-            .bottom-bar,
-            .left-brown-bar,
-            .brown-accent-1 {
-                print-color-adjust: exact;
-                -webkit-print-color-adjust: exact;
-            }
+            
             @page {
                 size: A4;
                 margin: 0;
+            }
+            
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            
+            body {
+                background-color: white;
+                padding: 0;
+                margin: 0;
+            }
+            
+            .container {
+                box-shadow: none;
+                margin: 0;
+                width: 210mm !important;
+                min-height: auto;
+            }
+            
+            .main-content {
+                display: flex !important;
+                flex-direction: row !important;
+                flex-wrap: nowrap !important;
+            }
+            
+            .left-column {
+                width: 35% !important;
+                flex: 0 0 35% !important;
+                max-width: 35% !important;
+            }
+            
+            .right-column {
+                width: 65% !important;
+                flex: 0 0 65% !important;
+                max-width: 65% !important;
+            }
+            
+            .top-bar {
+                background: linear-gradient(135deg, #F57C00 0%, #FF9800 100%) !important;
+            }
+            
+            .bottom-bar {
+                background: linear-gradient(135deg, #F57C00 0%, #FF9800 100%) !important;
+            }
+            
+            .left-brown-bar {
+                background-color: #8B4513 !important;
+            }
+            
+            .brown-accent-1 {
+                background-color: #D2691E !important;
             }
         }
     </style>
@@ -439,8 +475,47 @@
             currentUrl.searchParams.set('template', templateNumber);
             window.location.href = currentUrl.toString();
         }
+
+        function fitToOnePage() {
+            const container = document.querySelector('.container');
+            const wrapper = document.getElementById('resume-wrapper');
+            if (!container || !wrapper) return;
+
+            wrapper.style.width = '210mm';
+            wrapper.style.height = '297mm';
+            wrapper.style.overflow = 'hidden';
+            wrapper.style.margin = '0 auto';
+            const a4Height = wrapper.offsetHeight;
+
+            container.style.zoom = '1';
+            container.style.width = '210mm';
+
+            const contentHeight = container.scrollHeight;
+
+            let zoomLevel = 1;
+            if (contentHeight > a4Height) {
+                zoomLevel = Math.floor((a4Height / contentHeight) * 1000) / 1000;
+            }
+
+            let dynamicStyle = document.getElementById('dynamic-zoom-style');
+            if (!dynamicStyle) {
+                dynamicStyle = document.createElement('style');
+                dynamicStyle.id = 'dynamic-zoom-style';
+                document.head.appendChild(dynamicStyle);
+            }
+            dynamicStyle.textContent = 
+                '.container { zoom: ' + zoomLevel + ' !important; }' +
+                '#resume-wrapper { width: 210mm !important; height: 297mm !important; overflow: hidden !important; margin: 0 auto !important; }' +
+                '@media print { ' +
+                '  .container { zoom: ' + zoomLevel + ' !important; }' +
+                '  #resume-wrapper { width: 210mm !important; height: 297mm !important; overflow: hidden !important; margin: 0 !important; }' +
+                '}';
+        }
+
+        window.addEventListener('load', fitToOnePage);
     </script>
 
+    <div id="resume-wrapper">
     <div class="container">
         <!-- Orange Top Bar -->
         <div class="top-bar"></div>
@@ -596,6 +671,7 @@
             @endif
         </div>
     </div>
+    </div><!-- end resume-wrapper -->
 
 </body>
 </html>

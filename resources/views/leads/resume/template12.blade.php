@@ -59,7 +59,7 @@
         .top-section {
             display: flex;
             align-items: flex-start;
-            padding: 30px 40px 10px 40px;
+            padding: 15px 25px 8px 25px;
             background-color: white;
             position: relative;
         }
@@ -67,12 +67,12 @@
         /* Styling for the large name/title header */
         .name-header {
             width: 65%;
-            padding-left: 20px;
+            padding-left: 15px;
             position: relative;
         }
         .name-header h1 {
             color: var(--primary-color);
-            font-size: 3em;
+            font-size: 2em;
             font-weight: 900;
             margin: 0;
             line-height: 1.1;
@@ -80,20 +80,20 @@
         }
         .name-header h2 {
             color: #555;
-            font-size: 1.5em;
+            font-size: 1.1em;
             font-weight: normal;
-            margin: 5px 0 20px 0;
-            padding-bottom: 15px;
+            margin: 3px 0 10px 0;
+            padding-bottom: 10px;
             position: relative;
         }
         .name-header h1::after {
             content: '';
-            margin: 10px;
+            margin: 8px;
             position: absolute;
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 30px;
+            height: 20px;
             background: linear-gradient(to right, var(--primary-color) 0%, var(--secondary-color) 50%, #E8A5A5 100%);
             border-radius: 4px;
         }
@@ -101,7 +101,7 @@
         /* Image and Contact Info Column (Left Side) */
         .left-info-column {
             width: 35%;
-            padding: 20px;
+            padding: 12px;
             position: relative;
             z-index: 2;
             display: flex;
@@ -122,7 +122,7 @@
 
         .profile-pic {
             width: 100%;
-            max-width: 180px;
+            max-width: 150px;
             height: auto;
             display: block;
             position: relative;
@@ -138,7 +138,7 @@
         /* LEFT COLUMN (WIDER) - Contact, About Me */
         .left-column {
             width: 35%;
-            padding: 20px 20px 20px 40px;
+            padding: 10px 12px 10px 25px;
             box-sizing: border-box;
             color: #333;
             position: relative;
@@ -147,7 +147,7 @@
         /* RIGHT COLUMN (WIDER) - Experience */
         .right-column {
             width: 65%;
-            padding: 0 40px 20px 20px;
+            padding: 0 25px 10px 15px;
             box-sizing: border-box;
             border-left: 1px solid #ddd;
         }
@@ -155,14 +155,14 @@
         /* SECTION TITLES */
         .section-title {
             color: var(--primary-color);
-            font-size: 1.3em;
+            font-size: 1em;
             font-weight: bold;
-            margin-top: 20px;
-            margin-bottom: 10px;
+            margin-top: 8px;
+            margin-bottom: 6px;
         }
         .contact-details, .about-me {
-            font-size: 0.9em;
-            margin-bottom: 20px;
+            font-size: 0.8em;
+            margin-bottom: 8px;
         }
         .contact-details {
             color: #793345;
@@ -182,35 +182,35 @@
             list-style-type: none;
             padding: 0;
             margin: 0;
-            font-size: 0.85em;
+            font-size: 0.8em;
         }
         .about-me ul li {
-            margin-bottom: 2px;
+            margin-bottom: 1px;
         }
 
         /* EXPERIENCE SECTION */
         .experience-item {
-            margin-bottom: 25px;
+            margin-bottom: 12px;
             position: relative;
-            padding-left: 20px;
+            padding-left: 18px;
         }
         .experience-item h4 {
             margin: 0;
-            font-size: 1.1em;
+            font-size: 0.9em;
             color: #333;
             font-weight: bold;
         }
         .experience-item p.duration-role {
-            margin: 3px 0 5px 0;
+            margin: 2px 0 3px 0;
             color: #555;
             font-weight: bold;
-            font-size: 0.9em;
+            font-size: 0.8em;
         }
         .experience-item ul {
             list-style-type: disc;
-            padding-left: 20px;
-            margin-top: 5px;
-            font-size: 0.9em;
+            padding-left: 15px;
+            margin-top: 3px;
+            font-size: 0.8em;
             color: #333;
         }
         
@@ -230,9 +230,9 @@
         
         .footer-note {
             position: absolute;
-            bottom: 10px;
+            bottom: 8px;
             left: 10px;
-            font-size: 0.8em;
+            font-size: 0.7em;
             color: #777;
             z-index: 3;
         }
@@ -252,12 +252,12 @@
             top: 50%;
             left: 100%;
             transform: translateY(-50%);
-            width: calc(210mm - 40px - 100%);
-            height: 20px;
+            width: calc(210mm - 30px - 100%);
+            height: 15px;
             background: linear-gradient(to right, #E8A5A5 0%, var(--secondary-color) 50%, var(--primary-color) 100%);
             border-radius: 4px;
             z-index: 1;
-            margin-left: 20px;
+            margin-left: 15px;
         }
         
         /* Template Selector Styles */
@@ -303,15 +303,85 @@
         .template-selector .print-btn:hover {
             background-color: #A36B79;
         }
-         /* Footer credit - แสดงทุกหน้า */
-            .footer-note {
-                position: fixed;
-                bottom: 10px;
-                left: 30px;
-                font-size: 12px;
-                color: #333 !important;
-                font-weight: 500;
+
+        @media print {
+            .template-selector {
+                display: none !important;
             }
+            
+            @page {
+                size: A4;
+                margin: 0;
+            }
+            
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            
+            body {
+                background-color: white;
+                padding: 0;
+                margin: 0;
+            }
+            
+            .container {
+                box-shadow: none;
+                margin: 0;
+                width: 210mm !important;
+                min-height: auto;
+            }
+            
+            .top-section {
+                display: flex !important;
+                flex-direction: row !important;
+                flex-wrap: nowrap !important;
+            }
+            
+            .left-info-column {
+                width: 35% !important;
+                flex: 0 0 35% !important;
+                max-width: 35% !important;
+            }
+            
+            .name-header {
+                width: 65% !important;
+                flex: 0 0 65% !important;
+                max-width: 65% !important;
+            }
+            
+            .main-content {
+                display: flex !important;
+                flex-direction: row !important;
+                flex-wrap: nowrap !important;
+            }
+            
+            .left-column {
+                width: 35% !important;
+                flex: 0 0 35% !important;
+                max-width: 35% !important;
+            }
+            
+            .right-column {
+                width: 65% !important;
+                flex: 0 0 65% !important;
+                max-width: 65% !important;
+            }
+            
+            .name-header h1::after {
+                background: linear-gradient(to right, #793345 0%, #A36B79 50%, #E8A5A5 100%) !important;
+            }
+            
+            .footer-note::after {
+                background: linear-gradient(to right, #E8A5A5 0%, #A36B79 50%, #793345 100%) !important;
+            }
+            
+            .footer-note {
+                position: absolute;
+                bottom: 8px;
+                left: 10px;
+            }
+        }
 
 
     </style>
@@ -335,8 +405,47 @@
             currentUrl.searchParams.set('template', templateNumber);
             window.location.href = currentUrl.toString();
         }
+
+        function fitToOnePage() {
+            const container = document.querySelector('.container');
+            const wrapper = document.getElementById('resume-wrapper');
+            if (!container || !wrapper) return;
+
+            wrapper.style.width = '210mm';
+            wrapper.style.height = '297mm';
+            wrapper.style.overflow = 'hidden';
+            wrapper.style.margin = '0 auto';
+            const a4Height = wrapper.offsetHeight;
+
+            container.style.zoom = '1';
+            container.style.width = '210mm';
+
+            const contentHeight = container.scrollHeight;
+
+            let zoomLevel = 1;
+            if (contentHeight > a4Height) {
+                zoomLevel = Math.floor((a4Height / contentHeight) * 1000) / 1000;
+            }
+
+            let dynamicStyle = document.getElementById('dynamic-zoom-style');
+            if (!dynamicStyle) {
+                dynamicStyle = document.createElement('style');
+                dynamicStyle.id = 'dynamic-zoom-style';
+                document.head.appendChild(dynamicStyle);
+            }
+            dynamicStyle.textContent = 
+                '.container { zoom: ' + zoomLevel + ' !important; }' +
+                '#resume-wrapper { width: 210mm !important; height: 297mm !important; overflow: hidden !important; margin: 0 auto !important; }' +
+                '@media print { ' +
+                '  .container { zoom: ' + zoomLevel + ' !important; }' +
+                '  #resume-wrapper { width: 210mm !important; height: 297mm !important; overflow: hidden !important; margin: 0 !important; }' +
+                '}';
+        }
+
+        window.addEventListener('load', fitToOnePage);
     </script>
     
+    <div id="resume-wrapper">
     <div class="container">
         
         <!-- Company Logo -->
@@ -430,5 +539,6 @@
             {{ $lead->staff->staff_nickname ?? 'N/A' }} / {{ $lead->recommenderStaff->staff_sub_name ?? '' }}
         </div>
     </div>
+    </div><!-- end resume-wrapper -->
 </body>
 </html>

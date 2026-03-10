@@ -6,31 +6,6 @@
     <title>Resume - {{ $lead->fullName }}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        @page {
-            size: A4;
-            margin: 0;
-        }
-        @media print {
-            body {
-                margin: 0;
-                padding: 0;
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-            }
-            .container {
-                width: 210mm;
-                height: 297mm;
-                margin: 0;
-                padding: 0;
-                box-shadow: none;
-                page-break-after: avoid;
-                page-break-inside: avoid;
-                overflow: hidden;
-            }
-            .template-selector {
-                display: none !important;
-            }
-        }
         body {
             font-family: Arial, sans-serif;
             line-height: 1.5;
@@ -69,7 +44,7 @@
         .left-column {
             width: 35%;
             background-color: var(--primary-color);
-            padding: 30px 20px 20px 20px;
+            padding: 20px 15px 15px 15px;
             box-sizing: border-box;
             color: white;
             position: relative;
@@ -78,11 +53,11 @@
         
         .profile-pic-wrapper {
             width: 100%;
-            max-width: 200px;
+            max-width: 160px;
             height: auto;
-            margin: 0 auto 30px auto;
+            margin: 0 auto 15px auto;
             background-color: white;
-            border: 5px solid white;
+            border: 3px solid white;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
         }
         .profile-pic-wrapper img {
@@ -95,7 +70,7 @@
         .right-column {
             width: 65%;
             background-color: white;
-            padding: 30px 40px 30px 40px;
+            padding: 20px 25px 20px 25px;
             box-sizing: border-box;
             position: relative;
             z-index: 2;
@@ -103,14 +78,14 @@
         
         .name-header {
             background-color: var(--secondary-color);
-            padding: 20px;
-            margin: -30px -40px 20px -40px;
+            padding: 12px;
+            margin: -20px -25px 15px -25px;
         }
         
         .name-header h1 {
-            color: white; /* Name text is white/light */
-            font-family: 'Georgia', serif; /* Use a serif font for a formal look */
-            font-size: 2.5em;
+            color: white;
+            font-family: 'Georgia', serif;
+            font-size: 1.8em;
             font-weight: bold;
             margin: 0;
             line-height: 1.1;
@@ -118,9 +93,9 @@
         }
         .name-header h2 {
             color: white;
-            font-size: 1.2em;
+            font-size: 0.9em;
             font-weight: normal;
-            margin: 5px 0 20px 0;
+            margin: 3px 0 10px 0;
             text-transform: uppercase;
         }
         
@@ -144,9 +119,9 @@
         /* Contact Bar (Bottom of Page) */
         .contact-bar {
             background-color: var(--tertiary-color);
-            padding: 15px 40px;
+            padding: 8px 25px;
             color: var(--primary-color);
-            font-size: 1em;
+            font-size: 0.85em;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -158,8 +133,8 @@
             align-items: center;
         }
         .contact-bar i {
-            margin-right: 10px;
-            font-size: 1.3em;
+            margin-right: 8px;
+            font-size: 1em;
         }
         /* Using a simple icon placeholder for display purposes */
         .icon-phone:before { content: "📞"; }
@@ -168,23 +143,23 @@
 
         /* PROFILE SECTION (Left Column) */
         .section-title {
-            font-size: 1.5em;
+            font-size: 1.1em;
             font-weight: bold;
-            margin-top: 30px;
-            margin-bottom: 10px;
+            margin-top: 15px;
+            margin-bottom: 6px;
             border-bottom: 2px solid white;
-            padding-bottom: 5px;
+            padding-bottom: 3px;
             color: white;
         }
         .profile-text p {
-            font-size: 0.9em;
-            line-height: 1.6;
+            font-size: 0.8em;
+            line-height: 1.4;
         }
         .profile-text ul {
             list-style-type: disc;
-            padding-left: 20px;
-            margin-top: 10px;
-            font-size: 0.85em;
+            padding-left: 15px;
+            margin-top: 6px;
+            font-size: 0.75em;
         }
         .profile-text ul li {
             margin-bottom: 5px;
@@ -196,44 +171,44 @@
             color: white;
         }
         .footer-note {
-            font-size: 0.8em;
+            font-size: 0.7em;
             color: white;
             text-align: center;
-            margin-top: 40px;
+            margin-top: 15px;
             border-top: 1px solid rgba(255, 255, 255, 0.3);
-            padding-top: 10px;
+            padding-top: 6px;
         }
 
         /* EXPERIENCE SECTION (Right Column) */
         .experience-title {
-            font-size: 1.5em;
+            font-size: 1.1em;
             font-weight: bold;
             margin-top: 0;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             color: var(--primary-color);
             border-bottom: 2px solid var(--primary-color);
-            padding-bottom: 5px;
+            padding-bottom: 3px;
         }
         .experience-item {
-            margin-bottom: 30px;
+            margin-bottom: 12px;
         }
         .experience-item h4 {
             margin: 0;
-            font-size: 1.1em;
+            font-size: 0.9em;
             color: var(--primary-color);
             font-weight: bold;
         }
         .experience-item p.duration {
-            margin: 3px 0 5px 0;
+            margin: 2px 0 3px 0;
             color: #555;
             font-weight: bold;
-            font-size: 0.9em;
+            font-size: 0.8em;
         }
         .experience-item ul {
             list-style-type: disc;
-            padding-left: 20px;
-            margin-top: 5px;
-            font-size: 0.9em;
+            padding-left: 15px;
+            margin-top: 3px;
+            font-size: 0.8em;
             color: #333;
         }
         
@@ -289,24 +264,64 @@
         .template-selector .print-btn:hover {
             background-color: #A9A9A9;
         }
-        
+
         @media print {
             .template-selector {
                 display: none !important;
             }
-            .container {
-                box-shadow: none !important;
+
+            @page {
+                size: A4;
+                margin: 0;
             }
+
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            body {
+                background-color: white;
+                padding: 0;
+                margin: 0;
+            }
+
+            .container {
+                box-shadow: none;
+                margin: 0;
+                width: 210mm !important;
+                min-height: auto;
+            }
+
+            .header-section {
+                display: flex !important;
+                flex-direction: row !important;
+                flex-wrap: nowrap !important;
+            }
+
+            .left-column {
+                width: 35% !important;
+                flex: 0 0 35% !important;
+                max-width: 35% !important;
+                background-color: var(--primary-color) !important;
+            }
+
+            .right-column {
+                width: 65% !important;
+                flex: 0 0 65% !important;
+                max-width: 65% !important;
+            }
+
+            .name-header {
+                background-color: var(--secondary-color) !important;
+            }
+
+            .contact-bar {
+                background-color: var(--tertiary-color) !important;
+            }
+
             .footer-note {
-                position: fixed;
-                bottom: 20px;
-                left: 50%;
-                transform: translateX(-50%);
-                font-size: 0.8em;
-                color: #333 !important;
-                text-align: center;
-                border: none;
-                background: transparent;
+                color: white !important;
             }
         }
 
@@ -332,7 +347,46 @@
             currentUrl.searchParams.set('template', templateNumber);
             window.location.href = currentUrl.toString();
         }
+
+        function fitToOnePage() {
+            const container = document.querySelector('.container');
+            const wrapper = document.getElementById('resume-wrapper');
+            if (!container || !wrapper) return;
+
+            wrapper.style.width = '210mm';
+            wrapper.style.height = '297mm';
+            wrapper.style.overflow = 'hidden';
+            wrapper.style.margin = '0 auto';
+            const a4Height = wrapper.offsetHeight;
+
+            container.style.zoom = '1';
+            container.style.width = '210mm';
+
+            const contentHeight = container.scrollHeight;
+
+            let zoomLevel = 1;
+            if (contentHeight > a4Height) {
+                zoomLevel = Math.floor((a4Height / contentHeight) * 1000) / 1000;
+            }
+
+            let dynamicStyle = document.getElementById('dynamic-zoom-style');
+            if (!dynamicStyle) {
+                dynamicStyle = document.createElement('style');
+                dynamicStyle.id = 'dynamic-zoom-style';
+                document.head.appendChild(dynamicStyle);
+            }
+            dynamicStyle.textContent = 
+                '.container { zoom: ' + zoomLevel + ' !important; }' +
+                '#resume-wrapper { width: 210mm !important; height: 297mm !important; overflow: hidden !important; margin: 0 auto !important; }' +
+                '@media print { ' +
+                '  .container { zoom: ' + zoomLevel + ' !important; }' +
+                '  #resume-wrapper { width: 210mm !important; height: 297mm !important; overflow: hidden !important; margin: 0 !important; }' +
+                '}';
+        }
+
+        window.addEventListener('load', fitToOnePage);
     </script>
+    <div id="resume-wrapper">
     <div class="container">
         
         <!-- Company Logo -->
@@ -424,5 +478,6 @@
             </span>
         </div>
     </div>
+    </div><!-- end resume-wrapper -->
 </body>
 </html>

@@ -6,32 +6,6 @@
     <title>Resume - {{ $lead->fullName }}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        @page {
-            size: A4;
-            margin: 0;
-        }
-        @media print {
-            body {
-                margin: 0;
-                padding: 0;
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-            }
-            .container {
-                width: 210mm;
-                height: 297mm;
-                margin: 0;
-                padding: 0;
-                box-shadow: none;
-                page-break-after: avoid;
-                page-break-inside: avoid;
-                overflow: hidden;
-            }
-            .template-selector {
-                display: none !important;
-            }
-            
-        }
         body {
             font-family: Arial, sans-serif;
             line-height: 1.5;
@@ -71,36 +45,36 @@
             top: 0;
             right: 0;
             width: 100%;
-            height: 200px; /* Cover the name section height */
+            height: 160px;
             z-index: 1;
         }
         .name-header {
             width: 70%;
-            padding: 30px 40px 10px 0;
+            padding: 20px 25px 8px 0;
             text-align: right;
             position: relative;
             z-index: 3;
         }
         .name-header h1 {
-            color: white; /* Name text is white */
-            font-size: 3em;
+            color: white;
+            font-size: 2em;
             font-weight: 900;
             margin: 0;
             line-height: 1.1;
             text-transform: uppercase;
         }
         .name-header h2 {
-            color: var(--secondary-color); /* Subtitle in light blue */
-            font-size: 1.5em;
+            color: var(--secondary-color);
+            font-size: 1.1em;
             font-style: italic;
             font-weight: normal;
-            margin: 5px 0 20px 0;
+            margin: 3px 0 10px 0;
         }
 
         /* Image and Contact Info Column (Left Side) */
         .left-info-column {
             width: 35%;
-            padding: 20px 40px 20px 40px;
+            padding: 12px 25px 12px 25px;
             position: relative;
             z-index: 3;
             box-sizing: border-box;
@@ -111,10 +85,10 @@
             position: absolute;
             top: 0;
             left: 0;
-            margin: 130px 30px 80px -120px;
+            margin: 100px 25px 60px -120px;
   
             width: 130%;
-            height: 200px; 
+            height: 160px; 
             background-color: #003D82;
             border-radius: 0 100px 100px 0;
             transform: rotate(-30deg);
@@ -123,13 +97,13 @@
         }
 
         .profile-pic-wrapper {
-            width: 150px;
-            height: 150px;
+            width: 120px;
+            height: 120px;
             border-radius: 50%;
             overflow: hidden;
-            background-color: white; /* White border effect */
-            border: 5px solid white;
-            margin: 0 auto 20px auto;
+            background-color: white;
+            border: 4px solid white;
+            margin: 0 auto 12px auto;
             position: relative;
             z-index: 3;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
@@ -148,7 +122,7 @@
         /* LEFT COLUMN (NARROWER) - Contact, Profile */
         .left-column {
             width: 35%;
-            padding: 0 40px 20px 40px;
+            padding: 0 20px 10px 25px;
             box-sizing: border-box;
             color: #333;
             position: relative;
@@ -157,7 +131,7 @@
         /* RIGHT COLUMN (WIDER) - Experience */
         .right-column {
             width: 65%;
-            padding: 0 40px 20px 20px;
+            padding: 0 25px 10px 15px;
             box-sizing: border-box;
             border-left: 1px solid #ddd;
         }
@@ -165,37 +139,37 @@
         /* SECTION TITLES */
         .section-title {
             color: var(--secondary-color);
-            font-size: 1.3em;
+            font-size: 1em;
             font-weight: bold;
-            margin-top: 20px;
-            margin-bottom: 10px;
+            margin-top: 8px;
+            margin-bottom: 6px;
         }
         .contact-details {
-            font-size: 0.9em;
-            margin-bottom: 20px;
+            font-size: 0.8em;
+            margin-bottom: 8px;
         }
         .contact-item {
             display: flex;
             align-items: flex-start;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
         }
         .contact-item i {
             color: var(--primary-color);
-            margin-right: 10px;
-            font-size: 1.2em;
+            margin-right: 8px;
+            font-size: 1em;
         }
         
         .profile-text {
-            font-size: 0.9em;
+            font-size: 0.8em;
         }
         .profile-text ul {
             list-style-type: none;
             padding: 0;
             margin: 0;
-            font-size: 0.85em;
+            font-size: 0.8em;
         }
         .profile-text ul li {
-            margin-bottom: 2px;
+            margin-bottom: 1px;
         }
         .profile-text strong {
              font-weight: bold;
@@ -203,33 +177,33 @@
 
         /* EXPERIENCE SECTION */
         .experience-item {
-            margin-bottom: 25px;
+            margin-bottom: 12px;
             position: relative;
-            padding-left: 30px;
+            padding-left: 22px;
         }
         .experience-item h4 {
             margin: 0;
-            font-size: 1.1em;
+            font-size: 0.9em;
             color: #333;
             font-weight: bold;
         }
         .experience-item p.duration-role {
-            margin: 3px 0 5px 0;
+            margin: 2px 0 3px 0;
             color: #555;
             font-weight: bold;
-            font-size: 0.9em;
+            font-size: 0.8em;
         }
         .experience-item p.company {
-            margin: 0 0 5px 0;
-            font-size: 1em;
+            margin: 0 0 3px 0;
+            font-size: 0.85em;
             color: var(--primary-color);
             font-weight: bold;
         }
         .experience-item ul {
             list-style-type: disc;
-            padding-left: 20px;
-            margin-top: 5px;
-            font-size: 0.9em;
+            padding-left: 15px;
+            margin-top: 3px;
+            font-size: 0.8em;
             color: #333;
         }
         
@@ -249,9 +223,9 @@
         
         .footer-note {
             position: absolute;
-            bottom: 10px;
-            left: 40px;
-            font-size: 0.8em;
+            bottom: 8px;
+            left: 25px;
+            font-size: 0.7em;
             color: #777;
             z-index: 3;
         }
@@ -308,15 +282,85 @@
         .template-selector .print-btn:hover {
             background-color: #4A90E2;
         }
-         /* Footer credit - แสดงทุกหน้า */
-            .footer-note {
-                position: fixed;
-                bottom: 10px;
-                left: 30px;
-                font-size: 12px;
-                color: #333 !important;
-                font-weight: 500;
+
+        @media print {
+            .template-selector {
+                display: none !important;
             }
+            
+            @page {
+                size: A4;
+                margin: 0;
+            }
+            
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            
+            body {
+                background-color: white;
+                padding: 0;
+                margin: 0;
+            }
+            
+            .container {
+                box-shadow: none;
+                margin: 0;
+                width: 210mm !important;
+                min-height: auto;
+            }
+            
+            .top-section {
+                display: flex !important;
+                flex-direction: row !important;
+                flex-wrap: nowrap !important;
+            }
+            
+            .left-info-column {
+                width: 35% !important;
+                flex: 0 0 35% !important;
+                max-width: 35% !important;
+            }
+            
+            .name-header {
+                width: 70% !important;
+                flex: 0 0 70% !important;
+                max-width: 70% !important;
+            }
+            
+            .main-content {
+                display: flex !important;
+                flex-direction: row !important;
+                flex-wrap: nowrap !important;
+            }
+            
+            .left-column {
+                width: 35% !important;
+                flex: 0 0 35% !important;
+                max-width: 35% !important;
+            }
+            
+            .right-column {
+                width: 65% !important;
+                flex: 0 0 65% !important;
+                max-width: 65% !important;
+            }
+            
+            .name-header-bg {
+                background-color: #001F4D !important;
+            }
+            
+            .image-bg-shape {
+                background-color: #003D82 !important;
+            }
+            
+            .footer-note {
+                position: absolute;
+                bottom: 8px;
+                left: 25px;
+            }
+        }
 
 
     </style>
@@ -340,8 +384,47 @@
             currentUrl.searchParams.set('template', templateNumber);
             window.location.href = currentUrl.toString();
         }
+
+        function fitToOnePage() {
+            const container = document.querySelector('.container');
+            const wrapper = document.getElementById('resume-wrapper');
+            if (!container || !wrapper) return;
+
+            wrapper.style.width = '210mm';
+            wrapper.style.height = '297mm';
+            wrapper.style.overflow = 'hidden';
+            wrapper.style.margin = '0 auto';
+            const a4Height = wrapper.offsetHeight;
+
+            container.style.zoom = '1';
+            container.style.width = '210mm';
+
+            const contentHeight = container.scrollHeight;
+
+            let zoomLevel = 1;
+            if (contentHeight > a4Height) {
+                zoomLevel = Math.floor((a4Height / contentHeight) * 1000) / 1000;
+            }
+
+            let dynamicStyle = document.getElementById('dynamic-zoom-style');
+            if (!dynamicStyle) {
+                dynamicStyle = document.createElement('style');
+                dynamicStyle.id = 'dynamic-zoom-style';
+                document.head.appendChild(dynamicStyle);
+            }
+            dynamicStyle.textContent = 
+                '.container { zoom: ' + zoomLevel + ' !important; }' +
+                '#resume-wrapper { width: 210mm !important; height: 297mm !important; overflow: hidden !important; margin: 0 auto !important; }' +
+                '@media print { ' +
+                '  .container { zoom: ' + zoomLevel + ' !important; }' +
+                '  #resume-wrapper { width: 210mm !important; height: 297mm !important; overflow: hidden !important; margin: 0 !important; }' +
+                '}';
+        }
+
+        window.addEventListener('load', fitToOnePage);
     </script>
     
+    <div id="resume-wrapper">
     <div class="container">
         
         <!-- Company Logo -->
@@ -448,5 +531,6 @@
              {{ $lead->staff->staff_nickname ?? 'N/A' }} / {{ $lead->recommenderStaff->staff_sub_name ?? '' }}
         </div>
     </div>
+    </div><!-- end resume-wrapper -->
 </body>
 </html>

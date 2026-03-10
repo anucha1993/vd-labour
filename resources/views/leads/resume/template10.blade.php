@@ -39,7 +39,7 @@
             background: white;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             position: relative;
-            padding: 40px;
+            padding: 25px 30px;
             box-sizing: border-box;
         }
         
@@ -66,18 +66,18 @@
         /* PROFILE IMAGE with decorative oval frame */
         .profile-wrapper {
             position: absolute;
-            top: 60px;
-            left: 40px;
+            top: 40px;
+            left: 30px;
             z-index: 10;
         }
         .profile-oval {
-            width: 180px;
-            height: 240px;
+            width: 150px;
+            height: 200px;
             border-radius: 50%;
             overflow: hidden;
             background-color: white;
             border: 3px solid var(--brown-color);
-            box-shadow: 0 0 0 8px var(--light-bg), 0 0 0 11px var(--brown-color);
+            box-shadow: 0 0 0 6px var(--light-bg), 0 0 0 9px var(--brown-color);
             position: relative;
         }
         .profile-oval::before,
@@ -108,35 +108,35 @@
         /* HEADER SECTION (Name and Position) */
         .header {
             position: absolute;
-            top: 40px;
-            right: 40px;
+            top: 30px;
+            right: 30px;
             text-align: center;
             z-index: 10;
-            width: 70%;
+            width: 65%;
         }
         .header .position-subtitle {
             font-family: 'Brush Script MT', cursive;
-            font-size: 32px;
+            font-size: 24px;
             color: #999;
             font-style: italic;
-            margin: 0 0 5px 0;
+            margin: 0 0 3px 0;
         }
         .header h1 {
             font-family: Georgia, serif;
             margin: 0;
             line-height: 1;
             color: var(--primary-color);
-            font-size: 42px;
+            font-size: 30px;
             font-weight: bold;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 1px;
         }
         
         /* MAIN CONTENT (2 COLUMNS) */
         .main-content {
             display: flex;
-            margin-top: 320px;
-            gap: 30px;
+            margin-top: 230px;
+            gap: 20px;
             position: relative;
             z-index: 10;
         }
@@ -152,32 +152,32 @@
         /* SECTION TITLES */
         .section-title {
             color: var(--primary-color);
-            font-size: 22px;
+            font-size: 16px;
             font-weight: bold;
-            margin: 20px 0 10px 0;
+            margin: 10px 0 6px 0;
             font-family: Georgia, serif;
         }
         
         /* Contact Section */
         .contact-section {
-            margin-bottom: 25px;
+            margin-bottom: 10px;
         }
         .contact-section .phone {
-            font-size: 18px;
+            font-size: 13px;
             font-weight: bold;
             color: var(--text-color);
-            margin: 5px 0;
+            margin: 3px 0;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
         .contact-section .address {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-color);
-            line-height: 1.5;
+            line-height: 1.3;
             display: flex;
             align-items: flex-start;
-            gap: 8px;
+            gap: 6px;
         }
         .contact-section i {
             color: var(--primary-color);
@@ -188,66 +188,66 @@
             list-style: none;
             padding: 0;
             margin: 0;
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-color);
         }
         .profile-section ul li {
-            margin-bottom: 4px;
+            margin-bottom: 2px;
         }
 
         /* Summary Section */
         .summary-section p {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-color);
-            margin: 5px 0;
+            margin: 3px 0;
             text-align: justify;
         }
 
         /* Work Experience Section */
         .work-experience-title {
             color: var(--primary-color);
-            font-size: 22px;
+            font-size: 16px;
             font-weight: bold;
-            margin: 20px 0 15px 0;
+            margin: 10px 0 8px 0;
             font-family: Georgia, serif;
         }
         .experience-item {
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
         .experience-item .job-title {
-            font-size: 14px;
+            font-size: 12px;
             font-weight: bold;
             color: var(--text-color);
             margin: 0 0 2px 0;
         }
         .experience-item .job-duration {
-            font-size: 12px;
+            font-size: 11px;
             font-style: italic;
             color: #666;
-            margin: 0 0 5px 0;
+            margin: 0 0 3px 0;
         }
         .experience-item .job-department {
-            font-size: 12px;
+            font-size: 11px;
             font-style: italic;
             color: var(--text-color);
-            margin: 0 0 5px 0;
+            margin: 0 0 3px 0;
         }
         .experience-item ul {
             list-style-type: disc;
-            padding-left: 20px;
-            margin: 5px 0;
+            padding-left: 15px;
+            margin: 3px 0;
             font-size: 11px;
             color: var(--text-color);
         }
         .experience-item ul li {
-            margin-bottom: 2px;
+            margin-bottom: 1px;
         }
         
         .footer-note {
             position: absolute;
-            bottom: 20px;
-            left: 40px;
-            font-size: 14px;
+            bottom: 12px;
+            left: 30px;
+            font-size: 12px;
             color: var(--text-color);
             z-index: 10;
         }
@@ -308,37 +308,59 @@
         
         /* Print Styles */
         @media print {
-            body {
-                background-color: white;
-                padding: 0;
-            }
             .template-selector {
                 display: none !important;
             }
-            .container {
-                box-shadow: none !important;
-                margin: 0;
-                width: 100%;
-                min-height: auto;
-            }
-            .container::before {
-                print-color-adjust: exact;
-                -webkit-print-color-adjust: exact;
-            }
-            .footer-note {
-                position: fixed;
-                bottom: 20px;
-                left: 40px;
-                font-size: 14px;
-                color: #333 !important;
-                z-index: 10;
-            }
-            .profile-oval {
-                box-shadow: none !important;
-            }
+            
             @page {
                 size: A4;
-                margin: 20px;
+                margin: 0;
+            }
+            
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            
+            body {
+                background-color: white;
+                padding: 0;
+                margin: 0;
+            }
+            
+            .container {
+                box-shadow: none;
+                margin: 0;
+                width: 210mm !important;
+                min-height: auto;
+            }
+            
+            .main-content {
+                display: flex !important;
+                flex-direction: row !important;
+                flex-wrap: nowrap !important;
+            }
+            
+            .left-column {
+                width: 35% !important;
+                flex: 0 0 35% !important;
+                max-width: 35% !important;
+            }
+            
+            .right-column {
+                width: 65% !important;
+                flex: 0 0 65% !important;
+                max-width: 65% !important;
+            }
+            
+            .container::before {
+                background: #E8E4D9 !important;
+            }
+            
+            .footer-note {
+                position: absolute;
+                bottom: 10px;
+                left: 30px;
             }
         }
     </style>
@@ -362,8 +384,47 @@
             currentUrl.searchParams.set('template', templateNumber);
             window.location.href = currentUrl.toString();
         }
+
+        function fitToOnePage() {
+            const container = document.querySelector('.container');
+            const wrapper = document.getElementById('resume-wrapper');
+            if (!container || !wrapper) return;
+
+            wrapper.style.width = '210mm';
+            wrapper.style.height = '297mm';
+            wrapper.style.overflow = 'hidden';
+            wrapper.style.margin = '0 auto';
+            const a4Height = wrapper.offsetHeight;
+
+            container.style.zoom = '1';
+            container.style.width = '210mm';
+
+            const contentHeight = container.scrollHeight;
+
+            let zoomLevel = 1;
+            if (contentHeight > a4Height) {
+                zoomLevel = Math.floor((a4Height / contentHeight) * 1000) / 1000;
+            }
+
+            let dynamicStyle = document.getElementById('dynamic-zoom-style');
+            if (!dynamicStyle) {
+                dynamicStyle = document.createElement('style');
+                dynamicStyle.id = 'dynamic-zoom-style';
+                document.head.appendChild(dynamicStyle);
+            }
+            dynamicStyle.textContent = 
+                '.container { zoom: ' + zoomLevel + ' !important; }' +
+                '#resume-wrapper { width: 210mm !important; height: 297mm !important; overflow: hidden !important; margin: 0 auto !important; }' +
+                '@media print { ' +
+                '  .container { zoom: ' + zoomLevel + ' !important; }' +
+                '  #resume-wrapper { width: 210mm !important; height: 297mm !important; overflow: hidden !important; margin: 0 !important; }' +
+                '}';
+        }
+
+        window.addEventListener('load', fitToOnePage);
     </script>
     
+    <div id="resume-wrapper">
     <div class="container">
         
         <!-- Company Logo -->
@@ -522,5 +583,6 @@
             @endif
         </footer>
     </div>
+    </div><!-- end resume-wrapper -->
 </body>
 </html>

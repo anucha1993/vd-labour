@@ -145,16 +145,16 @@ class JobLeadConversionController extends Controller
         if (!$lead) {
             $errors[] = 'ไม่พบข้อมูลคนงาน (Lead)';
         } else {
-            // 3. Check Passport expiry >= 3 years from now
-            if (!$lead->lead_passport_expiry_date) {
-                $errors[] = 'ไม่พบวันหมดอายุ Passport';
-            } else {
-                $expiryDate = Carbon::parse($lead->lead_passport_expiry_date);
-                $threeYearsFromNow = Carbon::now()->addYears(3);
-                if ($expiryDate->lessThan($threeYearsFromNow)) {
-                    $errors[] = 'วันหมดอายุ Passport ต้องมากกว่า 3 ปี (วันที่: ' . $expiryDate->format('d/m/Y') . ')';
-                }
-            }
+            // 3. Check Passport expiry >= 3 years from now (ปิดไว้ชั่วคราว - ยังไม่จำเป็นต้องใช้)
+            // if (!$lead->lead_passport_expiry_date) {
+            //     $errors[] = 'ไม่พบวันหมดอายุ Passport';
+            // } else {
+            //     $expiryDate = Carbon::parse($lead->lead_passport_expiry_date);
+            //     $threeYearsFromNow = Carbon::now()->addYears(3);
+            //     if ($expiryDate->lessThan($threeYearsFromNow)) {
+            //         $errors[] = 'วันหมดอายุ Passport ต้องมากกว่า 3 ปี (วันที่: ' . $expiryDate->format('d/m/Y') . ')';
+            //     }
+            // }
 
             // 4. Check Passport number duplicate in Labour
             $duplicatePassport = labourModel::where('labour_passport_number', $lead->lead_passport_number)

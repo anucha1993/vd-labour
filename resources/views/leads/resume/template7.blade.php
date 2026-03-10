@@ -74,7 +74,7 @@
         /* ================= คอลัมน์ซ้าย (รูปภาพ & Profile & Contact) ================= */
         .left-col {
             width: 38%;
-            padding: 30px 20px 30px 30px;
+            padding: 15px 12px 15px 20px;
             color: var(--text-grey);
             position: relative;
         }
@@ -82,7 +82,7 @@
         /* รูปภาพ */
         .photo-frame {
             width: 100%;
-            margin-bottom: 25px;
+            margin-bottom: 10px;
             overflow: hidden;
             border-radius: 15px; /* ขอบมน */
             /* ทำให้กรอบรูปดูเป็นบล็อกที่สะอาด */
@@ -98,16 +98,16 @@
         /* Profile Header */
         .profile-header {
             font-family: 'Roboto', sans-serif;
-            font-size: 20px;
+            font-size: 16px;
             font-weight: 700;
             color: var(--text-dark-titles);
-            margin-bottom: 15px;
-            padding-top: 15px; /* เว้นระยะจากรูปภาพ */
+            margin-bottom: 6px;
+            padding-top: 6px;
             position: relative;
         }
         
         .profile-header i {
-            margin-right: 10px;
+            margin-right: 8px;
             color: var(--theme-dark);
         }
 
@@ -115,132 +115,131 @@
         .profile-list {
             list-style: none;
             padding-left: 0;
-            font-size: 13px;
-            line-height: 1.6;
+            font-size: 11px;
+            line-height: 1.4;
         }
 
         .profile-list li {
             position: relative;
             padding-left: 10px;
-            margin-bottom: 5px;
+            margin-bottom: 2px;
         }
 
         .profile-list li::before {
             content: '•';
-            color: var(--theme-dark); /* ใช้สีดำตามภาพ */
+            color: var(--theme-dark);
             position: absolute;
             left: 0;
             font-weight: bold;
-            font-size: 18px; 
+            font-size: 14px; 
             line-height: 0.8;
-            top: 5px;
+            top: 4px;
         }
         
         .profile-list strong {
             color: var(--theme-dark);
             font-weight: 500;
             display: inline-block;
-            min-width: 110px;
+            min-width: 95px;
         }
 
         /* Contact Header */
         .contact-header {
             font-family: 'Roboto', sans-serif;
-            font-size: 20px;
+            font-size: 16px;
             font-weight: 700;
             color: var(--text-dark-titles);
-            margin-top: 30px;
-            margin-bottom: 15px;
+            margin-top: 12px;
+            margin-bottom: 6px;
             position: relative;
         }
 
         .contact-header i {
-            margin-right: 10px;
+            margin-right: 8px;
             color: var(--theme-dark);
         }
 
         /* Contact List */
         .contact-list {
             list-style: none;
-            font-size: 13px;
+            font-size: 11px;
         }
 
         .contact-list li {
-            margin-bottom: 10px;
-            line-height: 1.4;
+            margin-bottom: 5px;
+            line-height: 1.3;
         }
 
         /* ================= คอลัมน์ขวา (ชื่อ & Experience) ================= */
         .right-col {
             width: 62%;
-            padding: 30px 30px 30px 20px;
+            padding: 15px 20px 15px 15px;
             color: var(--text-grey);
             position: relative;
         }
 
         /* ชื่อหลัก */
         .main-header {
-            margin-top: 20px;
-            margin-bottom: 20px;
-            padding-bottom: 5px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            padding-bottom: 3px;
             border-bottom: 1px solid var(--border-light);
         }
 
         .main-name {
             font-family: 'Roboto', sans-serif;
-            font-size: 38px;
+            font-size: 28px;
             color: var(--theme-dark);
             text-transform: uppercase;
-            font-weight: 900; /* เน้นให้หนาเป็นพิเศษ */
+            font-weight: 900;
             line-height: 1.1;
-            margin-bottom: 5px;
+            margin-bottom: 3px;
         }
 
         .supermarket-tag {
-            font-size: 16px;
+            font-size: 14px;
             color: var(--text-grey);
             font-weight: 500;
             display: block;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
         }
         
         /* Summary Text Box */
         .summary-box {
             background-color: var(--light-grey-bg);
-            padding: 20px;
-            margin-bottom: 30px;
-            font-size: 14px;
-            line-height: 1.5;
+            padding: 10px 12px;
+            margin-bottom: 12px;
+            font-size: 12px;
+            line-height: 1.3;
             text-align: justify;
-            border-radius: 20px; /* เพิ่มความโค้งมน */
+            border-radius: 12px;
             border: 1px solid var(--border-light);
         }
 
         /* Experience Header */
         .experience-header {
             font-family: 'Roboto', sans-serif;
-            font-size: 20px;
+            font-size: 16px;
             font-weight: 700;
             color: var(--text-dark-titles);
             text-transform: uppercase;
-            margin-bottom: 20px;
+            margin-bottom: 8px;
             position: relative;
         }
         
         /* Experience Wrapper (มีพื้นหลังสีอ่อนและเส้นโค้ง) */
         .experience-wrapper {
             background-color: var(--section-bg);
-            padding: 20px 20px 5px 30px;
-            border-radius: 20px; /* เพิ่มความโค้งมน */
+            padding: 12px 12px 5px 22px;
+            border-radius: 12px;
             position: relative;
         }
 
         /* Job Item Container */
         .job-item {
-            margin-bottom: 30px;
-            padding-left: 20px;
+            margin-bottom: 12px;
+            padding-left: 15px;
             position: relative;
-            
         }
 
         /* เส้นแนวตั้งและจุดนำหน้า (จำลองเส้นขอบโค้งและจุด) */
@@ -272,9 +271,9 @@
         .job-location-date {
             display: flex;
             justify-content: space-between;
-            font-size: 13px;
+            font-size: 11px;
             color: var(--text-grey);
-            margin-bottom: 5px;
+            margin-bottom: 3px;
         }
         
         .job-date {
@@ -284,33 +283,33 @@
 
         /* Job Title */
         .job-title {
-            font-size: 16px;
+            font-size: 13px;
             color: var(--theme-dark);
             font-weight: 700;
             display: block;
-            margin-bottom: 3px;
+            margin-bottom: 2px;
         }
 
         .company-name {
-            font-size: 14px;
+            font-size: 12px;
             color: var(--text-grey);
             font-weight: 500;
             display: block;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
         }
 
         /* รายละเอียดงาน */
         .job-duties {
             list-style: none;
             padding-left: 0;
-            font-size: 13px;
-            line-height: 1.5;
+            font-size: 11px;
+            line-height: 1.3;
         }
 
         .job-duties li {
             position: relative;
-            padding-left: 15px;
-            margin-bottom: 5px;
+            padding-left: 12px;
+            margin-bottom: 2px;
         }
 
         .job-duties li::before {
@@ -380,6 +379,16 @@
                 display: none !important;
             }
             
+            @page {
+                size: A4;
+                margin: 0;
+            }
+            
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            
             body {
                 background-color: white;
                 padding: 0;
@@ -389,29 +398,40 @@
             .resume-container {
                 box-shadow: none;
                 margin: 0;
-                width: 100%;
+                width: 210mm !important;
                 min-height: auto;
+                display: flex !important;
+                flex-direction: row !important;
+                flex-wrap: nowrap !important;
             }
             
-            /* Ensure colors print correctly */
-            .summary-box,
-            .experience-wrapper {
-                print-color-adjust: exact;
-                -webkit-print-color-adjust: exact;
+            .left-col {
+                width: 38% !important;
+                flex: 0 0 38% !important;
+                max-width: 38% !important;
             }
-             /* Footer credit - แสดงทุกหน้า */
+            
+            .right-col {
+                width: 62% !important;
+                flex: 0 0 62% !important;
+                max-width: 62% !important;
+            }
+            
+            .summary-box {
+                background-color: #9ea6c0 !important;
+            }
+            
+            .experience-wrapper {
+                background-color: #9ea6c0 !important;
+            }
+            
             .footer-credit {
-                position: fixed;
+                position: absolute;
                 bottom: 10px;
                 left: 30px;
                 font-size: 12px;
                 color: #333 !important;
                 font-weight: 500;
-            }
-            
-            @page {
-                size: A4;
-                margin: 20px;
             }
         }
     </style>
@@ -436,8 +456,47 @@
             currentUrl.searchParams.set('template', templateNumber);
             window.location.href = currentUrl.toString();
         }
+
+        function fitToOnePage() {
+            const container = document.querySelector('.resume-container');
+            const wrapper = document.getElementById('resume-wrapper');
+            if (!container || !wrapper) return;
+
+            wrapper.style.width = '210mm';
+            wrapper.style.height = '297mm';
+            wrapper.style.overflow = 'hidden';
+            wrapper.style.margin = '0 auto';
+            const a4Height = wrapper.offsetHeight;
+
+            container.style.zoom = '1';
+            container.style.width = '210mm';
+
+            const contentHeight = container.scrollHeight;
+
+            let zoomLevel = 1;
+            if (contentHeight > a4Height) {
+                zoomLevel = Math.floor((a4Height / contentHeight) * 1000) / 1000;
+            }
+
+            let dynamicStyle = document.getElementById('dynamic-zoom-style');
+            if (!dynamicStyle) {
+                dynamicStyle = document.createElement('style');
+                dynamicStyle.id = 'dynamic-zoom-style';
+                document.head.appendChild(dynamicStyle);
+            }
+            dynamicStyle.textContent = 
+                '.resume-container { zoom: ' + zoomLevel + ' !important; }' +
+                '#resume-wrapper { width: 210mm !important; height: 297mm !important; overflow: hidden !important; margin: 0 auto !important; }' +
+                '@media print { ' +
+                '  .resume-container { zoom: ' + zoomLevel + ' !important; }' +
+                '  #resume-wrapper { width: 210mm !important; height: 297mm !important; overflow: hidden !important; margin: 0 !important; }' +
+                '}';
+        }
+
+        window.addEventListener('load', fitToOnePage);
     </script>
 
+    <div id="resume-wrapper">
     <div class="resume-container">
         <div class="logo-vd">
             <img src="{{ asset('logo/V dragon-02.png') }}" alt="VD Logo">
@@ -570,6 +629,7 @@
             @endif
         </div>
     </div>
+    </div><!-- end resume-wrapper -->
 
 </body>
 </html>
