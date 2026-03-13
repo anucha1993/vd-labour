@@ -558,12 +558,16 @@
                                         <option value="Category 2 (ท.2)" {{ old('lead_car_type') == 'Category 2 (ท.2)' ? 'selected' : '' }}>
                                             Category 2 (ท.2) - รถขนส่งสาธารณะ
                                         </option>
+                                        <option value="Category 3 (ท.3)" {{ old('lead_car_type') == 'Category 3 (ท.3)' ? 'selected' : '' }}>
+                                            Category 3 (ท.3) - ใบอนุญาตขับขี่สาธารณะสำหรับรถลากจูง รถพ่วง
+                                        </option>
                                         <option value="Category 4 (บ.4)" {{ old('lead_car_type') == 'Category 4 (บ.4)' ? 'selected' : '' }}>
                                             Category 4 (บ.4) - รถขนส่งวัตถุอันตราย
                                         </option>
                                         <option value="Category 4 (ท.4)" {{ old('lead_car_type') == 'Category 4 (ท.4)' ? 'selected' : '' }}>
                                             Category 4 (ท.4) - รถขนส่งอื่นๆ
                                         </option>
+                                        
                                     </optgroup>
                                     
                                     <optgroup label="🌍 ใบขับขี่ประเภทอื่นๆ (Other License)">
