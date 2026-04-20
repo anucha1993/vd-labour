@@ -99,8 +99,17 @@
         </div>
         <div class="col-12 col-sm-6 col-md-3">
             <div class="alert-card">
+                <span class="alert-icon" style="background:#ff9800;"><i class="mdi mdi-pause-circle"></i></span>
+                <span class="alert-badge" style="background:#ff9800;">ชะลอ</span>
+                <div class="alert-label">ชะลอดำเนินการ</div>
+                <div class="alert-value">{{ number_format($countHold) }}</div>
+                <div class="alert-desc">ชะลอดำเนินการทั้งหมด</div>
+            </div>
+        </div>
+        <div class="col-12 col-sm-6 col-md-3">
+            <div class="alert-card">
                 <span class="alert-icon bg-orange"><i class="mdi mdi-close-circle"></i></span>
-                <span class="alert-badge" style="background:#ff9800;">ยกเลิก</span>
+                <span class="alert-badge" style="background:#f44336;">ยกเลิก</span>
                 <div class="alert-label">จำนวนคนงานยกเลิก</div>
                 <div class="alert-value">{{ number_format($countCancel) }}</div>
                 <div class="alert-desc">ยกเลิกทั้งหมด</div>

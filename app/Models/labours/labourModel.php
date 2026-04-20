@@ -228,6 +228,11 @@ class labourModel extends Model
         return $query->where('labour_status', 'success');
     }
 
+    public function scopeCountHold($query)
+    {
+        return $query->where('labour_status', 'hold');
+    }
+
     // แจ้งเตือน VISA ไม่ Update (วันที่ยืนวีซ่าเกิน 75 วัน และ status = none)
     public function scopeVisaNotUpdate($query)
     {

@@ -11,6 +11,7 @@ if (! function_exists('labourStatusBadge')) {
     {
         return match (strtolower($status)) {
             'wait'        => 'กำลังดำเนินการ',
+            'hold'        => 'ชะลอดำเนินการ',
             'success'     => 'บินแล้ว',
             'cancel'      => 'ยกเลิก',
             default       => '>ไม่ทราบสถานะ',

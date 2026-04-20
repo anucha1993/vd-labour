@@ -100,6 +100,10 @@ class MyLeadsController extends Controller
             'processing' => \App\Models\labours\labourModel::whereHas('leadModel', function($q) use ($userStaff) {
                 $q->where('staff_id', $userStaff->staff_id);
             })->where('labour_status', 'wait')->count(),
+
+            'hold' => \App\Models\labours\labourModel::whereHas('leadModel', function($q) use ($userStaff) {
+                $q->where('staff_id', $userStaff->staff_id);
+            })->where('labour_status', 'hold')->count(),
             
             'cancelled' => \App\Models\labours\labourModel::whereHas('leadModel', function($q) use ($userStaff) {
                 $q->where('staff_id', $userStaff->staff_id);

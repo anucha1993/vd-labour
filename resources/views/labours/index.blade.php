@@ -112,6 +112,7 @@
                                     <select name="labour_status" class="form-select">
                                         <option value="all">All</option>
                                         <option value="wait">กำลังดำเนินการ</option>
+                                        <option value="hold">ชะลอดำเนินการ</option>
                                         <option value="success">บินแล้ว</option>
                                         <option value="cancel">ยกเลิก</option>
                                     </select>
@@ -203,6 +204,9 @@
                                     @if ($item->labour_status === 'wait')
                                         <span class="badge rounded-pill bg-primary"><i class="bi bi-hourglass-split"></i>
                                             กำลังดำเนินการ</span>
+                                    @elseif ($item->labour_status === 'hold')
+                                        <span class="badge rounded-pill bg-warning text-dark"><i class="bi bi-pause-circle"></i>
+                                            ชะลอดำเนินการ</span>
                                     @elseif ($item->labour_status === 'success')
                                         <span class="badge rounded-pill bg-success"><i class="bi bi-check-circle"></i>
                                             บินแล้ว</span>

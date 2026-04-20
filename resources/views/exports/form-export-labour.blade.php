@@ -104,6 +104,7 @@
                         <select name="labour_status" class="form-select">
                             <option @if($request->labour_status == 'all') selected @endif  value="all">All</option>
                             <option @if($request->labour_status == 'wait') selected @endif  value="wait">กำลังดำเนินการ</option>
+                            <option @if($request->labour_status == 'hold') selected @endif  value="hold">ชะลอดำเนินการ</option>
                             <option @if($request->labour_status == 'success') selected @endif  value="success">บินแล้ว</option>
                             <option @if($request->labour_status == 'cancel') selected @endif  value="cancel">ยกเลิก</option>
                         </select>

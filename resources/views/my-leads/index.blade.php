@@ -155,6 +155,23 @@
                     </div>
                 </div>
 
+                <!-- Hold Labour -->
+                <div class="col-md-2">
+                    <div class="card border-secondary shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="text-muted mb-1" style="font-size: 0.85rem;">ชะลอดำเนินการ</h6>
+                                    <h3 class="mb-0 text-secondary">{{ number_format($labourStats['hold'] ?? 0) }}</h3>
+                                </div>
+                                <div class="bg-secondary bg-opacity-10 rounded-circle p-2">
+                                    <i class="bi bi-pause-circle-fill text-secondary fs-4"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Cancelled Labour -->
                 <div class="col-md-2">
                     <div class="card border-danger shadow-sm">

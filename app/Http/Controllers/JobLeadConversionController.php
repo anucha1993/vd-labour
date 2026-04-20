@@ -203,7 +203,7 @@ class JobLeadConversionController extends Controller
             'labour_examination' => $lead->examination_round_id,
             'labour_customer' => $job->customer_id,
             'labour_job_group' => $job->job_group_id, // Priority: job's group
-            'labour_position' => $job->position_id, // Priority: job's position
+            'labour_position' => $lead->position_id ?? $job->position_id, // Priority: lead's position, fallback to job's position
             'labour_birthday' => $lead->lead_birthday,
             'labour_status' => 'wait', // Default status
             'labour_path' => $folderPath,

@@ -36,10 +36,11 @@ class dashboardController extends Controller
         $countCancel = labourModel::query()->CountCancel()->count();
         $countAll = labourModel::query()->CountAll()->count();
         $countSuccess = labourModel::query()->CountSuccess()->count();
+        $countHold = labourModel::query()->CountHold()->count();
 
         // Job Lead Notifications
         $jobLeadNotifications = $this->notificationService->getUnreadCount();
 
-        return view('dashboards.index', compact( 'countCancel', 'countAll','scopeExpiringCidMoney', 'countSuccess','scopeExpiringPassport','scopeExpiringIdCard','scopeExpiringDiseaseConstruct','scopeExpiringDiseaseFactory','scopeExpiringCIDConstruct','scopeExpiringCIDFactory','scopeExpiringAffidavit', 'visaNotUpdate', 'visaApproved', 'visaRejected', 'jobLeadNotifications'));
+        return view('dashboards.index', compact( 'countCancel', 'countAll','scopeExpiringCidMoney', 'countSuccess', 'countHold','scopeExpiringPassport','scopeExpiringIdCard','scopeExpiringDiseaseConstruct','scopeExpiringDiseaseFactory','scopeExpiringCIDConstruct','scopeExpiringCIDFactory','scopeExpiringAffidavit', 'visaNotUpdate', 'visaApproved', 'visaRejected', 'jobLeadNotifications'));
     }
 }

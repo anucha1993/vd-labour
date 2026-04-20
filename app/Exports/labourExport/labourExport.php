@@ -93,6 +93,9 @@ class labourExport implements FromCollection, WithHeadings, WithMapping, WithCol
             case 'wait':
                 $status = 'กำลังดำเนินการ';
                 break;
+            case 'hold':
+                $status = 'ชะลอดำเนินการ';
+                break;
             case 'success':
                 $status = 'บินแล้ว';
                 break;
