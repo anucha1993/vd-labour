@@ -274,7 +274,12 @@ class JobLeadController extends Controller
     public function show($id)
     {
         $jobLead = JobLeadModel::with(['job.country', 'job.demand', 'createdBy', 'updatedBy', 'lead'])
-                              ->findOrFail($id);
+                              ->find($id);
+
+        if (!$jobLead) {
+            return redirect()->route('job-leads.index')
+                           ->with('warning', 'ไม่พบใบสมัครงานที่ต้องการ (อาจถูกลบหรือถูก Convert แล้ว)');
+        }
         
         return view('job-leads.show', compact('jobLead'));
     }
@@ -284,7 +289,17 @@ class JobLeadController extends Controller
      */
     public function edit($id)
     {
-        $jobLead = JobLeadModel::with(['job'])->findOrFail($id);
+        $jobLead = JobLeadModel::with(['job', 'lead'])->find($id);
+
+        if (!$jobLead) {
+            return redirect()->route('job-leads.index')
+                           ->with('warning', 'ไม่พบใบสมัครที่ต้องการแก้ไข (อาจถูกลบหรือถูก Convert แล้ว)');
+        }
+
+        if ($jobLead->lead && $jobLead->lead->isConverted()) {
+            return redirect()->route('job-leads.job-applicants', ['job' => $jobLead->job_id])
+                           ->with('warning', 'ใบสมัครนี้ถูก Convert เป็น Labour แล้ว จึงไม่สามารถแก้ไขได้');
+        }
         
         return view('job-leads.edit', compact('jobLead'));
     }
@@ -294,7 +309,12 @@ class JobLeadController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $jobLead = JobLeadModel::with('lead')->findOrFail($id);
+        $jobLead = JobLeadModel::with('lead')->find($id);
+
+        if (!$jobLead) {
+            return redirect()->route('job-leads.index')
+                           ->with('warning', 'ไม่พบใบสมัครที่ต้องการอัปเดต (อาจถูกลบหรือถูก Convert แล้ว)');
+        }
         
         // ตรวจสอบว่า Lead ถูก Convert แล้วหรือไม่
         if ($jobLead->lead && $jobLead->lead->isConverted()) {
@@ -368,7 +388,13 @@ class JobLeadController extends Controller
         try {
             DB::beginTransaction();
             
-            $jobLead = JobLeadModel::with('lead')->findOrFail($id);
+            $jobLead = JobLeadModel::with('lead')->find($id);
+
+            if (!$jobLead) {
+                DB::rollBack();
+                return redirect()->route('job-leads.index')
+                               ->with('warning', 'ไม่พบใบสมัครที่ต้องการลบ (อาจถูกลบไปก่อนหน้าแล้ว)');
+            }
             
             // ตรวจสอบว่า Lead ถูก Convert แล้วหรือไม่
             if ($jobLead->lead && $jobLead->lead->isConverted()) {
@@ -399,14 +425,20 @@ class JobLeadController extends Controller
     /**
      * Force unlock a job lead (Admin only)
      */
-    public function forceUnlock(Request $request, $id)
+    public function forceUnlock(Request $request, $jobLead)
     {
         if (!auth()->user()->hasPermissionTo('job-lead-admin') && !auth()->user()->hasRole('super-admin')) {
             return redirect()->back()->with('error', 'คุณไม่มีสิทธิ์ในการปลดล็อคบังคับ');
         }
         
         try {
-            $jobLead = JobLeadModel::findOrFail($id);
+            // Route binding may inject a model instance; fall back to DB lookup for raw ID values.
+            if (!$jobLead instanceof JobLeadModel) {
+                $jobLead = JobLeadModel::find($jobLead);
+            }
+            if (!$jobLead) {
+                return redirect()->back()->with('warning', 'ไม่พบใบสมัครที่ต้องการปลดล็อค');
+            }
             $reason = $request->reason ?? 'Admin บังคับปลดล็อค';
             
             $jobLead->forceUnlock($reason);

@@ -7,6 +7,7 @@ use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvi
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
+use App\Models\jobs\JobLeadModel;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -27,7 +28,25 @@ class RouteServiceProvider extends ServiceProvider
         $this->configureRateLimiting();
 
         // Configure route model bindings
-        Route::model('jobLead', \App\Models\jobs\JobLeadModel::class);
+        Route::bind('jobLead', function ($value) {
+            if ($value instanceof JobLeadModel) {
+                return $value;
+            }
+
+            $rawValue = trim((string) $value);
+            $lookupValue = $rawValue;
+
+            // Defensive parse: some links may accidentally pass a CSV-like payload.
+            if (str_contains($lookupValue, ',')) {
+                $lookupValue = trim(strtok($lookupValue, ','));
+            }
+
+            if (is_numeric($lookupValue)) {
+                return JobLeadModel::where('job_lead_id', (int) $lookupValue)->firstOrFail();
+            }
+
+            return JobLeadModel::where('job_lead_number', $lookupValue)->firstOrFail();
+        });
 
         $this->routes(function () {
             Route::middleware('api')
